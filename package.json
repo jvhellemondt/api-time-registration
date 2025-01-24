@@ -1,0 +1,27 @@
+{
+    "name": "time-registration",
+    "module": "src/main.ts",
+    "type": "module",
+    "scripts": {
+        "dev": "bun --hot --watch src/main.ts",
+        "build": "bun build ./src/main.ts --splitting --outdir=./dist --target=bun --tsconfig=tsconfig.build.json",
+        "start": "NODE_ENV=production bun dist/main.js",
+        "lint": "eslint ./src/**",
+        "lint:fix": "eslint ./src/** --fix",
+        "test": "NODE_ENV=test bun test --watch",
+        "type:check": "tsc --noEmit"
+    },
+    "devDependencies": {
+        "@antfu/eslint-config": "^3.16.0",
+        "@eslint/js": "^9.18.0",
+        "@total-typescript/ts-reset": "latest",
+        "@types/bun": "latest",
+        "eslint": "^9.18.0"
+    },
+    "peerDependencies": {
+        "typescript": "^5.0.0"
+    },
+    "bun": {
+        "target": "esnext"
+    }
+}
