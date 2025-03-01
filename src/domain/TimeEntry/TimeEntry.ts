@@ -4,6 +4,7 @@ import { AggregateRoot } from '@jvhellemondt/crafts-and-arts.ts'
 
 interface TimeEntryProps {
   userId: UUID
+  endTime: Date
 }
 
 export class TimeEntry extends AggregateRoot<TimeEntryProps> {
