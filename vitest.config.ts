@@ -1,3 +1,4 @@
+import path from 'node:path'
 import { defineConfig } from 'vitest/config'
 
 export default defineConfig({
@@ -7,6 +8,7 @@ export default defineConfig({
     reporters: ['verbose'],
     include: ['src/**/*.{test,spec}.?(c|m)[jt]s?(x)'],
     exclude: [
+      '*.implementation.*',
       '**/node_modules/**',
       '**/dist/**',
       '**/cypress/**',
@@ -22,6 +24,11 @@ export default defineConfig({
         functions: 100,
         branches: 100,
       },
+    },
+  },
+  resolve: {
+    alias: {
+      '@': path.resolve(__dirname, './src'),
     },
   },
 })
