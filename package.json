@@ -23,5 +23,8 @@
     },
     "bun": {
         "target": "esnext"
+    },
+    "dependencies": {
+        "@jvhellemondt/crafts-and-arts.ts": "0.0.1"
     }
 }

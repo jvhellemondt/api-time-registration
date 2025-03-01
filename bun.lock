@@ -3,6 +3,9 @@
   "workspaces": {
     "": {
       "name": "time-registration",
+      "dependencies": {
+        "@jvhellemondt/crafts-and-arts.ts": "0.0.1",
+      },
       "devDependencies": {
         "@antfu/eslint-config": "^3.16.0",
         "@eslint/js": "^9.18.0",
@@ -69,6 +72,8 @@
     "@humanwhocodes/retry": ["@humanwhocodes/retry@0.4.1", "", {}, "sha512-c7hNEllBlenFTHBky65mhq8WD2kbN9Q6gk0bTk8lSBvc554jpXSkST1iePudpt7+A/AQvuHs9EMqjHDXMY1lrA=="],
 
     "@jridgewell/sourcemap-codec": ["@jridgewell/sourcemap-codec@1.5.0", "", {}, "sha512-gv3ZRaISU3fjPAgNsriBRqGWQL6quFx04YMPW/zD8XMLsU32mhCCbfbO6KZFLjvYpCZ8zyDEgqsgf+PwPaM7GQ=="],
+
+    "@jvhellemondt/crafts-and-arts.ts": ["@jvhellemondt/crafts-and-arts.ts@0.0.1", "https://npm.pkg.github.com/download/@jvhellemondt/crafts-and-arts.ts/0.0.1/950d77f973b313897551ca078738d291104a0aaa", { "peerDependencies": { "typescript": "^5.0.0" } }, "sha512-/cR6T6zCScadl35+i7paYPNqU21jYObVBrXLTlHVSDU7K0WqRAjyoiShcUaSU5RtYNgE4rRIONwcEbhZ1p22lQ=="],
 
     "@nodelib/fs.scandir": ["@nodelib/fs.scandir@2.1.5", "", { "dependencies": { "@nodelib/fs.stat": "2.0.5", "run-parallel": "^1.1.9" } }, "sha512-vq24Bq3ym5HEQm2NKCr3yXDwjc7vTsEThRDnkp2DK9p1uqLR+DHurm/NOTo0KG7HYHU7eppKZj3MyqYuMBf62g=="],
 
