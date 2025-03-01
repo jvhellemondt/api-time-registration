@@ -1,6 +1,5 @@
 import { randomUUID } from 'node:crypto'
 import { subDays } from 'date-fns'
-import { describe, expect, it } from 'vitest'
 import { RegisterTimeEntryCommand } from './RegisterTimeEntry.command'
 
 describe('registerTimeEntryCommand', () => {
