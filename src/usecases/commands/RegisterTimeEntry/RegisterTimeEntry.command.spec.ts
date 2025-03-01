@@ -9,8 +9,8 @@ describe('registerTimeEntryCommand', () => {
 
   it('should contain the right payload', () => {
     const userId = randomUUID()
-    const startTime = new Date()
-    const endTime = subDays(startTime, 3)
+    const endTime = new Date()
+    const startTime = subDays(endTime, 3)
 
     const command = new RegisterTimeEntryCommand({ userId, startTime, endTime })
 
