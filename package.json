@@ -1,30 +1,56 @@
 {
-    "name": "time-registration",
-    "module": "src/main.ts",
-    "type": "module",
-    "scripts": {
-        "dev": "bun --hot --watch src/main.ts",
-        "build": "bun build ./src/main.ts --splitting --outdir=./dist --target=bun --tsconfig=tsconfig.build.json",
-        "start": "NODE_ENV=production bun dist/main.js",
-        "lint": "eslint ./src/**",
-        "lint:fix": "eslint ./src/** --fix",
-        "test": "NODE_ENV=test bun test --watch",
-        "type:check": "tsc --noEmit"
-    },
-    "devDependencies": {
-        "@antfu/eslint-config": "^3.16.0",
-        "@eslint/js": "^9.18.0",
-        "@total-typescript/ts-reset": "latest",
-        "@types/bun": "latest",
-        "eslint": "^9.18.0"
-    },
-    "peerDependencies": {
-        "typescript": "^5.0.0"
-    },
-    "bun": {
-        "target": "esnext"
-    },
-    "dependencies": {
-        "@jvhellemondt/crafts-and-arts.ts": "0.0.1"
+  "name": "time-registration",
+  "module": "src/main.ts",
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "bun --hot --watch src/main.ts",
+    "build": "bun build ./src/main.ts --splitting --outdir=./dist --target=bun --tsconfig=tsconfig.build.json",
+    "start": "NODE_ENV=production bun dist/main.js",
+    "prepare": "husky",
+    "commit": "cz",
+    "lint": "eslint",
+    "lint:fix": "eslint --fix",
+    "test": "NODE_ENV=test vitest",
+    "test:watch": "NODE_ENV=test vitest --coverage --watch",
+    "test:ui": "NODE_ENV=test vitest --watch --coverage --ui",
+    "coverage": "NODE_ENV=test vitest --coverage",
+    "typecheck": "tsc --noEmit",
+    "release": "release-it"
+  },
+  "dependencies": {
+    "@jvhellemondt/crafts-and-arts.ts": "0.0.1"
+  },
+  "devDependencies": {
+    "@antfu/eslint-config": "^4.3.0",
+    "@commitlint/cli": "^19.7.1",
+    "@commitlint/config-conventional": "^19.7.1",
+    "@eslint/js": "^9.19.0",
+    "@release-it/bumper": "^7.0.1",
+    "@stylistic/eslint-plugin": "^3.0.1",
+    "@types/bun": "latest",
+    "@vitest/coverage-istanbul": "3.0.5",
+    "@vitest/ui": "^3.0.5",
+    "changelogen": "^0.6.0",
+    "commitizen": "^4.3.1",
+    "cz-conventional-changelog": "^3.3.0",
+    "eslint": "^9.19.0",
+    "globals": "^15.14.0",
+    "husky": "^9.1.7",
+    "release-it": "^18.1.2",
+    "release-it-changelogen": "^0.1.0",
+    "typescript-eslint": "^8.23.0",
+    "vitest": "^3.0.5"
+  },
+  "peerDependencies": {
+    "typescript": "^5.0.0"
+  },
+  "bun": {
+    "target": "esnext"
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
     }
+  }
 }
