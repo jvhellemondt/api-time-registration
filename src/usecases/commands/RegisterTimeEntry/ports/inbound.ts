@@ -1,5 +1,7 @@
+import type { UUID } from 'node:crypto'
+
 export interface RegisterTimeEntryPayload {
-  userId: string
+  userId: UUID
   startTime: Date
   endTime: Date
 }
