@@ -2,7 +2,7 @@ import type { DomainEvent } from '@jvhellemondt/crafts-and-arts.ts'
 import type { UUID } from 'node:crypto'
 import { AggregateRoot } from '@jvhellemondt/crafts-and-arts.ts'
 
-interface TimeEntryProps {
+export interface TimeEntryProps {
   userId: UUID
   startTime: Date
   endTime: Date
