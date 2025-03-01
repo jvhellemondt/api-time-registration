@@ -19,7 +19,8 @@
     "release": "release-it"
   },
   "dependencies": {
-    "@jvhellemondt/crafts-and-arts.ts": "0.0.1"
+    "@jvhellemondt/crafts-and-arts.ts": "0.0.1",
+    "date-fns": "^4.1.0"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^4.3.0",
