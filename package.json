@@ -20,6 +20,7 @@
   },
   "dependencies": {
     "@jvhellemondt/crafts-and-arts.ts": "0.0.1",
+    "class-validator": "^0.14.1",
     "date-fns": "^4.1.0"
   },
   "devDependencies": {
