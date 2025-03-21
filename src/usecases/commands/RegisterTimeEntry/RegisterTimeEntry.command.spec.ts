@@ -8,11 +8,12 @@ describe('registerTimeEntryCommand', () => {
   })
 
   it('should contain the right payload', () => {
+    const aggregateId = randomUUID()
     const userId = randomUUID()
     const endTime = new Date()
     const startTime = subDays(endTime, 3)
 
-    const command = new RegisterTimeEntryCommand({ userId, startTime, endTime })
+    const command = new RegisterTimeEntryCommand(aggregateId, { userId, startTime, endTime })
 
     expect(command.payload.userId).toBe(userId)
     expect(command.payload.startTime).toEqual(startTime)

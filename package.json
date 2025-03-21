@@ -1,6 +1,6 @@
 {
   "name": "time-registration",
-  "module": "src/main.ts",
+  "module": "src/timeRegistration.module.ts",
   "version": "0.0.0",
   "type": "module",
   "scripts": {

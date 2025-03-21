@@ -39,7 +39,7 @@
 
     "types": ["vitest/globals"]
   },
-  "include": ["src/**/*"],
+  "include": ["src/**/*", "tests/**/*"],
   "exclude": ["node_modules"],
   "files": ["package.json"]
 }

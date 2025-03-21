@@ -1,6 +1,7 @@
 import { randomUUID } from 'node:crypto'
 import { InMemoryTimeEntryRepository } from '@/repositories/TimeEntryRepository/implementations/InMemoryTimeEntry.implementation'
 import { CommandBus, EventBus, InMemoryEventStore } from '@jvhellemondt/crafts-and-arts.ts'
+import { isUUID } from 'class-validator'
 import { subDays } from 'date-fns'
 import { RegisterTimeEntryCommand } from './RegisterTimeEntry.command'
 import { RegisterTimeEntryHandler } from './RegisterTimeEntry.handler'
@@ -10,7 +11,7 @@ describe('registerTimeEntryHandler', () => {
     expect(RegisterTimeEntryHandler).toBeDefined()
   })
 
-  it('should return a "not implemented" error upon execution', async () => {
+  it('should store the aggregate and return the id of the created time entry', async () => {
     // arrange
     const eventBus = new EventBus()
     const eventStore = new InMemoryEventStore(eventBus)
@@ -19,16 +20,19 @@ describe('registerTimeEntryHandler', () => {
     const commandBus = new CommandBus()
     commandBus.register(RegisterTimeEntryCommand, handler)
 
+    const aggregateId = randomUUID()
     const userId = randomUUID()
     const endTime = new Date()
     const startTime = subDays(endTime, 3)
 
-    const command = new RegisterTimeEntryCommand({ userId, startTime, endTime })
+    const command = new RegisterTimeEntryCommand(aggregateId, { userId, startTime, endTime })
 
     // act
-    const execute = () => handler.execute(command)
+    const result = await handler.execute(command)
+    const events = await eventStore.loadEvents(result.id)
 
     // assert
-    expect(execute).rejects.toThrow()
+    expect(isUUID(result.id)).toBeTruthy()
+    expect(events).toHaveLength(1)
   })
 })

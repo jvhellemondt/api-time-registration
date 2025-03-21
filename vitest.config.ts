@@ -6,9 +6,8 @@ export default defineConfig({
     watch: false,
     globals: true,
     reporters: ['verbose'],
-    include: ['src/**/*.{test,spec}.?(c|m)[jt]s?(x)'],
+    include: ['src/**/*.{test,spec,scenario}.?(c|m)[jt]s?(x)'],
     exclude: [
-      '*.implementation.*',
       '**/node_modules/**',
       '**/dist/**',
       '**/cypress/**',
