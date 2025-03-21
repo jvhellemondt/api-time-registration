@@ -16,11 +16,12 @@ export class TimeEntry extends AggregateRoot<TimeEntryProps> {
     return aggregate
   }
 
-  static rehydrate(id: string, events: DomainEvent<TimeEntryProps>[]): TimeEntry {
-    if (!events.length) {
-      throw new Error('No events provided')
+  static rehydrate(id: string, events: DomainEvent<unknown>[]): TimeEntry {
+    const creationEvent = events.shift()
+    if (!(creationEvent instanceof TimeEntryRegistered)) {
+      throw new TypeError('Invalid creation event found')
     }
-    const aggregate = new this(events[0].payload, id)
+    const aggregate = new this(creationEvent.payload, id)
     events.forEach(event => aggregate._applyEvent(event))
     return aggregate
   }

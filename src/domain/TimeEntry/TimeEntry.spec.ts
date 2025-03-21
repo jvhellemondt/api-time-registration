@@ -1,5 +1,7 @@
+import type { UUID } from 'node:crypto'
 import { randomUUID } from 'node:crypto'
-import { subDays } from 'date-fns'
+import { DomainEvent } from '@jvhellemondt/crafts-and-arts.ts'
+import { subDays, subMinutes } from 'date-fns'
 import { TimeEntryRegistered } from '../events/TimeEntryRegistered.event'
 import { TimeEntry } from './TimeEntry'
 
@@ -42,5 +44,19 @@ describe('timeEntry', () => {
 
   it('should throw an error upon calling rehydrate when no events are given', () => {
     expect(() => TimeEntry.rehydrate(randomUUID(), [])).toThrow()
+  })
+
+  it('should ignore a fakeEvent upon rehydration', () => {
+    class FakeEvent extends DomainEvent<{ userId: UUID }> { }
+
+    const aggregateId = randomUUID()
+    const userId = randomUUID()
+    const event = new TimeEntryRegistered(aggregateId, { userId, startTime: subMinutes(endTime, 120), endTime })
+    const fakeId = randomUUID()
+    const fakeEvent = new FakeEvent(aggregateId, { userId: fakeId })
+    const aggregate = TimeEntry.rehydrate(aggregateId, [event, fakeEvent])
+    expect(aggregate).toBeDefined()
+    expect(aggregate.props.userId).not.toBe(fakeId)
+    expect(aggregate.props.userId).toBe(userId)
   })
 })
