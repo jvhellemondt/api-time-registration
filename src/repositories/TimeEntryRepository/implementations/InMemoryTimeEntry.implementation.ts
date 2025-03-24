@@ -1,7 +1,7 @@
 import type { TimeEntryProps } from '@/domain/TimeEntry/TimeEntry'
-import type { AggregateRoot, EventStore } from '@jvhellemondt/crafts-and-arts.ts'
+import type { AggregateRoot, EventStore } from '@jvhellemondt/arts-and-crafts.ts'
 import { TimeEntry } from '@/domain/TimeEntry/TimeEntry'
-import { Repository } from '@jvhellemondt/crafts-and-arts.ts'
+import { Repository } from '@jvhellemondt/arts-and-crafts.ts'
 
 export class InMemoryTimeEntryRepository extends Repository<TimeEntry> {
   constructor(eventStore: EventStore) {

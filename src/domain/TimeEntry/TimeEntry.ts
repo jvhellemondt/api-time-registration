@@ -1,6 +1,6 @@
-import type { DomainEvent } from '@jvhellemondt/crafts-and-arts.ts'
+import type { DomainEvent } from '@jvhellemondt/arts-and-crafts.ts'
 import type { UUID } from 'node:crypto'
-import { AggregateRoot } from '@jvhellemondt/crafts-and-arts.ts'
+import { AggregateRoot } from '@jvhellemondt/arts-and-crafts.ts'
 import { TimeEntryRegistered } from '../events/TimeEntryRegistered.event'
 
 export interface TimeEntryProps {

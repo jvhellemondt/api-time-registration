@@ -1,6 +1,6 @@
 import type { UUID } from 'node:crypto'
 import { randomUUID } from 'node:crypto'
-import { DomainEvent } from '@jvhellemondt/crafts-and-arts.ts'
+import { DomainEvent } from '@jvhellemondt/arts-and-crafts.ts'
 import { subDays, subMinutes } from 'date-fns'
 import { TimeEntryRegistered } from '../events/TimeEntryRegistered.event'
 import { TimeEntry } from './TimeEntry'

@@ -4,7 +4,7 @@
     "": {
       "name": "time-registration",
       "dependencies": {
-        "@jvhellemondt/crafts-and-arts.ts": "0.0.1",
+        "@jvhellemondt/arts-and-crafts.ts": "^0.0.3",
         "class-validator": "^0.14.1",
         "date-fns": "^4.1.0",
       },
@@ -235,7 +235,7 @@
 
     "@jridgewell/trace-mapping": ["@jridgewell/trace-mapping@0.3.25", "", { "dependencies": { "@jridgewell/resolve-uri": "^3.1.0", "@jridgewell/sourcemap-codec": "^1.4.14" } }, "sha512-vNk6aEwybGtawWmy/PzwnGDOjCkLWSD2wqvjGGAgOAwCGWySYXfYoxt00IJkTF+8Lb57DwOb3Aa0o9CApepiYQ=="],
 
-    "@jvhellemondt/crafts-and-arts.ts": ["@jvhellemondt/crafts-and-arts.ts@0.0.1", "https://npm.pkg.github.com/download/@jvhellemondt/crafts-and-arts.ts/0.0.1/950d77f973b313897551ca078738d291104a0aaa", { "peerDependencies": { "typescript": "^5.0.0" } }, "sha512-/cR6T6zCScadl35+i7paYPNqU21jYObVBrXLTlHVSDU7K0WqRAjyoiShcUaSU5RtYNgE4rRIONwcEbhZ1p22lQ=="],
+    "@jvhellemondt/arts-and-crafts.ts": ["@jvhellemondt/arts-and-crafts.ts@0.0.3", "https://npm.pkg.github.com/download/@jvhellemondt/arts-and-crafts.ts/0.0.3/9572173953bce37aafc84e9991d4d7dbd9a8c862", { "peerDependencies": { "typescript": "^5.0.0" } }, "sha512-cvKIXbs4GHi3IphHewODS1k4gdBYneSoMGOXMzmAwdH779kPFpScEM6p3dNp71xM59XaTV5bnZIOOpsfDeCxBQ=="],
 
     "@nodelib/fs.scandir": ["@nodelib/fs.scandir@2.1.5", "", { "dependencies": { "@nodelib/fs.stat": "2.0.5", "run-parallel": "^1.1.9" } }, "sha512-vq24Bq3ym5HEQm2NKCr3yXDwjc7vTsEThRDnkp2DK9p1uqLR+DHurm/NOTo0KG7HYHU7eppKZj3MyqYuMBf62g=="],
 

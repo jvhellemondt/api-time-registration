@@ -1,6 +1,6 @@
 import { randomUUID } from 'node:crypto'
 import { InMemoryTimeEntryRepository } from '@/repositories/TimeEntryRepository/implementations/InMemoryTimeEntry.implementation'
-import { CommandBus, EventBus, InMemoryEventStore } from '@jvhellemondt/crafts-and-arts.ts'
+import { CommandBus, EventBus, InMemoryEventStore } from '@jvhellemondt/arts-and-crafts.ts'
 import { isUUID } from 'class-validator'
 import { subDays } from 'date-fns'
 import { RegisterTimeEntryCommand } from './RegisterTimeEntry.command'

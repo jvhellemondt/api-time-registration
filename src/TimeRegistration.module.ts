@@ -1,4 +1,4 @@
-import type { CommandBus, EventStore, Module } from '@jvhellemondt/crafts-and-arts.ts'
+import type { CommandBus, EventStore, Module } from '@jvhellemondt/arts-and-crafts.ts'
 import type { TimeEntryRepository } from './repositories/TimeEntryRepository/TimeEntryRepository'
 import { InMemoryTimeEntryRepository } from './repositories/TimeEntryRepository/implementations/InMemoryTimeEntry.implementation'
 import { RegisterTimeEntryCommand } from './usecases/commands/RegisterTimeEntry/RegisterTimeEntry.command'

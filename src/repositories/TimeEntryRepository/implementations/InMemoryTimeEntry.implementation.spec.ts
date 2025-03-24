@@ -1,8 +1,8 @@
 import type { TimeEntryProps } from '@/domain/TimeEntry/TimeEntry'
-import type { EventStore } from '@jvhellemondt/crafts-and-arts.ts'
+import type { EventStore } from '@jvhellemondt/arts-and-crafts.ts'
 import { randomUUID } from 'node:crypto'
 import { TimeEntry } from '@/domain/TimeEntry/TimeEntry'
-import { EventBus, InMemoryEventStore } from '@jvhellemondt/crafts-and-arts.ts'
+import { EventBus, InMemoryEventStore } from '@jvhellemondt/arts-and-crafts.ts'
 import { subMinutes } from 'date-fns'
 import { InMemoryTimeEntryRepository } from './InMemoryTimeEntry.implementation'
 
