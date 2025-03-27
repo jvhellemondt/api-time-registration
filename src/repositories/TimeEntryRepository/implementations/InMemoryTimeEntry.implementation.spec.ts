@@ -23,7 +23,7 @@ describe('inMemoryTimeEntryRepository', () => {
 
   it('should return an error when loading a non-existent time entry', async () => {
     const aggregateId = randomUUID()
-    expect(() => repository.load(aggregateId)).rejects.toThrow()
+    await expect(() => repository.load(aggregateId)).rejects.toThrow()
   })
 
   it('should return the aggregate when loading an existing time entry', async () => {
