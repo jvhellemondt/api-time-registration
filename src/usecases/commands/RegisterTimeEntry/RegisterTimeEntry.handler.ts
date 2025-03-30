@@ -5,7 +5,7 @@ import { CommandHandler } from '@jvhellemondt/arts-and-crafts.ts'
 
 export class RegisterTimeEntryHandler extends CommandHandler<RegisterTimeEntryCommand> {
   async execute(command: RegisterTimeEntryCommand): Promise<RegisterTimeEntryResult> {
-    const aggregate = TimeEntry.create(command.payload, command.aggregateId)
+    const aggregate = TimeEntry.create(command.aggregateId, command.payload)
     await this.repository.store(aggregate)
     return { id: command.aggregateId }
   }

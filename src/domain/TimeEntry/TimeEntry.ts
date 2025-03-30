@@ -10,8 +10,8 @@ export interface TimeEntryProps {
 }
 
 export class TimeEntry extends AggregateRoot<TimeEntryProps> {
-  static create(props: TimeEntryProps, id: UUID) {
-    const aggregate = new this(props, id)
+  static create(id: UUID, props: TimeEntryProps) {
+    const aggregate = new this(id, props)
     aggregate.apply(new TimeEntryRegistered(id, props))
     return aggregate
   }
@@ -21,7 +21,7 @@ export class TimeEntry extends AggregateRoot<TimeEntryProps> {
     if (!(creationEvent instanceof TimeEntryRegistered)) {
       throw new TypeError('Invalid creation event found')
     }
-    const aggregate = new this(creationEvent.payload, id)
+    const aggregate = new this(id, creationEvent.payload)
     events.forEach(event => aggregate._applyEvent(event))
     return aggregate
   }

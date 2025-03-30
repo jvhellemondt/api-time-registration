@@ -34,7 +34,7 @@ describe('inMemoryTimeEntryRepository', () => {
       startTime: subMinutes(new Date(), 120),
       endTime: subMinutes(new Date(), 60),
     }
-    const aggregate = TimeEntry.create(props, aggregateId)
+    const aggregate = TimeEntry.create(aggregateId, props)
     repository.store(aggregate)
 
     const rehydratedAggregate = await repository.load(aggregateId)

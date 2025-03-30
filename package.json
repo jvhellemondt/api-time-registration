@@ -19,7 +19,7 @@
     "release": "release-it"
   },
   "dependencies": {
-    "@jvhellemondt/arts-and-crafts.ts": "^0.0.3",
+    "@jvhellemondt/arts-and-crafts.ts": "^0.0.5",
     "class-validator": "^0.14.1",
     "date-fns": "^4.1.0",
     "hono": "^4.7.5"

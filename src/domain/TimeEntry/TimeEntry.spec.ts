@@ -15,7 +15,7 @@ describe('timeEntry', () => {
   it('should contain user id, start time and end time', () => {
     const aggregateId = randomUUID()
     const props = { userId: randomUUID(), startTime: subDays(endTime, 3), endTime }
-    const timeEntry = TimeEntry.create(props, aggregateId)
+    const timeEntry = TimeEntry.create(aggregateId, props)
     expect(timeEntry.id).toBe(aggregateId)
     expect(timeEntry.props.userId).toBe(props.userId)
     expect(timeEntry.props.startTime).toBe(props.startTime)
