@@ -1,4 +1,6 @@
 import { CommandBus, EventBus, InMemoryEventStore } from '@jvhellemondt/arts-and-crafts.ts'
+import { Hono } from 'hono'
+import TimeEntryApi from './infrastructure/api/TimeEntry'
 import { InMemoryTimeEntryRepository } from './repositories/TimeEntryRepository/implementations/InMemoryTimeEntry.implementation'
 import { TimeRegistrationModule } from './TimeRegistration.module'
 
@@ -11,4 +13,11 @@ const timeRegistrationModule = new TimeRegistrationModule(eventStore, commandBus
 
 timeRegistrationModule.registerModule()
 
-export { commandBus, eventStore }
+const timeEntryApi = new TimeEntryApi(commandBus)
+
+const app = new Hono()
+
+app.get('/health', c => c.text('OK'))
+app.route('/time-entry', timeEntryApi.app)
+
+export default app

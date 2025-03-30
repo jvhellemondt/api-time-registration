@@ -8,6 +8,7 @@ export default defineConfig({
     reporters: ['verbose'],
     include: ['src/**/*.{test,spec,scenario}.?(c|m)[jt]s?(x)'],
     exclude: [
+      '**/main.ts',
       '**/node_modules/**',
       '**/dist/**',
       '**/cypress/**',
@@ -23,6 +24,14 @@ export default defineConfig({
         functions: 100,
         branches: 100,
       },
+      exclude: [
+        '**/main.ts',
+        '**/node_modules/**',
+        '**/dist/**',
+        '**/cypress/**',
+        '**/.{idea,git,cache,output,temp}/**',
+        '**/{karma,rollup,webpack,vite,vitest,jest,ava,babel,nyc,cypress,tsup,build,eslint,prettier}.config.*',
+      ],
     },
   },
   resolve: {
