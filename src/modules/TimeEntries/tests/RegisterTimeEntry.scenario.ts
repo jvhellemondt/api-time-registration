@@ -1,7 +1,7 @@
-import type { EventStore, Repository } from '@jvhellemondt/arts-and-crafts.ts'
+import type { Database, EventStore, Repository } from '@jvhellemondt/arts-and-crafts.ts'
 import type { TimeEntry } from '@/TimeEntries/domain/TimeEntry/TimeEntry'
 import { randomUUID } from 'node:crypto'
-import { CommandBus, EventBus, InMemoryEventStore, QueryBus, ScenarioTest } from '@jvhellemondt/arts-and-crafts.ts'
+import { CommandBus, EventBus, InMemoryDatabase, InMemoryEventStore, QueryBus, ScenarioTest } from '@jvhellemondt/arts-and-crafts.ts'
 import { subMinutes } from 'date-fns'
 import { TimeEntryRegistered } from '@/TimeEntries/domain/events/TimeEntryRegistered.event'
 import { InMemoryTimeEntryRepository } from '@/TimeEntries/repositories/TimeEntryRepository/implementations/InMemoryTimeEntry.implementation'
@@ -12,6 +12,7 @@ describe('scenario test', () => {
   const id = randomUUID()
   let eventBus: EventBus
   let repository: Repository<TimeEntry>
+  let database: Database
   let queryBus: QueryBus
   let eventStore: EventStore
   let commandBus: CommandBus
@@ -19,12 +20,13 @@ describe('scenario test', () => {
 
   beforeEach(() => {
     eventBus = new EventBus()
+    database = new InMemoryDatabase()
     eventStore = new InMemoryEventStore(eventBus)
     repository = new InMemoryTimeEntryRepository(eventStore)
     commandBus = new CommandBus()
     queryBus = new QueryBus()
     scenarioTest = new ScenarioTest(eventStore, eventBus, commandBus, queryBus)
-    new TimeRegistrationModule(eventStore, commandBus, repository).registerModule()
+    new TimeRegistrationModule(repository, database, commandBus, queryBus, eventBus).registerModule()
   })
 
   it('should be defined', async () => {

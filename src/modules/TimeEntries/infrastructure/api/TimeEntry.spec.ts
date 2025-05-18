@@ -1,4 +1,4 @@
-import { CommandBus, EventBus, InMemoryEventStore } from '@jvhellemondt/arts-and-crafts.ts'
+import { CommandBus, EventBus, InMemoryDatabase, InMemoryEventStore, QueryBus } from '@jvhellemondt/arts-and-crafts.ts'
 import { InMemoryTimeEntryRepository } from '@/TimeEntries/repositories/TimeEntryRepository/implementations/InMemoryTimeEntry.implementation'
 import { TimeRegistrationModule } from '@/TimeEntries/TimeRegistration.module'
 import TimeEntryApi from './TimeEntry'
@@ -9,7 +9,9 @@ describe('example', () => {
     const eventStore = new InMemoryEventStore(eventBus)
     const commandBus = new CommandBus()
     const repository = new InMemoryTimeEntryRepository(eventStore)
-    const timeRegistrationModule = new TimeRegistrationModule(eventStore, commandBus, repository)
+    const queryBus = new QueryBus()
+    const database = new InMemoryDatabase()
+    const timeRegistrationModule = new TimeRegistrationModule(repository, database, commandBus, queryBus, eventBus)
 
     timeRegistrationModule.registerModule()
 
