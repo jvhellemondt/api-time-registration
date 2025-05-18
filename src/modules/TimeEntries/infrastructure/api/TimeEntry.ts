@@ -1,20 +1,23 @@
 import type { CommandBus } from '@jvhellemondt/arts-and-crafts.ts'
+import type { ApiServerRouter } from '@shared/infrastructure/api/ApiServerRouter'
 import { randomUUID } from 'node:crypto'
-import { RegisterTimeEntryCommand } from '@/usecases/commands/RegisterTimeEntry/RegisterTimeEntry.command'
+import { RegisterTimeEntryCommand } from '@/TimeEntries/usecases/commands/RegisterTimeEntry/RegisterTimeEntry.command'
 import { Hono } from 'hono'
 
-class TimeEntryApi {
+class TimeEntryApi implements ApiServerRouter {
   public readonly app: Hono
 
   constructor(
     private readonly commandBus: CommandBus,
   ) {
-    this.app = new Hono()
-    this.registerRoutes()
+    const app = new Hono().basePath('time-entry')
+    this.registerRoutes(app)
+
+    this.app = app
   }
 
-  registerRoutes() {
-    this.app.post('/register', async (context) => {
+  registerRoutes(app: Hono) {
+    app.post('/register', async (context) => {
       const body = await context.req.json()
       const command = new RegisterTimeEntryCommand(randomUUID(), body)
       const res = await this.commandBus.execute(command)

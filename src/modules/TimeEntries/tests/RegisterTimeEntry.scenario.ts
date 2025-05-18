@@ -1,13 +1,13 @@
-import type { TimeEntry } from '@/domain/TimeEntry/TimeEntry'
+import type { TimeEntry } from '@/TimeEntries/domain/TimeEntry/TimeEntry'
 import type { EventStore, Repository } from '@jvhellemondt/arts-and-crafts.ts'
 import { randomUUID } from 'node:crypto'
-import { TimeEntryRegistered } from '@/domain/events/TimeEntryRegistered.event'
-import { InMemoryTimeEntryRepository } from '@/repositories/TimeEntryRepository/implementations/InMemoryTimeEntry.implementation'
-import { TimeRegistrationModule } from '@/TimeRegistration.module.ts'
+import { TimeEntryRegistered } from '@/TimeEntries/domain/events/TimeEntryRegistered.event'
+import { InMemoryTimeEntryRepository } from '@/TimeEntries/repositories/TimeEntryRepository/implementations/InMemoryTimeEntry.implementation'
+import { TimeRegistrationModule } from '@/TimeEntries/TimeRegistration.module'
+import { RegisterTimeEntryCommand } from '@/TimeEntries/usecases/commands/RegisterTimeEntry/RegisterTimeEntry.command'
 import { CommandBus, EventBus, InMemoryEventStore, QueryBus, ScenarioTest } from '@jvhellemondt/arts-and-crafts.ts'
 import { subMinutes } from 'date-fns'
 import { beforeEach, describe, expect, it } from 'vitest'
-import { RegisterTimeEntryCommand } from './RegisterTimeEntry.command'
 
 describe('scenario test', () => {
   const id = randomUUID()

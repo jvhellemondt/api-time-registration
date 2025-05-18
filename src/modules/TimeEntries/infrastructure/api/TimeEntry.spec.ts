@@ -1,6 +1,6 @@
-import { TimeEntryRegistered } from '@/domain/events/TimeEntryRegistered.event'
-import { InMemoryTimeEntryRepository } from '@/repositories/TimeEntryRepository/implementations/InMemoryTimeEntry.implementation'
-import { TimeRegistrationModule } from '@/TimeRegistration.module'
+import { TimeEntryRegistered } from '@/TimeEntries/domain/events/TimeEntryRegistered.event'
+import { InMemoryTimeEntryRepository } from '@/TimeEntries/repositories/TimeEntryRepository/implementations/InMemoryTimeEntry.implementation'
+import { TimeRegistrationModule } from '@/TimeEntries/TimeRegistration.module'
 import { CommandBus, EventBus, InMemoryEventStore } from '@jvhellemondt/arts-and-crafts.ts'
 import TimeEntryApi from './TimeEntry'
 
@@ -15,12 +15,11 @@ describe('example', () => {
     timeRegistrationModule.registerModule()
 
     const server = new TimeEntryApi(commandBus)
-    const res = await server.app.request('register', {
+    const res = await server.app.request('time-entry/register', {
       method: 'POST',
       body: JSON.stringify({ message: 'hello hono' }),
       headers: new Headers({ 'Content-Type': 'application/json' }),
     })
-
     const { id } = await res.json()
     const events = await eventStore.loadEvents(id)
 

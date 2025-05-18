@@ -1,5 +1,5 @@
 import { randomUUID } from 'node:crypto'
-import { InMemoryTimeEntryRepository } from '@/repositories/TimeEntryRepository/implementations/InMemoryTimeEntry.implementation'
+import { InMemoryTimeEntryRepository } from '@/TimeEntries/repositories/TimeEntryRepository/implementations/InMemoryTimeEntry.implementation'
 import { CommandBus, EventBus, InMemoryEventStore } from '@jvhellemondt/arts-and-crafts.ts'
 import { isUUID } from 'class-validator'
 import { subDays } from 'date-fns'

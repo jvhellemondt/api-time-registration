@@ -1,6 +1,6 @@
 import type { RegisterTimeEntryResult } from './ports/outbound'
 import type { RegisterTimeEntryCommand } from './RegisterTimeEntry.command'
-import { TimeEntry } from '@/domain/TimeEntry/TimeEntry'
+import { TimeEntry } from '@/TimeEntries/domain/TimeEntry/TimeEntry'
 import { CommandHandler } from '@jvhellemondt/arts-and-crafts.ts'
 
 export class RegisterTimeEntryHandler extends CommandHandler<RegisterTimeEntryCommand> {
