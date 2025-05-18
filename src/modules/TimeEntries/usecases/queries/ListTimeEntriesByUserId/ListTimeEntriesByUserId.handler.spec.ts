@@ -34,6 +34,7 @@ describe('handler ListTimeEntriesByUserId', () => {
     const handler = new ListTimeEntriesByUserIdHandler(database)
 
     const results = await handler.execute(query)
-    expect(results.items).toHaveLength(4)
+    expect(results).toHaveLength(4)
+    expect(results).toStrictEqual(fixture)
   })
 })

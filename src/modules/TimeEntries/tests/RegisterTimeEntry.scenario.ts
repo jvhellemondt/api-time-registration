@@ -8,7 +8,7 @@ import { InMemoryTimeEntryRepository } from '@/TimeEntries/repositories/TimeEntr
 import { TimeRegistrationModule } from '@/TimeEntries/TimeRegistration.module'
 import { RegisterTimeEntry } from '@/TimeEntries/usecases/commands/RegisterTimeEntry/RegisterTimeEntry.command'
 
-describe('scenario test', () => {
+describe('scenario test: RegisterTimeEntry', () => {
   const id = randomUUID()
   let eventBus: EventBus
   let repository: Repository<TimeEntry>
