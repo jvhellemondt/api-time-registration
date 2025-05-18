@@ -1,4 +1,4 @@
-export interface ListTimeEntriesByUserIdPayload {
+export interface ListTimeEntriesByUserIdResult {
   id: string
   userId: string
   startTime: string
