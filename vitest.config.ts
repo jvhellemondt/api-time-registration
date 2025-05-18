@@ -25,6 +25,7 @@ export default defineConfig({
         branches: 100,
       },
       exclude: [
+        '**/*.seed.ts',
         '**/main.ts',
         '**/node_modules/**',
         '**/dist/**',
