@@ -12,4 +12,9 @@ describe('timeEntriesByUser specification', () => {
     const spec = new TimeEntriesByUser(id)
     expect(spec.isSatisfiedBy(id)).toBeTruthy()
   })
+
+  it('should return false if the id is not the same', () => {
+    const spec = new TimeEntriesByUser(id)
+    expect(spec.isSatisfiedBy(randomUUID())).toBeFalsy()
+  })
 })
