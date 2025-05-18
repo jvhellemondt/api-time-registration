@@ -1,7 +1,6 @@
-import { TimeEntryRegistered } from '@/TimeEntries/domain/events/TimeEntryRegistered.event'
+import { CommandBus, EventBus, InMemoryEventStore } from '@jvhellemondt/arts-and-crafts.ts'
 import { InMemoryTimeEntryRepository } from '@/TimeEntries/repositories/TimeEntryRepository/implementations/InMemoryTimeEntry.implementation'
 import { TimeRegistrationModule } from '@/TimeEntries/TimeRegistration.module'
-import { CommandBus, EventBus, InMemoryEventStore } from '@jvhellemondt/arts-and-crafts.ts'
 import TimeEntryApi from './TimeEntry'
 
 describe('example', () => {
@@ -26,6 +25,6 @@ describe('example', () => {
     expect(res.status).toBe(201)
     expect(res.headers.get('X-Custom')).toBe('Thank you')
     expect(events).toHaveLength(1)
-    expect(events[0]).toBeInstanceOf(TimeEntryRegistered)
+    expect(events[0].type).toBe('TimeEntryRegistered')
   })
 })

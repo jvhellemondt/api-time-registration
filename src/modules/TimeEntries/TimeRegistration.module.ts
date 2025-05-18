@@ -1,7 +1,6 @@
 import type { CommandBus, EventStore, Module, Repository } from '@jvhellemondt/arts-and-crafts.ts'
 import type { TimeEntry } from './domain/TimeEntry/TimeEntry'
 import type { TimeEntryRepository } from './repositories/TimeEntryRepository/TimeEntryRepository'
-import { RegisterTimeEntryCommand } from './usecases/commands/RegisterTimeEntry/RegisterTimeEntry.command'
 import { RegisterTimeEntryHandler } from './usecases/commands/RegisterTimeEntry/RegisterTimeEntry.handler'
 
 export class TimeRegistrationModule implements Module {
@@ -20,6 +19,6 @@ export class TimeRegistrationModule implements Module {
   }
 
   registerModule() {
-    this.commandBus.register(RegisterTimeEntryCommand, new RegisterTimeEntryHandler(this.repository))
+    this.commandBus.register('RegisterTimeEntry', new RegisterTimeEntryHandler(this.repository))
   }
 };

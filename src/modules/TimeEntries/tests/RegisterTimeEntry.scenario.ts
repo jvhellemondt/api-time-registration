@@ -1,12 +1,12 @@
-import type { TimeEntry } from '@/TimeEntries/domain/TimeEntry/TimeEntry'
 import type { EventStore, Repository } from '@jvhellemondt/arts-and-crafts.ts'
+import type { TimeEntry } from '@/TimeEntries/domain/TimeEntry/TimeEntry'
 import { randomUUID } from 'node:crypto'
+import { CommandBus, EventBus, InMemoryEventStore, QueryBus, ScenarioTest } from '@jvhellemondt/arts-and-crafts.ts'
+import { subMinutes } from 'date-fns'
 import { TimeEntryRegistered } from '@/TimeEntries/domain/events/TimeEntryRegistered.event'
 import { InMemoryTimeEntryRepository } from '@/TimeEntries/repositories/TimeEntryRepository/implementations/InMemoryTimeEntry.implementation'
 import { TimeRegistrationModule } from '@/TimeEntries/TimeRegistration.module'
-import { RegisterTimeEntryCommand } from '@/TimeEntries/usecases/commands/RegisterTimeEntry/RegisterTimeEntry.command'
-import { CommandBus, EventBus, InMemoryEventStore, QueryBus, ScenarioTest } from '@jvhellemondt/arts-and-crafts.ts'
-import { subMinutes } from 'date-fns'
+import { RegisterTimeEntry } from '@/TimeEntries/usecases/commands/RegisterTimeEntry/RegisterTimeEntry.command'
 
 describe('scenario test', () => {
   const id = randomUUID()
@@ -40,9 +40,11 @@ describe('scenario test', () => {
 
       await scenarioTest
         .when(
-          new RegisterTimeEntryCommand(id, payload),
+          RegisterTimeEntry(id, payload),
         )
-        .then(new TimeEntryRegistered(id, payload))
+        .then(
+          TimeEntryRegistered(id, payload),
+        )
     })
   })
 })

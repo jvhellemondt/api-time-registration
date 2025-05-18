@@ -1,4 +1,6 @@
 import type { TimeEntryProps } from '../TimeEntry/TimeEntry'
-import { DomainEvent } from '@jvhellemondt/arts-and-crafts.ts'
+import { createDomainEvent } from '@jvhellemondt/arts-and-crafts.ts'
 
-export class TimeEntryRegistered extends DomainEvent<TimeEntryProps> { }
+export function TimeEntryRegistered(aggregateId: string, props: TimeEntryProps) {
+  return createDomainEvent('TimeEntryRegistered', aggregateId, props)
+}

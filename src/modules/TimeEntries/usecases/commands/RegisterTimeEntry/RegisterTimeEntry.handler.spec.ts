@@ -1,9 +1,9 @@
 import { randomUUID } from 'node:crypto'
-import { InMemoryTimeEntryRepository } from '@/TimeEntries/repositories/TimeEntryRepository/implementations/InMemoryTimeEntry.implementation'
 import { CommandBus, EventBus, InMemoryEventStore } from '@jvhellemondt/arts-and-crafts.ts'
 import { isUUID } from 'class-validator'
 import { subDays } from 'date-fns'
-import { RegisterTimeEntryCommand } from './RegisterTimeEntry.command'
+import { InMemoryTimeEntryRepository } from '@/TimeEntries/repositories/TimeEntryRepository/implementations/InMemoryTimeEntry.implementation'
+import { RegisterTimeEntry } from './RegisterTimeEntry.command'
 import { RegisterTimeEntryHandler } from './RegisterTimeEntry.handler'
 
 describe('registerTimeEntryHandler', () => {
@@ -18,14 +18,14 @@ describe('registerTimeEntryHandler', () => {
     const repository = new InMemoryTimeEntryRepository(eventStore)
     const handler = new RegisterTimeEntryHandler(repository)
     const commandBus = new CommandBus()
-    commandBus.register(RegisterTimeEntryCommand, handler)
+    commandBus.register('RegisterTimeEntry', handler)
 
     const aggregateId = randomUUID()
     const userId = randomUUID()
     const endTime = new Date()
     const startTime = subDays(endTime, 3)
 
-    const command = new RegisterTimeEntryCommand(aggregateId, { userId, startTime, endTime })
+    const command = RegisterTimeEntry(aggregateId, { userId, startTime, endTime })
 
     // act
     const result = await handler.execute(command)
