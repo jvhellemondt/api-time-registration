@@ -7,7 +7,6 @@ import { TimeRegistrationModule } from '@/TimeEntries/TimeRegistration.module'
 import { RegisterTimeEntryCommand } from '@/TimeEntries/usecases/commands/RegisterTimeEntry/RegisterTimeEntry.command'
 import { CommandBus, EventBus, InMemoryEventStore, QueryBus, ScenarioTest } from '@jvhellemondt/arts-and-crafts.ts'
 import { subMinutes } from 'date-fns'
-import { beforeEach, describe, expect, it } from 'vitest'
 
 describe('scenario test', () => {
   const id = randomUUID()
