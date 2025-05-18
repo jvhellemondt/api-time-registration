@@ -1,10 +1,10 @@
 import type { TimeEntryModel } from '../infrastructure/models/TimeEntry.model'
 import { randomUUID } from 'node:crypto'
-import { TimeEntriesByUser } from './TimeEntriesByUserId'
+import { TimeEntriesByUserId } from './TimeEntriesByUserId'
 
 describe('timeEntriesByUser specification', () => {
   const userId = randomUUID()
-  const spec = new TimeEntriesByUser(userId)
+  const spec = new TimeEntriesByUserId(userId)
   const candidate: TimeEntryModel = {
     id: randomUUID(),
     userId,
@@ -13,7 +13,7 @@ describe('timeEntriesByUser specification', () => {
   }
 
   it('should be defined', () => {
-    expect(TimeEntriesByUser).toBeDefined()
+    expect(TimeEntriesByUserId).toBeDefined()
   })
 
   it('should return true if the id is the same', () => {
