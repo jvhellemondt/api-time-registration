@@ -34,8 +34,7 @@
 
     "outDir": "./dist",
     "paths": {
-      "@/*": ["./src/modules/*"],
-      "@shared/*": ["./src/shared/*"]
+      "@/*": ["./src/*"]
     },
 
     "types": ["vitest/globals"]

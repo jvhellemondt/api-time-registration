@@ -1,9 +1,9 @@
 import { CommandBus, EventBus, InMemoryDatabase, InMemoryEventStore, QueryBus } from '@jvhellemondt/arts-and-crafts.ts'
-import { ApiServer } from '@shared/infrastructure/api/ApiServer'
-import { seedTimeEntries } from '@/TimeEntries/infrastructure/api/seeds/TimeEntries.seed'
-import TimeEntryApi from './modules/TimeEntries/infrastructure/api/TimeEntry'
-import { InMemoryTimeEntryRepository } from './modules/TimeEntries/repositories/TimeEntryRepository/implementations/InMemoryTimeEntry.implementation'
-import { TimeRegistrationModule } from './modules/TimeEntries/TimeRegistration.module'
+import { Hono } from 'hono'
+import { seedTimeEntries } from '@/infrastructure/api/seeds/TimeEntries.seed'
+import TimeEntryApi from '@/infrastructure/api/TimeEntry'
+import { InMemoryTimeEntryRepository } from '@/repositories/TimeEntryRepository/implementations/InMemoryTimeEntry.implementation'
+import { TimeRegistrationModule } from '@/TimeRegistration.module'
 
 const eventBus = new EventBus()
 const commandBus = new CommandBus()
@@ -20,6 +20,7 @@ const timeEntryApi = new TimeEntryApi(commandBus, queryBus)
 // eslint-disable-next-line antfu/no-top-level-await
 await seedTimeEntries(eventBus)
 
-const server = new ApiServer(timeEntryApi).serve()
+const server = new Hono()
+  .route('time-entry/', timeEntryApi.app)
 
 export default server
