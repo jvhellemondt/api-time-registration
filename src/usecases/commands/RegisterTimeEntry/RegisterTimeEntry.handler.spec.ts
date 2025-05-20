@@ -2,7 +2,7 @@ import { randomUUID } from 'node:crypto'
 import { CommandBus, EventBus, InMemoryEventStore } from '@jvhellemondt/arts-and-crafts.ts'
 import { isUUID } from 'class-validator'
 import { subDays } from 'date-fns'
-import { InMemoryTimeEntryRepository } from '@/repositories/TimeEntryRepository/implementations/InMemoryTimeEntry.implementation'
+import { TimeEntryRepository } from '@/repositories/TimeEntryRepository/TimeEntryRepository'
 import { RegisterTimeEntry } from './RegisterTimeEntry.command'
 import { RegisterTimeEntryHandler } from './RegisterTimeEntry.handler'
 
@@ -15,7 +15,7 @@ describe('registerTimeEntryHandler', () => {
     // arrange
     const eventBus = new EventBus()
     const eventStore = new InMemoryEventStore(eventBus)
-    const repository = new InMemoryTimeEntryRepository(eventStore)
+    const repository = new TimeEntryRepository(eventStore)
     const handler = new RegisterTimeEntryHandler(repository)
     const commandBus = new CommandBus()
     commandBus.register('RegisterTimeEntry', handler)

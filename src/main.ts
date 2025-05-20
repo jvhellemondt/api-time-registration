@@ -2,7 +2,7 @@ import { CommandBus, EventBus, InMemoryDatabase, QueryBus } from '@jvhellemondt/
 import { Hono } from 'hono'
 import { seedTimeEntries } from '@/infrastructure/api/seeds/TimeEntries.seed'
 import TimeEntryApi from '@/infrastructure/api/TimeEntry'
-import { InMemoryTimeEntryRepository } from '@/repositories/TimeEntryRepository/implementations/InMemoryTimeEntry.implementation'
+import { TimeEntryRepository } from '@/repositories/TimeEntryRepository/TimeEntryRepository'
 import { TimeRegistrationModule } from '@/TimeRegistration.module'
 import { MongoEventStore } from './infrastructure/eventStore/mongodb'
 
@@ -13,7 +13,7 @@ const eventStore = new MongoEventStore(eventBus)
 // eslint-disable-next-line antfu/no-top-level-await
 await eventStore.connect()
 
-const repository = new InMemoryTimeEntryRepository(eventStore)
+const repository = new TimeEntryRepository(eventStore)
 const database = new InMemoryDatabase()
 
 const timeRegistrationModule = new TimeRegistrationModule(repository, database, commandBus, queryBus, eventBus)

@@ -4,21 +4,21 @@ import { randomUUID } from 'node:crypto'
 import { EventBus, InMemoryEventStore } from '@jvhellemondt/arts-and-crafts.ts'
 import { subMinutes } from 'date-fns'
 import { TimeEntry } from '@/domain/TimeEntry/TimeEntry'
-import { InMemoryTimeEntryRepository } from './InMemoryTimeEntry.implementation'
+import { TimeEntryRepository } from './TimeEntryRepository'
 
 describe('inMemoryTimeEntryRepository', () => {
   let eventBus: EventBus
   let eventStore: EventStore
-  let repository: InMemoryTimeEntryRepository
+  let repository: TimeEntryRepository
 
   beforeEach(() => {
     eventBus = new EventBus()
     eventStore = new InMemoryEventStore(eventBus)
-    repository = new InMemoryTimeEntryRepository(eventStore)
+    repository = new TimeEntryRepository(eventStore)
   })
 
   it('should be defined', () => {
-    expect(InMemoryTimeEntryRepository).toBeDefined()
+    expect(TimeEntryRepository).toBeDefined()
   })
 
   it('should return an error when loading a non-existent time entry', async () => {

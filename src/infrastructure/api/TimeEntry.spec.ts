@@ -3,7 +3,7 @@ import { randomUUID } from 'node:crypto'
 import { CommandBus, EventBus, InMemoryDatabase, InMemoryEventStore, QueryBus } from '@jvhellemondt/arts-and-crafts.ts'
 import { subHours } from 'date-fns'
 import { TimeEntryRegistered } from '@/domain/events/TimeEntryRegistered.event'
-import { InMemoryTimeEntryRepository } from '@/repositories/TimeEntryRepository/implementations/InMemoryTimeEntry.implementation'
+import { TimeEntryRepository } from '@/repositories/TimeEntryRepository/TimeEntryRepository'
 import { TimeRegistrationModule } from '@/TimeRegistration.module'
 import TimeEntryApi from './TimeEntry'
 
@@ -11,7 +11,7 @@ describe('example', () => {
   let eventBus: EventBus
   let eventStore: InMemoryEventStore
   let commandBus: CommandBus
-  let repository: InMemoryTimeEntryRepository
+  let repository: TimeEntryRepository
   let queryBus: QueryBus
   let database: InMemoryDatabase
   let server: TimeEntryApi
@@ -20,7 +20,7 @@ describe('example', () => {
     eventBus = new EventBus()
     eventStore = new InMemoryEventStore(eventBus)
     commandBus = new CommandBus()
-    repository = new InMemoryTimeEntryRepository(eventStore)
+    repository = new TimeEntryRepository(eventStore)
     queryBus = new QueryBus()
     database = new InMemoryDatabase()
 

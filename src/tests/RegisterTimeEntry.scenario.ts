@@ -4,7 +4,7 @@ import { randomUUID } from 'node:crypto'
 import { CommandBus, EventBus, InMemoryDatabase, InMemoryEventStore, QueryBus, ScenarioTest } from '@jvhellemondt/arts-and-crafts.ts'
 import { subMinutes } from 'date-fns'
 import { TimeEntryRegistered } from '@/domain/events/TimeEntryRegistered.event'
-import { InMemoryTimeEntryRepository } from '@/repositories/TimeEntryRepository/implementations/InMemoryTimeEntry.implementation'
+import { TimeEntryRepository } from '@/repositories/TimeEntryRepository/TimeEntryRepository'
 import { TimeRegistrationModule } from '@/TimeRegistration.module'
 import { RegisterTimeEntry } from '@/usecases/commands/RegisterTimeEntry/RegisterTimeEntry.command'
 
@@ -22,7 +22,7 @@ describe('scenario test: RegisterTimeEntry', () => {
     eventBus = new EventBus()
     database = new InMemoryDatabase()
     eventStore = new InMemoryEventStore(eventBus)
-    repository = new InMemoryTimeEntryRepository(eventStore)
+    repository = new TimeEntryRepository(eventStore)
     commandBus = new CommandBus()
     queryBus = new QueryBus()
     scenarioTest = new ScenarioTest(eventStore, eventBus, commandBus, queryBus)
