@@ -25,6 +25,7 @@ export default defineConfig({
         branches: 100,
       },
       exclude: [
+        'src/infrastructure/eventStore/mongodb.ts',
         '**/*.seed.ts',
         '**/main.ts',
         '**/node_modules/**',

@@ -1,14 +1,18 @@
-import { CommandBus, EventBus, InMemoryDatabase, InMemoryEventStore, QueryBus } from '@jvhellemondt/arts-and-crafts.ts'
+import { CommandBus, EventBus, InMemoryDatabase, QueryBus } from '@jvhellemondt/arts-and-crafts.ts'
 import { Hono } from 'hono'
 import { seedTimeEntries } from '@/infrastructure/api/seeds/TimeEntries.seed'
 import TimeEntryApi from '@/infrastructure/api/TimeEntry'
 import { InMemoryTimeEntryRepository } from '@/repositories/TimeEntryRepository/implementations/InMemoryTimeEntry.implementation'
 import { TimeRegistrationModule } from '@/TimeRegistration.module'
+import { MongoEventStore } from './infrastructure/eventStore/mongodb'
 
 const eventBus = new EventBus()
 const commandBus = new CommandBus()
 const queryBus = new QueryBus()
-const eventStore = new InMemoryEventStore(eventBus)
+const eventStore = new MongoEventStore(eventBus)
+// eslint-disable-next-line antfu/no-top-level-await
+await eventStore.connect()
+
 const repository = new InMemoryTimeEntryRepository(eventStore)
 const database = new InMemoryDatabase()
 

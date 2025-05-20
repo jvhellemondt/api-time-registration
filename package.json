@@ -22,7 +22,8 @@
     "@jvhellemondt/arts-and-crafts.ts": "1.2.0",
     "class-validator": "^0.14.2",
     "date-fns": "^4.1.0",
-    "hono": "^4.7.10"
+    "hono": "^4.7.10",
+    "mongodb": "^6.16.0"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^4.13.1",
