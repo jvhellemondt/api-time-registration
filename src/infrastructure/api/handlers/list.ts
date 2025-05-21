@@ -5,6 +5,7 @@ import type { ListTimeEntriesByUserIdResult } from '@/usecases/queries/ListTimeE
 import { isUUID } from 'class-validator'
 import { HTTPException } from 'hono/http-exception'
 import { ListTimeEntriesByUserId } from '@/usecases/queries/ListTimeEntriesByUserId/ListTimeEntriesByUserId.query'
+import { fail } from '@/utils/fail/fail'
 import { invariant } from '@/utils/invariant/invariant'
 
 export class ListHandler {
@@ -22,13 +23,7 @@ export class ListHandler {
   }
 
   validate(userId: unknown): asserts userId is UUID {
-    invariant(!!userId, () => {
-      const message = 'Required query param \'userId\' not provided'
-      throw new HTTPException(400, { res: new Response(message, { status: 400 }) })
-    })
-    invariant(isUUID(userId), () => {
-      const message = 'Required query param \'userId\' not a valid UUID'
-      throw new HTTPException(400, { res: new Response(message, { status: 400 }) })
-    })
+    invariant(!!userId, fail(new HTTPException(400, { res: new Response('Required query param \'userId\' not provided', { status: 400 }) })))
+    invariant(isUUID(userId), fail(new HTTPException(400, { res: new Response('Required query param \'userId\' not a valid UUID', { status: 400 }) })))
   }
 }

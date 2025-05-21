@@ -1,6 +1,7 @@
 import type { DomainEvent } from '@jvhellemondt/arts-and-crafts.ts'
 import type { UUID } from 'node:crypto'
 import { AggregateRoot, isDomainEvent } from '@jvhellemondt/arts-and-crafts.ts'
+import { fail } from '@/utils/fail/fail'
 import { invariant } from '@/utils/invariant/invariant'
 import { TimeEntryRegistered } from '../events/TimeEntryRegistered.event'
 
@@ -19,12 +20,8 @@ export class TimeEntry extends AggregateRoot<TimeEntryProps> {
 
   static rehydrate(id: string, events: DomainEvent<unknown>[]): TimeEntry {
     const creationEvent = events.shift()
-    invariant(isDomainEvent<TimeEntryProps>(creationEvent), () => {
-      throw new TypeError('Invalid creation event found')
-    })
-    invariant(creationEvent.type === 'TimeEntryRegistered', () => {
-      throw new TypeError('Invalid creation event found')
-    })
+    invariant(isDomainEvent<TimeEntryProps>(creationEvent), fail(new TypeError('Invalid creation event found')))
+    invariant(creationEvent.type === 'TimeEntryRegistered', fail(new TypeError('Invalid creation event found')))
 
     const aggregate = new this(id, creationEvent.payload)
     events.forEach(event => aggregate._applyEvent(event))
