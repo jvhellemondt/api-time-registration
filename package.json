@@ -23,6 +23,7 @@
     "date-fns": "^4.1.0",
     "effect": "^3.16.5",
     "hono": "^4.7.10",
+    "winston": "^3.17.0",
     "zod": "^3.25.63"
   },
   "devDependencies": {
