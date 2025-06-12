@@ -10,6 +10,8 @@ describe('env', () => {
       appName: 'time-registration',
       env: 'test',
       version: expect.stringMatching(/^\d+\.\d+\.\d+$/),
+      host: expect.any(String),
+      port: expect.any(String),
     })
   })
 })
