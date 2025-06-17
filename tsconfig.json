@@ -30,6 +30,7 @@
     "isolatedModules": true,
     "sourceMap": true,
     "incremental": true,
+    "exactOptionalPropertyTypes": true,
     "baseUrl": "./",
 
     "outDir": "./dist",
