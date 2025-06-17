@@ -1,5 +1,5 @@
-import { z } from 'zod/v4'
+import { Schema } from 'effect'
 
-export const registerTimeEntryResult = z.strictObject({
-  id: z.string(),
+export const registerTimeEntryResult = Schema.Struct({
+  id: Schema.UUID,
 })

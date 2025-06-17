@@ -1,7 +1,7 @@
-import { z } from 'zod/v4'
+import { Schema } from 'effect'
 
-export const registerTimeEntryPayload = z.strictObject({
-  userId: z.string(),
-  startTime: z.date(),
-  endTime: z.date(),
+export const registerTimeEntryPayload = Schema.Struct({
+  userId: Schema.UUID,
+  startTime: Schema.DateFromString,
+  endTime: Schema.DateFromString,
 })
