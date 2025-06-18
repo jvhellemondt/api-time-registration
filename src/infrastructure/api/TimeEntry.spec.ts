@@ -39,7 +39,7 @@ describe('example', () => {
   })
 
   it('post register', async () => {
-    const res = await server.app.request('register', {
+    const res = await server.app.request('registerTimeEntry', {
       method: 'POST',
       body: JSON.stringify({ message: 'hello hono' }),
       headers: new Headers({ 'Content-Type': 'application/json' }),
@@ -61,7 +61,7 @@ describe('example', () => {
 
       await eventBus.publish(event)
 
-      const res = await server.app.request(`list?userId=${userId}`, {
+      const res = await server.app.request(`listTimeEntries?userId=${userId}`, {
         method: 'GET',
         headers: new Headers({ 'Content-Type': 'application/json' }),
       })
@@ -78,7 +78,7 @@ describe('example', () => {
       const event = TimeEntryRegistered(randomUUID(), props)
       await eventBus.publish(event)
 
-      const res = await server.app.request(`list?userId=${randomUUID()}`, {
+      const res = await server.app.request(`listTimeEntries?userId=${randomUUID()}`, {
         method: 'GET',
         headers: new Headers({ 'Content-Type': 'application/json' }),
       })
@@ -91,7 +91,7 @@ describe('example', () => {
     })
 
     it('should inform the user that the userId is not provided', async () => {
-      const res = await server.app.request(`list`, {
+      const res = await server.app.request(`listTimeEntries`, {
         method: 'GET',
         headers: new Headers({ 'Content-Type': 'application/json' }),
       })
@@ -101,7 +101,7 @@ describe('example', () => {
     })
 
     it('should inform the user that the userId is not in UUID-format', async () => {
-      const res = await server.app.request(`list?userId=NOT_UUID`, {
+      const res = await server.app.request(`listTimeEntries?userId=NOT_UUID`, {
         method: 'GET',
         headers: new Headers({ 'Content-Type': 'application/json' }),
       })
@@ -111,7 +111,7 @@ describe('example', () => {
     })
 
     it('should respond with 500 if no time entries are created at all (thus no table)', async () => {
-      const res = await server.app.request(`list?userId=${randomUUID()}`, {
+      const res = await server.app.request(`listTimeEntries?userId=${randomUUID()}`, {
         method: 'GET',
         headers: new Headers({ 'Content-Type': 'application/json' }),
       })

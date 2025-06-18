@@ -25,6 +25,6 @@ const timeEntryApi = new TimeEntryApi(commandBus, queryBus)
 await seedTimeEntries(eventBus)
 
 const server = new Hono()
-  .route('time-entry/', timeEntryApi.app)
+  .route('', timeEntryApi.app)
 
 export default server

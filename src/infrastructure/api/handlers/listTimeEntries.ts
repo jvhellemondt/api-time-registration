@@ -8,7 +8,7 @@ import { ListTimeEntriesByUserId } from '@/usecases/queries/ListTimeEntriesByUse
 import { fail } from '@/utils/fail/fail'
 import { invariant } from '@/utils/invariant/invariant'
 
-export class ListHandler {
+export class ListTimeEntriesHandler {
   constructor(
     private readonly queryBus: QueryBus,
   ) { }

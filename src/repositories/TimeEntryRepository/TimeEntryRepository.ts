@@ -1,6 +1,6 @@
-import type { AggregateRoot, EventStore } from '@jvhellemondt/arts-and-crafts.ts'
-import { Repository } from '@jvhellemondt/arts-and-crafts.ts'
-import { TimeEntry } from '@/domain/TimeEntry/TimeEntry'
+import type {AggregateRoot, EventStore} from '@jvhellemondt/arts-and-crafts.ts'
+import {Repository} from '@jvhellemondt/arts-and-crafts.ts'
+import {TimeEntry} from '@/domain/TimeEntry/TimeEntry'
 
 export class TimeEntryRepository extends Repository<TimeEntry> {
   constructor(eventStore: EventStore) {
@@ -9,8 +9,7 @@ export class TimeEntryRepository extends Repository<TimeEntry> {
 
   async load(aggregateId: string): Promise<AggregateRoot<TimeEntry['props']>> {
     const events = await this.eventStore.loadEvents(aggregateId)
-    const aggregate = TimeEntry.rehydrate(aggregateId, events)
-    return aggregate
+    return TimeEntry.rehydrate(aggregateId, events)
   }
 
   async store(aggregate: AggregateRoot<TimeEntry['props']>): Promise<void> {
