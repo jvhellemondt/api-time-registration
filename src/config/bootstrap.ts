@@ -6,7 +6,10 @@ import createServer from '@/shared/infrastructure/server/server'
 import { invariant } from '@/shared/utils/invariant/invariant'
 import { terminate } from '@/shared/utils/terminate/terminate'
 
-const root = composeRoot({ env })
+const modules = {}
+const messageStore = {}
+const database = {}
+const root = composeRoot({ env, modules, messageStore, database })
 
 invariant(!!root, terminate(new Error('Bootstrap failed. Composition root is not defined')))
 
@@ -28,8 +31,6 @@ function signalAppStart(server: ReturnType<typeof serve>) {
 }
 
 function start() {
-  root.aggregators.forEach(aggregator => aggregator.start())
-  root.components.forEach(component => component.start())
   const server = serve(createServer(env))
   signalAppStart(server)
 }
