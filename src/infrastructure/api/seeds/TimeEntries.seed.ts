@@ -2,7 +2,7 @@ import type { EventBus } from '@jvhellemondt/arts-and-crafts.ts'
 import type { UUID } from 'node:crypto'
 import { randomUUID } from 'node:crypto'
 import { subHours } from 'date-fns'
-import { TimeEntryRegistered } from '@/domain/events/TimeEntryRegistered.event'
+import { TimeEntryRegistered } from '@/domain/TimeEntry/TimeEntryRegistered.event.ts'
 
 const userFoo = { name: 'foo', id: '94c5964f-3535-4991-b112-c09e887ba72e' as UUID }
 const userBar = { name: 'bar', id: 'b4622d27-0fc4-48dd-839d-191a5eeab72a' as UUID }

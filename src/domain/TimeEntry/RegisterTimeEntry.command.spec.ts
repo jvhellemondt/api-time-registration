@@ -1,6 +1,6 @@
 import { randomUUID } from 'node:crypto'
 import { subDays } from 'date-fns'
-import { RegisterTimeEntry } from './RegisterTimeEntry.command'
+import { RegisterTimeEntry } from './RegisterTimeEntry.command.ts'
 
 describe('registerTimeEntryCommand', () => {
   it('should be defined', () => {

@@ -3,10 +3,10 @@ import type { TimeEntry } from '@/domain/TimeEntry/TimeEntry'
 import { randomUUID } from 'node:crypto'
 import { CommandBus, EventBus, InMemoryDatabase, InMemoryEventStore, QueryBus, ScenarioTest } from '@jvhellemondt/arts-and-crafts.ts'
 import { subMinutes } from 'date-fns'
-import { TimeEntryRegistered } from '@/domain/events/TimeEntryRegistered.event'
+import { TimeEntryRegistered } from '@/domain/TimeEntry/TimeEntryRegistered.event.ts'
 import { TimeEntryRepository } from '@/repositories/TimeEntryRepository/TimeEntryRepository'
 import { TimeRegistrationModule } from '@/TimeRegistration.module'
-import { RegisterTimeEntry } from '@/usecases/commands/RegisterTimeEntry/RegisterTimeEntry.command'
+import { RegisterTimeEntry } from '@/domain/TimeEntry/RegisterTimeEntry.command.ts'
 
 describe('scenario test: RegisterTimeEntry', () => {
   const id = randomUUID()

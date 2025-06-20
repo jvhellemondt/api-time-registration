@@ -3,7 +3,7 @@ import type { TimeEntryProps } from '@/domain/TimeEntry/TimeEntry'
 import { randomUUID } from 'node:crypto'
 import { EventBus, InMemoryDatabase } from '@jvhellemondt/arts-and-crafts.ts'
 import { subHours } from 'date-fns'
-import { TimeEntryRegistered } from '@/domain/events/TimeEntryRegistered.event'
+import { TimeEntryRegistered } from '@/domain/TimeEntry/TimeEntryRegistered.event.ts'
 import { TimeEntriesByUserId } from '@/specifications/TimeEntriesByUserId'
 import { AfterTimeEntryRegistered } from './afterTimeEntryRegistered'
 

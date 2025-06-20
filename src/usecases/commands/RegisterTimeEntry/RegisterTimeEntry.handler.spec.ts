@@ -3,7 +3,7 @@ import { CommandBus, EventBus, InMemoryEventStore } from '@jvhellemondt/arts-and
 import { isUUID } from 'class-validator'
 import { subDays } from 'date-fns'
 import { TimeEntryRepository } from '@/repositories/TimeEntryRepository/TimeEntryRepository'
-import { RegisterTimeEntry } from './RegisterTimeEntry.command'
+import { RegisterTimeEntry } from '../../../domain/TimeEntry/RegisterTimeEntry.command.ts'
 import { RegisterTimeEntryHandler } from './RegisterTimeEntry.handler'
 
 describe('registerTimeEntryHandler', () => {

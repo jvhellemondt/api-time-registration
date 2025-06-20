@@ -1,36 +1,55 @@
-import type { DomainEvent } from '@jvhellemondt/arts-and-crafts.ts'
+import type { Decider, Maybe } from '@jvhellemondt/arts-and-crafts.ts'
 import type { UUID } from 'node:crypto'
-import { AggregateRoot, isDomainEvent } from '@jvhellemondt/arts-and-crafts.ts'
-import { fail } from '@/utils/fail/fail'
-import { invariant } from '@/utils/invariant/invariant'
-import { TimeEntryRegistered } from '../events/TimeEntryRegistered.event'
+import type { RegisterTimeEntry } from '@/domain/TimeEntry/RegisterTimeEntry.command.ts'
+import { isDeepStrictEqual } from 'node:util'
+import { TimeEntryRegistered } from '@/domain/TimeEntry/TimeEntryRegistered.event.ts'
 
-export interface TimeEntryProps {
-  userId: UUID
-  startTime: Date
-  endTime: Date
+export type TimeEntryCommand = ReturnType<typeof RegisterTimeEntry>
+export type TimeEntryEvent = ReturnType<typeof TimeEntryRegistered>
+
+interface TimeEntryState {
+  id: string
+  userId: Maybe<UUID>
+  startTime: Maybe<Date>
+  endTime: Maybe<Date>
 }
 
-export class TimeEntry extends AggregateRoot<TimeEntryProps> {
-  static create(id: UUID, props: TimeEntryProps) {
-    const aggregate = new this(id, props)
-    aggregate.apply(TimeEntryRegistered(id, props))
-    return aggregate
+function initialTimeEntryState(id: string): TimeEntryState {
+  return {
+    id,
+    userId: null,
+    startTime: null,
+    endTime: null,
   }
+}
 
-  static rehydrate(id: string, events: DomainEvent<unknown>[]): TimeEntry {
-    const creationEvent = events.shift()
-    invariant(isDomainEvent<TimeEntryProps>(creationEvent), fail(new TypeError('Invalid creation event found')))
-    invariant(creationEvent.type === 'TimeEntryRegistered', fail(new TypeError('Invalid creation event found')))
+function isInitialState(state: TimeEntryState): boolean {
+  const initialState = initialTimeEntryState(state.id)
+  return isDeepStrictEqual(initialState, state)
+}
 
-    const aggregate = new this(id, creationEvent.payload)
-    events.forEach(event => aggregate._applyEvent(event))
-    return aggregate
+function evolveTimeEntryState(currentState: TimeEntryState, event: TimeEntryEvent): TimeEntryState {
+  switch (event.type) {
+    case 'TimeEntryRegistered':
+      return { ...currentState, ...event.payload }
+    default:
+      return currentState
   }
+}
 
-  protected _applyEvent(event: DomainEvent<unknown>): void {
-    if (event.type === 'TimeEntryRegistered') {
-      return void 0
+function decideTimeEntryState(command: TimeEntryCommand, currentState: TimeEntryState) {
+  switch (command.type) {
+    case 'RegisterTimeEntry': {
+      if (!isInitialState(currentState)) {
+        return []
+      }
+      return [TimeEntryRegistered(command.aggregateId, command.payload, command.metadata)]
     }
   }
+}
+
+export const TimeEntry: Decider<TimeEntryState, TimeEntryCommand, TimeEntryEvent> = {
+  initialState: initialTimeEntryState,
+  evolve: evolveTimeEntryState,
+  decide: decideTimeEntryState,
 }

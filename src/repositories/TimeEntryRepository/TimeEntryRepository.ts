@@ -1,6 +1,6 @@
-import type {AggregateRoot, EventStore} from '@jvhellemondt/arts-and-crafts.ts'
-import {Repository} from '@jvhellemondt/arts-and-crafts.ts'
-import {TimeEntry} from '@/domain/TimeEntry/TimeEntry'
+import type { AggregateRoot, EventStore } from '@jvhellemondt/arts-and-crafts.ts'
+import { Repository } from '@jvhellemondt/arts-and-crafts.ts'
+import { TimeEntry } from '@/domain/TimeEntry/TimeEntry'
 
 export class TimeEntryRepository extends Repository<TimeEntry> {
   constructor(eventStore: EventStore) {
