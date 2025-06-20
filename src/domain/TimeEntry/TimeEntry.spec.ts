@@ -1,17 +1,21 @@
 import type { TimeEntryEvent } from './TimeEntry'
 import { randomUUID } from 'node:crypto'
 import { subHours } from 'date-fns'
+import { Schema } from 'effect'
 import { RegisterTimeEntry } from '@/domain/TimeEntry/RegisterTimeEntry.command.ts'
 import { TimeEntryRegistered } from '@/domain/TimeEntry/TimeEntryRegistered.event.ts'
+import { registerTimeEntryPayload } from '@/usecases/commands/RegisterTimeEntry/ports/inbound.ts'
 import { TimeEntry } from './TimeEntry'
 
 describe('timeEntry', () => {
   let pastEvents: TimeEntryEvent[]
   const aggregateId = randomUUID()
   const userId = randomUUID()
-  const endTime = new Date()
-  const startTime = subHours(endTime, 2)
-  const registerTimeEntry = RegisterTimeEntry(aggregateId, { userId, startTime, endTime })
+  const startTime = subHours(new Date(), 2).toISOString()
+  const endTime = new Date().toISOString()
+
+  const payload = Schema.decodeUnknownSync(registerTimeEntryPayload)({ userId, startTime, endTime })
+  const registerTimeEntry = RegisterTimeEntry(aggregateId, payload)
   const timeEntryRegistered = TimeEntryRegistered(registerTimeEntry.aggregateId, registerTimeEntry.payload)
 
   it('should be defined', () => {
