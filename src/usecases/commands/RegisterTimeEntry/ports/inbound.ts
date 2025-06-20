@@ -12,4 +12,5 @@ export const registerTimeEntryPayload = Schema.Struct({
   endTime: Schema.DateTimeUtc,
 })
 
+export type RegisterTimeEntryInput = typeof registerTimeEntryPayload.Encoded
 export type RegisterTimeEntryPayload = typeof registerTimeEntryPayload.Type

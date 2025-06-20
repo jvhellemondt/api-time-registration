@@ -1,5 +1,4 @@
 import type { CommandBus, Database, EventBus, Module, QueryBus, Repository } from '@jvhellemondt/arts-and-crafts.ts'
-import type { TimeEntry } from './domain/TimeEntry/TimeEntry'
 import { RegisterTimeEntryHandler } from './usecases/commands/RegisterTimeEntry/RegisterTimeEntry.handler'
 import { ListTimeEntriesByUserIdHandler } from './usecases/queries/ListTimeEntriesByUserId/ListTimeEntriesByUserId.handler'
 import { AfterTimeEntryRegistered } from './usecases/subscribers/afterTimeEntryRegistered/afterTimeEntryRegistered'
