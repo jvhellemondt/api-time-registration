@@ -1,19 +1,21 @@
-import type { AggregateRoot, EventStore } from '@jvhellemondt/arts-and-crafts.ts'
-import { Repository } from '@jvhellemondt/arts-and-crafts.ts'
-import { TimeEntry } from '@/domain/TimeEntry/TimeEntry'
+import type { EventStore, Repository } from '@jvhellemondt/arts-and-crafts.ts'
+import type { TimeEntryEvent } from '@/domain/TimeEntry/TimeEntry.ts'
 
-export class TimeEntryRepository extends Repository<TimeEntry> {
-  constructor(eventStore: EventStore) {
-    super(eventStore)
+export class TimeEntryRepository implements Repository<TimeEntryEvent> {
+  constructor(
+    private readonly eventStore: EventStore<TimeEntryEvent>,
+  ) {
   }
 
-  async load(aggregateId: string): Promise<AggregateRoot<TimeEntry['props']>> {
-    const events = await this.eventStore.loadEvents(aggregateId)
-    return TimeEntry.rehydrate(aggregateId, events)
+  async load(aggregateId: string): Promise<TimeEntryEvent[]> {
+    return this.eventStore.loadEvents(aggregateId)
   }
 
-  async store(aggregate: AggregateRoot<TimeEntry['props']>): Promise<void> {
-    await Promise.all(aggregate.uncommittedEvents.map(async event => this.eventStore.store(event)))
-    aggregate.markEventsCommitted()
+  async store(events: TimeEntryEvent[]): Promise<void> {
+    await Promise.all(
+      events.map(
+        async event => this.eventStore.store(event),
+      ),
+    )
   }
 }
