@@ -1,7 +1,7 @@
-import type { DomainEvent, EventBus } from '@jvhellemondt/arts-and-crafts.ts'
+import type { DomainEvent, EventBus, EventStore } from '@jvhellemondt/arts-and-crafts.ts'
 import type { Collection, Db } from 'mongodb'
 import process from 'node:process'
-import { EventStore } from '@jvhellemondt/arts-and-crafts.ts'
+import { isDomainEvent } from '@jvhellemondt/arts-and-crafts.ts'
 import { MongoClient, ServerApiVersion } from 'mongodb'
 
 const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://root:password@localhost:27017/time-registration?authSource=admin'
@@ -9,7 +9,7 @@ const DB_NAME = 'timeEntries'
 const EVENTS_COLLECTION = 'events'
 
 let client: MongoClient | null = null // Initialize to null
-let eventsCollection: Collection<DomainEvent> | null = null // Initialize to null
+let eventsCollection: Collection<DomainEvent<unknown>> | null = null // Initialize to null
 let db: Db | null = null // Initialize to null
 
 async function ensureConnected(): Promise<void> {
@@ -49,7 +49,7 @@ async function ensureConnected(): Promise<void> {
       })
       await client.connect() // This establishes the connection
       db = client.db(DB_NAME) // Assign db after successful connection
-      eventsCollection = db.collection<DomainEvent>(EVENTS_COLLECTION)
+      eventsCollection = db.collection<DomainEvent<unknown>>(EVENTS_COLLECTION)
 
       await eventsCollection.createIndex({ aggregateId: 1, sequenceNumber: 1 }, { unique: true })
 
@@ -66,20 +66,25 @@ async function ensureConnected(): Promise<void> {
   }
 }
 
-export class MongoEventStore extends EventStore {
-  constructor(eventBus: EventBus) {
-    super(eventBus)
+export class MongoEventStore implements EventStore<unknown> {
+  constructor(
+    private readonly eventBus: EventBus<unknown>,
+  ) {
   }
 
   public async connect(): Promise<void> {
     await ensureConnected()
   }
 
-  public override async store(event: DomainEvent): Promise<void> {
+  public async store(event: unknown): Promise<void> {
     await ensureConnected()
 
     if (!eventsCollection) {
       throw new Error('Events collection not initialized after connection attempt.')
+    }
+
+    if (!isDomainEvent(event)) {
+      throw new Error('MongoEventStore::store did not receive a DomainEvent to store.')
     }
 
     try {
@@ -104,7 +109,7 @@ export class MongoEventStore extends EventStore {
     }
   }
 
-  public override async loadEvents(aggregateId: string): Promise<DomainEvent[]> {
+  public async loadEvents(aggregateId: string): Promise<DomainEvent<unknown>[]> {
     await ensureConnected()
 
     if (!eventsCollection) {
@@ -116,7 +121,7 @@ export class MongoEventStore extends EventStore {
       .sort({ sequenceNumber: 1 })
       .toArray()
 
-    return events as DomainEvent[]
+    return events as DomainEvent<unknown>[]
   }
 
   public async disconnect(): Promise<void> { // Made public per original method signature
