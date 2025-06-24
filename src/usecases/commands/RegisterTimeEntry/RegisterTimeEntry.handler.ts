@@ -1,16 +1,20 @@
-import type { Command } from '@jvhellemondt/arts-and-crafts.ts'
-import type { UUID } from 'node:crypto'
+import type { Command, CommandHandler, Repository } from '@jvhellemondt/arts-and-crafts.ts'
 import type { RegisterTimeEntryPayload } from './ports/inbound'
-import type { RegisterTimeEntryResult } from './ports/outbound'
-import { CommandHandler } from '@jvhellemondt/arts-and-crafts.ts'
-import { TimeEntry } from '@/domain/TimeEntry/TimeEntry'
+import type { TimeEntryEvent } from '@/domain/TimeEntry/TimeEntry.ts'
+import type { RegisterTimeEntryResult } from '@/usecases/commands/RegisterTimeEntry/ports/outbound.ts'
+import { Effect, pipe } from 'effect'
 
-type CommandType = Command<RegisterTimeEntryPayload, UUID>
+export class RegisterTimeEntryHandler implements CommandHandler<'RegisterTimeEntry', RegisterTimeEntryPayload> {
+  constructor(
+    private readonly repository: Repository<TimeEntryEvent>,
+  ) {}
 
-export class RegisterTimeEntryHandler extends CommandHandler<CommandType> {
-  async execute(command: CommandType): Promise<RegisterTimeEntryResult> {
-    const aggregate = TimeEntry.create(command.aggregateId, command.payload)
-    await this.repository.store(aggregate)
-    return { id: command.aggregateId }
+  async execute(aCommand: Command<'RegisterTimeEntry', RegisterTimeEntryPayload>): Promise<RegisterTimeEntryResult> {
+    return Effect.runPromise(
+      pipe(
+        Effect.succeed(aCommand),
+        Effect.map((props: Command<'RegisterTimeEntry', RegisterTimeEntryPayload>): RegisterTimeEntryResult => ({ id: props.aggregateId })),
+      ),
+    )
   }
 }

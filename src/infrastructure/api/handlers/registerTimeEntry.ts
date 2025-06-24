@@ -12,18 +12,19 @@ export class RegisterTimeEntryHandler {
   }
 
   async handle(context: Context) {
-    const program = pipe(
-      context.req.json(),
-      Schema.decodeUnknown(registerTimeEntryPayload),
-      Effect.map(props => RegisterTimeEntry(randomUUID(), props)),
-      Effect.map(this.commandBus.execute),
-      Effect.map(commandResult =>
-        context.json({ res: commandResult }, 201),
-      ),
-      Effect.catchAll(error =>
-        Effect.succeed(context.json({ error }, 400, { 'X-Custom': 'Thank you' })),
+    return Effect.runPromise(
+      pipe(
+        context.req.json(),
+        Schema.decodeUnknown(registerTimeEntryPayload),
+        Effect.map(props => RegisterTimeEntry(randomUUID(), props)),
+        Effect.map(this.commandBus.execute),
+        Effect.map(commandResult =>
+          context.json({ res: commandResult }, 201),
+        ),
+        Effect.catchAll(error =>
+          Effect.succeed(context.json({ error }, 400, { 'X-Custom': 'Thank you' })),
+        ),
       ),
     )
-    return Effect.runPromise(program)
   }
 }

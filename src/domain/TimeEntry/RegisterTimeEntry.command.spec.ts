@@ -1,5 +1,7 @@
 import { randomUUID } from 'node:crypto'
 import { subDays } from 'date-fns'
+import { Schema } from 'effect'
+import { registerTimeEntryPayload } from '@/usecases/commands/RegisterTimeEntry/ports/inbound.ts'
 import { RegisterTimeEntry } from './RegisterTimeEntry.command.ts'
 
 describe('registerTimeEntryCommand', () => {
@@ -10,13 +12,12 @@ describe('registerTimeEntryCommand', () => {
   it('should contain the right payload', () => {
     const aggregateId = randomUUID()
     const userId = randomUUID()
-    const endTime = new Date()
-    const startTime = subDays(endTime, 3)
+    const endTime = new Date().toISOString()
+    const startTime = subDays(endTime, 3).toISOString()
+    const payload = Schema.decodeSync(registerTimeEntryPayload)({ userId, startTime, endTime })
 
-    const command = RegisterTimeEntry(aggregateId, { userId, startTime, endTime })
+    const command = RegisterTimeEntry(aggregateId, payload)
 
-    expect(command.payload.userId).toBe(userId)
-    expect(command.payload.startTime).toEqual(startTime)
-    expect(command.payload.endTime).toEqual(endTime)
+    expect(command.payload).toBe(payload)
   })
 })
