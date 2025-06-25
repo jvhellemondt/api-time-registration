@@ -1,30 +1,13 @@
-import { CommandBus, EventBus, InMemoryDatabase, QueryBus } from '@jvhellemondt/arts-and-crafts.ts'
+import { InMemoryCommandBus, InMemoryQueryBus } from '@jvhellemondt/arts-and-crafts.ts'
 import { Hono } from 'hono'
-import { seedTimeEntries } from '@/infrastructure/api/seeds/TimeEntries.seed'
-import TimeEntryApi from '@/infrastructure/api/TimeEntry'
-import { TimeEntryRepository } from '@/repositories/TimeEntryRepository/TimeEntryRepository'
-import { TimeRegistrationModule } from '@/TimeRegistration.module'
-import { MongoEventStore } from './infrastructure/eventStore/mongodb'
+import TimeEntryApi from './infrastructure/api/TimeEntry'
 
-const eventBus = new EventBus()
-const commandBus = new CommandBus()
-const queryBus = new QueryBus()
-const eventStore = new MongoEventStore(eventBus)
-// eslint-disable-next-line antfu/no-top-level-await
-await eventStore.connect()
+const commandBus = new InMemoryCommandBus()
+const queryBus = new InMemoryQueryBus()
 
-const repository = new TimeEntryRepository(eventStore)
-const database = new InMemoryDatabase()
-
-const timeRegistrationModule = new TimeRegistrationModule(repository, database, commandBus, queryBus, eventBus)
-timeRegistrationModule.registerModule()
-
-const timeEntryApi = new TimeEntryApi(commandBus, queryBus)
-
-// eslint-disable-next-line antfu/no-top-level-await
-await seedTimeEntries(eventBus)
+const timeEntryApi = TimeEntryApi(commandBus, queryBus)
 
 const server = new Hono()
-  .route('', timeEntryApi.app)
+  .route('', timeEntryApi)
 
 export default server

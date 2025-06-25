@@ -21,9 +21,9 @@
   "dependencies": {
     "@jvhellemondt/arts-and-crafts.ts": "^2.1.2",
     "date-fns": "^4.1.0",
-    "effect": "^3.16.9",
     "hono": "^4.8.3",
-    "mongodb": "^6.17.0"
+    "mongodb": "^6.17.0",
+    "zod": "^3.25.67"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^4.16.1",
