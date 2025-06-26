@@ -1,4 +1,5 @@
 import type { CommandBus, EventBus, EventStore, QueryBus, Repository } from '@jvhellemondt/arts-and-crafts.ts'
+import type { IntegrationEvent } from 'node_modules/@jvhellemondt/arts-and-crafts.ts/dist/index.d.cts'
 import type { TimeEntryEvent } from '@/domain/TimeEntry/TimeEntry.decider'
 import { randomUUID } from 'node:crypto'
 import {
@@ -14,7 +15,7 @@ import { TimeRegistrationModule } from '@/TimeRegistration.module'
 import TimeEntryApi from './TimeEntry'
 
 describe('example', () => {
-  let eventBus: EventBus<TimeEntryEvent>
+  let eventBus: EventBus<TimeEntryEvent | IntegrationEvent<unknown>>
   let commandBus: CommandBus
   let eventStore: EventStore<TimeEntryEvent>
   let repository: Repository<TimeEntryEvent>

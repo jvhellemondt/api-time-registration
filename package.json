@@ -19,7 +19,7 @@
     "release": "release-it"
   },
   "dependencies": {
-    "@jvhellemondt/arts-and-crafts.ts": "^2.1.2",
+    "@jvhellemondt/arts-and-crafts.ts": "^2.2.1",
     "date-fns": "^4.1.0",
     "hono": "^4.8.3",
     "mongodb": "^6.17.0",

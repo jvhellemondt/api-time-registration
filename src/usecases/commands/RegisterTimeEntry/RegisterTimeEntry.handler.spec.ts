@@ -1,4 +1,5 @@
 import type { CommandHandler, EventBus, EventStore, Repository } from '@jvhellemondt/arts-and-crafts.ts'
+import type { IntegrationEvent } from 'node_modules/@jvhellemondt/arts-and-crafts.ts/dist/index.d.cts'
 import type { TimeEntryEvent } from '@/domain/TimeEntry/TimeEntry.decider.ts'
 import type { RegisterTimeEntryOutput } from '@/usecases/commands/RegisterTimeEntry/ports/inbound.ts'
 import { randomUUID } from 'node:crypto'
@@ -9,7 +10,7 @@ import { RegisterTimeEntry } from '@/domain/TimeEntry/RegisterTimeEntry.command.
 import { RegisterTimeEntryHandler } from './RegisterTimeEntry.handler'
 
 describe('registerTimeEntryHandler', () => {
-  let eventBus: EventBus<TimeEntryEvent>
+  let eventBus: EventBus<TimeEntryEvent | IntegrationEvent<unknown>>
   let eventStore: EventStore<TimeEntryEvent>
   let repository: Repository<TimeEntryEvent>
   let handler: CommandHandler<'RegisterTimeEntry', RegisterTimeEntryOutput>
