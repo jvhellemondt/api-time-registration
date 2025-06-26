@@ -7,9 +7,12 @@ import { TimeEntriesProjectionHandler } from './TimeEntriesProjection.handler'
 
 describe('afterTimeEntryRegisteredHandler', () => {
   let eventBus: EventBus<TimeEntryEvent>
+  let handler: TimeEntriesProjectionHandler
 
   beforeAll(() => {
     eventBus = new InMemoryEventBus()
+    handler = new TimeEntriesProjectionHandler(eventBus)
+    handler.start()
   })
 
   it('should be defined', () => {
@@ -17,13 +20,10 @@ describe('afterTimeEntryRegisteredHandler', () => {
   })
 
   it('should implement the projection handler interface', () => {
-    const handler = new TimeEntriesProjectionHandler(eventBus)
     expect(() => handler.handle({} as any)).rejects.toThrow()
   })
 
   it('should subscribe to the time entry registered event', async () => {
-    const handler = new TimeEntriesProjectionHandler(eventBus)
-    handler.start()
     const event = TimeEntryRegistered(randomUUID(), { userId: randomUUID(), startTime: new Date().toISOString(), endTime: new Date().toISOString() })
     await expect(() => eventBus.publish(event)).rejects.toThrow()
   })
