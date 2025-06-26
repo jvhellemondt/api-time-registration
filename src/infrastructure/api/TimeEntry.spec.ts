@@ -1,12 +1,22 @@
-import type { CommandBus, EventBus, QueryBus, Repository } from '@jvhellemondt/arts-and-crafts.ts'
+import type { CommandBus, EventBus, EventStore, QueryBus, Repository } from '@jvhellemondt/arts-and-crafts.ts'
 import type { TimeEntryEvent } from '@/domain/TimeEntry/TimeEntry.decider'
-import { InMemoryCommandBus, InMemoryDatabase, InMemoryEventBus, InMemoryQueryBus } from '@jvhellemondt/arts-and-crafts.ts'
+import { randomUUID } from 'node:crypto'
+import {
+  InMemoryCommandBus,
+  InMemoryDatabase,
+  InMemoryEventBus,
+  InMemoryEventStore,
+  InMemoryQueryBus,
+  InMemoryRepository,
+} from '@jvhellemondt/arts-and-crafts.ts'
+import { subHours } from 'date-fns'
 import { TimeRegistrationModule } from '@/TimeRegistration.module'
 import TimeEntryApi from './TimeEntry'
 
 describe('example', () => {
   let eventBus: EventBus<TimeEntryEvent>
   let commandBus: CommandBus
+  let eventStore: EventStore<TimeEntryEvent>
   let repository: Repository<TimeEntryEvent>
   let queryBus: QueryBus
   let database: InMemoryDatabase
@@ -14,8 +24,9 @@ describe('example', () => {
 
   beforeEach(() => {
     eventBus = new InMemoryEventBus()
+    eventStore = new InMemoryEventStore(eventBus)
     commandBus = new InMemoryCommandBus()
-    repository = null as unknown as Repository<TimeEntryEvent>
+    repository = new InMemoryRepository<TimeEntryEvent>(eventStore)
     queryBus = new InMemoryQueryBus()
     database = new InMemoryDatabase()
 
@@ -32,6 +43,28 @@ describe('example', () => {
 
       expect(res.status).toBe(200)
       expect(await res.text()).toBe('HEALTH OK')
+    })
+  })
+
+  describe('endpoint /registerTimeEntry', () => {
+    it('should register a time entry', async () => {
+      const now = new Date()
+      const res = await server.request('registerTimeEntry', {
+        method: 'POST',
+        headers: new Headers({ 'Content-Type': 'application/json' }),
+        body: JSON.stringify({
+          userId: randomUUID(),
+          startTime: subHours(now, 1).toISOString(),
+          endTime: now.toISOString(),
+        }),
+      })
+      const { id } = await res.json()
+      const events = await eventStore.loadEvents(id)
+
+      expect(res.status).toBe(201)
+      expect(events).toHaveLength(1)
+      expect(events[0].type).toBe('TimeEntryRegistered')
+      expect(id).toBeDefined()
     })
   })
 })
