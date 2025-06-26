@@ -1,5 +1,6 @@
 import type { CommandBus, Database, EventBus, Module, QueryBus, Repository } from '@jvhellemondt/arts-and-crafts.ts'
 import type { TimeEntryEvent } from './domain/TimeEntry/TimeEntry.decider'
+import { RegisterTimeEntryHandler } from '@/usecases/commands/RegisterTimeEntry/RegisterTimeEntry.handler.ts'
 
 export class TimeRegistrationModule implements Module {
   constructor(
@@ -12,5 +13,6 @@ export class TimeRegistrationModule implements Module {
   }
 
   registerModule() {
+    this.commandBus.register('RegisterTimeEntry', new RegisterTimeEntryHandler(this.repository))
   }
 };
