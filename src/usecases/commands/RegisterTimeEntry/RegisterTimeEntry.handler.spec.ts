@@ -6,7 +6,7 @@ import { randomUUID } from 'node:crypto'
 import { InMemoryEventBus, InMemoryEventStore, InMemoryRepository } from '@jvhellemondt/arts-and-crafts.ts'
 import { subHours } from 'date-fns'
 import { beforeAll } from 'vitest'
-import { RegisterTimeEntry } from '@/domain/TimeEntry/RegisterTimeEntry.command.ts'
+import { registerTimeEntry } from '@/domain/TimeEntry/RegisterTimeEntry.command.ts'
 import { RegisterTimeEntryHandler } from './RegisterTimeEntry.handler'
 
 describe('registerTimeEntryHandler', () => {
@@ -34,7 +34,7 @@ describe('registerTimeEntryHandler', () => {
       startTime: subHours(now, 1).toISOString(),
       endTime: now.toISOString(),
     }
-    const command = RegisterTimeEntry(aggregateId, payload)
+    const command = registerTimeEntry(aggregateId, payload)
     const result = await handler.execute(command)
 
     const events = await eventStore.loadEvents(aggregateId)

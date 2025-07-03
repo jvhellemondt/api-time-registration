@@ -2,8 +2,8 @@ import type { TimeEntryEvent } from './TimeEntry.decider'
 import { randomUUID } from 'node:crypto'
 import { createDomainEvent } from '@jvhellemondt/arts-and-crafts.ts'
 import { subHours } from 'date-fns'
-import { RegisterTimeEntry } from '@/domain/TimeEntry/RegisterTimeEntry.command.ts'
-import { TimeEntryRegistered } from '@/domain/TimeEntry/TimeEntryRegistered.event.ts'
+import { registerTimeEntry } from '@/domain/TimeEntry/RegisterTimeEntry.command.ts'
+import { timeEntryRegistered } from '@/domain/TimeEntry/TimeEntryRegistered.event.ts'
 import { RegisterTimeEntryPayload } from '@/usecases/commands/RegisterTimeEntry/ports/inbound'
 import { TimeEntry } from './TimeEntry.decider'
 
@@ -15,8 +15,8 @@ describe('timeEntry', () => {
   const endTime = new Date().toISOString()
 
   const payload = RegisterTimeEntryPayload.parse({ userId, startTime, endTime })
-  const registerTimeEntry = RegisterTimeEntry(aggregateId, payload)
-  const timeEntryRegistered = TimeEntryRegistered(registerTimeEntry.aggregateId, registerTimeEntry.payload)
+  const registerTimeEntryCommand = registerTimeEntry(aggregateId, payload)
+  const timeEntryRegisteredEvent = timeEntryRegistered(registerTimeEntryCommand.aggregateId, registerTimeEntryCommand.payload)
 
   it('should be defined', () => {
     expect(TimeEntry).toBeDefined()
@@ -25,13 +25,13 @@ describe('timeEntry', () => {
   describe('time entry registration', () => {
     it('should register the time entry', () => {
       pastEvents = []
-      const currentState = pastEvents.reduce(TimeEntry.evolve, TimeEntry.initialState(registerTimeEntry.aggregateId))
+      const currentState = pastEvents.reduce(TimeEntry.evolve, TimeEntry.initialState(registerTimeEntryCommand.aggregateId))
 
-      const decision = TimeEntry.decide(registerTimeEntry, currentState)
+      const decision = TimeEntry.decide(registerTimeEntryCommand, currentState)
 
       expect(decision).toHaveLength(1)
       expect(decision.at(0)).toStrictEqual({
-        ...timeEntryRegistered,
+        ...timeEntryRegisteredEvent,
         id: expect.any(String),
         metadata: {
           timestamp: expect.any(String),
@@ -40,19 +40,19 @@ describe('timeEntry', () => {
     })
 
     it('should handle faulty events', () => {
-      const faultyEvent = createDomainEvent('FaultyEvent', registerTimeEntry.aggregateId, { message: 'faulty event' })
+      const faultyEvent = createDomainEvent('FaultyEvent', registerTimeEntryCommand.aggregateId, { message: 'faulty event' })
 
       // @ts-expect-error required test for default
       pastEvents = [faultyEvent]
-      const currentState = pastEvents.reduce(TimeEntry.evolve, TimeEntry.initialState(registerTimeEntry.aggregateId))
-      expect(currentState).toStrictEqual(TimeEntry.initialState(registerTimeEntry.aggregateId))
+      const currentState = pastEvents.reduce(TimeEntry.evolve, TimeEntry.initialState(registerTimeEntryCommand.aggregateId))
+      expect(currentState).toStrictEqual(TimeEntry.initialState(registerTimeEntryCommand.aggregateId))
     })
 
     it('should not change anything if the registered event is consumed twice', () => {
-      pastEvents = [timeEntryRegistered]
-      const currentState = pastEvents.reduce(TimeEntry.evolve, TimeEntry.initialState(registerTimeEntry.aggregateId))
+      pastEvents = [timeEntryRegisteredEvent]
+      const currentState = pastEvents.reduce(TimeEntry.evolve, TimeEntry.initialState(registerTimeEntryCommand.aggregateId))
 
-      const decision = TimeEntry.decide(registerTimeEntry, currentState)
+      const decision = TimeEntry.decide(registerTimeEntryCommand, currentState)
 
       expect(decision).toHaveLength(0)
     })
