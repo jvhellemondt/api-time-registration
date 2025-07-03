@@ -3,11 +3,20 @@ import { randomUUID } from 'node:crypto'
 import { Hono } from 'hono'
 import { registerTimeEntry } from '@/domain/TimeEntry/RegisterTimeEntry.command.ts'
 import { RegisterTimeEntryPayload } from '@/usecases/commands/RegisterTimeEntry/ports/inbound.ts'
+import { listTimeEntriesByUserId } from '@/usecases/queries/ListTimeEntries/ListTimeEntries.query'
+import { listTimeEntriesByUserIdPayload } from '@/usecases/queries/ListTimeEntries/ports/inbound'
 
-export default function TimeEntryApi(aCommandBus: CommandBus, _aQueryBus: QueryBus) {
+export default function TimeEntryApi(aCommandBus: CommandBus, aQueryBus: QueryBus) {
   return new Hono()
     .get('/health', c => c.text('HEALTH OK'))
-  // get('/listTimeEntries', async c => new ListTimeEntriesHandler(this.queryBus).handle(c))
+    .get('/listTimeEntries/:userId', async (c) => {
+      const anUserId = c.req.param('userId')
+      const aPayload = listTimeEntriesByUserIdPayload.parse({ userId: anUserId })
+      const aQuery = listTimeEntriesByUserId(aPayload)
+      const aResult = await aQueryBus.execute(aQuery)
+      // @ts-expect-error queryBus execute should be generic
+      return c.json(aResult, 200)
+    })
     .post('/registerTimeEntry', async (c) => {
       const aBody = await c.req.json()
       const aPayload = RegisterTimeEntryPayload.parse(aBody)

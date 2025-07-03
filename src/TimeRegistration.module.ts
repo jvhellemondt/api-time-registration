@@ -2,6 +2,7 @@ import type { CommandBus, Database, EventBus, Module, QueryBus, Repository } fro
 import type { TimeEntryEvent } from './domain/TimeEntry/TimeEntry.decider'
 import { RegisterTimeEntryHandler } from '@/usecases/commands/RegisterTimeEntry/RegisterTimeEntry.handler.ts'
 import { TimeEntriesProjectionHandler } from './usecases/projectors/TimeEntriesProjection/TimeEntriesProjection.handler'
+import { ListTimeEntriesByUserIdHandler } from './usecases/queries/ListTimeEntries/ListTimeEntries.handler'
 
 export class TimeRegistrationModule implements Module {
   constructor(
@@ -17,5 +18,7 @@ export class TimeRegistrationModule implements Module {
     this.commandBus.register('RegisterTimeEntry', new RegisterTimeEntryHandler(this.repository))
 
     new TimeEntriesProjectionHandler(this.eventBus, this.database).start()
+
+    this.queryBus.register('ListTimeEntriesByUserId', new ListTimeEntriesByUserIdHandler(this.database))
   }
 };
