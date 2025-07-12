@@ -1,12 +1,12 @@
-import type { TimeEntryEvent } from '@/domain/TimeEntry/TimeEntry.decider.ts'
-import { InMemoryCommandBus, InMemoryDatabase, InMemoryEventBus, InMemoryEventStore, InMemoryQueryBus, InMemoryRepository } from '@jvhellemondt/arts-and-crafts.ts'
+import { InMemoryCommandBus, InMemoryDatabase, InMemoryEventBus, InMemoryEventStore, InMemoryQueryBus } from '@jvhellemondt/arts-and-crafts.ts'
 import { Hono } from 'hono'
 import { TimeRegistrationModule } from '@/TimeRegistration.module.ts'
 import TimeEntryApi from './infrastructure/api/TimeEntry'
+import { TimeEntryRepository } from './repositories/TimeEntryRepository/TimeEntry.repository'
 
 const eventBus = new InMemoryEventBus()
-const eventStore = new InMemoryEventStore<TimeEntryEvent>(eventBus)
-const repository = new InMemoryRepository<TimeEntryEvent>(eventStore)
+const eventStore = new InMemoryEventStore()
+const repository = new TimeEntryRepository(eventStore)
 const database = new InMemoryDatabase()
 const commandBus = new InMemoryCommandBus()
 const queryBus = new InMemoryQueryBus()

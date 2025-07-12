@@ -5,10 +5,11 @@ import type { ListTimeEntriesByUserIdResult } from './ports/outbound'
 
 export class ListTimeEntriesByUserIdHandler implements QueryHandler<ListTimeEntriesByUserIdOutput, ListTimeEntriesByUserIdResult[]> {
   constructor(
+    private readonly tableName: string,
     private readonly database: Database,
   ) {}
 
   async execute(aQuery: ReturnType<typeof listTimeEntriesByUserId>): Promise<ListTimeEntriesByUserIdResult[]> {
-    return this.database.query<ListTimeEntriesByUserIdResult>('time_entries', [{ userId: aQuery.payload.userId }])
+    return this.database.query<ListTimeEntriesByUserIdResult>(this.tableName, [{ userId: aQuery.payload.userId }])
   }
 }

@@ -2,9 +2,9 @@ import type { TimeEntryEvent } from './TimeEntry.decider'
 import { randomUUID } from 'node:crypto'
 import { createDomainEvent } from '@jvhellemondt/arts-and-crafts.ts'
 import { subHours } from 'date-fns'
-import { registerTimeEntry } from '@/domain/TimeEntry/RegisterTimeEntry.command.ts'
 import { timeEntryRegistered } from '@/domain/TimeEntry/TimeEntryRegistered.event.ts'
 import { RegisterTimeEntryPayload } from '@/usecases/commands/RegisterTimeEntry/ports/inbound'
+import { registerTimeEntry } from '@/usecases/commands/RegisterTimeEntry/RegisterTimeEntry.command'
 import { TimeEntry } from './TimeEntry.decider'
 
 describe('timeEntry', () => {

@@ -1,8 +1,8 @@
 import type { CommandBus, QueryBus } from '@jvhellemondt/arts-and-crafts.ts'
 import { randomUUID } from 'node:crypto'
 import { Hono } from 'hono'
-import { registerTimeEntry } from '@/domain/TimeEntry/RegisterTimeEntry.command.ts'
 import { RegisterTimeEntryPayload } from '@/usecases/commands/RegisterTimeEntry/ports/inbound.ts'
+import { registerTimeEntry } from '@/usecases/commands/RegisterTimeEntry/RegisterTimeEntry.command'
 import { listTimeEntriesByUserId } from '@/usecases/queries/ListTimeEntries/ListTimeEntries.query'
 import { listTimeEntriesByUserIdPayload } from '@/usecases/queries/ListTimeEntries/ports/inbound'
 

@@ -25,7 +25,7 @@ describe('afterTimeEntryRegisteredHandler', () => {
   it('should make the projection of the time entry', async () => {
     const event = timeEntryRegistered(randomUUID(), { userId: randomUUID(), startTime: new Date().toISOString(), endTime: new Date().toISOString() })
     await eventBus.publish(event)
-    const result = await database.query<TimeEntryModel>('time_entries', [{ user_id: event.payload.userId }])
+    const result = await database.query<TimeEntryModel>(TimeEntriesProjectionHandler.tableName, [{ user_id: event.payload.userId }])
     expect(result).toHaveLength(1)
     expect(result[0].user_id).toBe(event.payload.userId)
   })

@@ -1,6 +1,4 @@
-import type { CommandBus, EventBus, EventStore, QueryBus, Repository } from '@jvhellemondt/arts-and-crafts.ts'
-import type { IntegrationEvent } from 'node_modules/@jvhellemondt/arts-and-crafts.ts/dist/index.d.cts'
-import type { TimeEntryEvent } from '@/domain/TimeEntry/TimeEntry.decider'
+import type { CommandBus, QueryBus } from '@jvhellemondt/arts-and-crafts.ts'
 import { randomUUID } from 'node:crypto'
 import {
   InMemoryCommandBus,
@@ -8,30 +6,31 @@ import {
   InMemoryEventBus,
   InMemoryEventStore,
   InMemoryQueryBus,
-  InMemoryRepository,
+  makeStreamKey,
   Operation,
 } from '@jvhellemondt/arts-and-crafts.ts'
 import { subHours } from 'date-fns'
+import { TimeEntryRepository } from '@/repositories/TimeEntryRepository/TimeEntry.repository'
 import { TimeRegistrationModule } from '@/TimeRegistration.module'
+import { TimeEntriesProjectionHandler } from '@/usecases/projectors/TimeEntriesProjection/TimeEntriesProjection.handler'
 import TimeEntryApi from './TimeEntry'
 
 describe('example', () => {
-  const store = 'time_entries'
   const userId = randomUUID()
   const now = new Date()
-  let eventBus: EventBus<TimeEntryEvent | IntegrationEvent<unknown>>
+  const eventBus = new InMemoryEventBus()
+  let eventStore: InMemoryEventStore
+  let repository: TimeEntryRepository
+
   let commandBus: CommandBus
-  let eventStore: EventStore<TimeEntryEvent>
-  let repository: Repository<TimeEntryEvent>
   let queryBus: QueryBus
   let database: InMemoryDatabase
   let server: ReturnType<typeof TimeEntryApi>
 
   beforeEach(() => {
-    eventBus = new InMemoryEventBus()
-    eventStore = new InMemoryEventStore(eventBus)
+    eventStore = new InMemoryEventStore()
     commandBus = new InMemoryCommandBus()
-    repository = new InMemoryRepository<TimeEntryEvent>(eventStore)
+    repository = new TimeEntryRepository(eventStore)
     queryBus = new InMemoryQueryBus()
     database = new InMemoryDatabase()
 
@@ -63,7 +62,8 @@ describe('example', () => {
         }),
       })
       const { id } = await res.json()
-      const events = await eventStore.loadEvents(id)
+      const streamKey = makeStreamKey(TimeEntryRepository.streamName, id)
+      const events = await eventStore.load(streamKey)
 
       expect(res.status).toBe(201)
       expect(events).toHaveLength(1)
@@ -81,7 +81,7 @@ describe('example', () => {
     ]
     beforeEach(async () => {
       await Promise.all(records.map(payload =>
-        database.execute(store, { operation: Operation.CREATE, payload })))
+        database.execute(TimeEntriesProjectionHandler.tableName, { operation: Operation.CREATE, payload })))
     })
 
     it('should register a time entry', async () => {

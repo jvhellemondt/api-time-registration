@@ -1,6 +1,6 @@
 import type { Decider, Maybe } from '@jvhellemondt/arts-and-crafts.ts'
-import type { registerTimeEntry } from '@/domain/TimeEntry/RegisterTimeEntry.command.ts'
 import type { RegisterTimeEntryOutput } from '@/usecases/commands/RegisterTimeEntry/ports/inbound'
+import type { registerTimeEntry } from '@/usecases/commands/RegisterTimeEntry/RegisterTimeEntry.command'
 import { isDeepStrictEqual } from 'node:util'
 import { timeEntryRegistered } from '@/domain/TimeEntry/TimeEntryRegistered.event.ts'
 

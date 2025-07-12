@@ -3,12 +3,12 @@ import type { RegisterTimeEntryOutput } from '@/usecases/commands/RegisterTimeEn
 import { randomUUID } from 'node:crypto'
 import { InMemoryDatabase, Operation } from '@jvhellemondt/arts-and-crafts.ts'
 import { subHours } from 'date-fns'
+import { TimeEntriesProjectionHandler } from '@/usecases/projectors/TimeEntriesProjection/TimeEntriesProjection.handler'
 import { ListTimeEntriesByUserIdHandler } from './ListTimeEntries.handler'
 import { listTimeEntriesByUserId } from './ListTimeEntries.query'
 import { listTimeEntriesByUserIdPayload } from './ports/inbound'
 
 describe('listTimeEntriesByUserIdHandler', () => {
-  const store = 'time_entries'
   let database: Database
   const userId = randomUUID()
   const aggregateId = randomUUID()
@@ -22,7 +22,7 @@ describe('listTimeEntriesByUserIdHandler', () => {
 
   beforeEach(async () => {
     database = new InMemoryDatabase()
-    await database.execute(store, { operation: Operation.CREATE, payload: dbRecord })
+    await database.execute(TimeEntriesProjectionHandler.tableName, { operation: Operation.CREATE, payload: dbRecord })
   })
 
   it('should be defined', () => {
@@ -32,7 +32,7 @@ describe('listTimeEntriesByUserIdHandler', () => {
   it('should retrieve the time entries', async () => {
     const aPayload = listTimeEntriesByUserIdPayload.parse({ userId })
     const aQuery = listTimeEntriesByUserId(aPayload)
-    const handler = new ListTimeEntriesByUserIdHandler(database)
+    const handler = new ListTimeEntriesByUserIdHandler(TimeEntriesProjectionHandler.tableName, database)
     const result = await handler.execute(aQuery)
     expect(result).toStrictEqual([dbRecord])
   })

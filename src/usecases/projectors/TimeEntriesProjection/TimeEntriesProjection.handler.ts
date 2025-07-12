@@ -4,6 +4,8 @@ import type { timeEntryRegistered } from '@/domain/TimeEntry/TimeEntryRegistered
 import { Operation } from '@jvhellemondt/arts-and-crafts.ts'
 
 export class TimeEntriesProjectionHandler implements ProjectionHandler<TimeEntryEvent> {
+  static readonly tableName = 'time_entries'
+
   constructor(
     private readonly eventBus: EventBus<TimeEntryEvent>,
     private readonly database: Database,
@@ -15,6 +17,6 @@ export class TimeEntriesProjectionHandler implements ProjectionHandler<TimeEntry
 
   async handle(anEvent: ReturnType<typeof timeEntryRegistered>) {
     const payload = { id: anEvent.aggregateId, user_id: anEvent.payload.userId, start_time: anEvent.payload.startTime, end_time: anEvent.payload.endTime }
-    await this.database.execute('time_entries', { operation: Operation.CREATE, payload })
+    await this.database.execute(TimeEntriesProjectionHandler.tableName, { operation: Operation.CREATE, payload })
   }
 }
