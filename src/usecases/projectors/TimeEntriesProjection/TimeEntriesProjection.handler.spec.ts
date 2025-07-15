@@ -1,5 +1,4 @@
 import type { Database, EventBus } from '@jvhellemondt/arts-and-crafts.ts'
-import type { TimeEntryEvent } from '@/domain/TimeEntry/TimeEntry.decider'
 import type { TimeEntryModel } from '@/infrastructure/models/TimeEntry.model'
 import { randomUUID } from 'node:crypto'
 import { InMemoryDatabase, InMemoryEventBus } from '@jvhellemondt/arts-and-crafts.ts'
@@ -7,7 +6,7 @@ import { timeEntryRegistered } from '@/domain/TimeEntry/TimeEntryRegistered.even
 import { TimeEntriesProjectionHandler } from './TimeEntriesProjection.handler'
 
 describe('afterTimeEntryRegisteredHandler', () => {
-  let eventBus: EventBus<TimeEntryEvent>
+  let eventBus: EventBus
   let handler: TimeEntriesProjectionHandler
   let database: Database
 

@@ -7,7 +7,7 @@ export class TimeEntriesProjectionHandler implements ProjectionHandler<TimeEntry
   static readonly tableName = 'time_entries'
 
   constructor(
-    private readonly eventBus: EventBus<TimeEntryEvent>,
+    private readonly eventBus: EventBus,
     private readonly database: Database,
   ) {}
 

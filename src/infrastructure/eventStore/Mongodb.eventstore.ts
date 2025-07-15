@@ -1,0 +1,38 @@
+// import type { DomainEvent, EventStore, OutboxEntry } from '@jvhellemondt/arts-and-crafts.ts'
+// import type { MongoDatabaseClient } from '../database/Mongodb.client'
+
+// export class MongoEventStore implements EventStore {
+//   private readonly collectionName = 'event_store'
+//   private outbox: OutboxEntry[] = []
+//   private store = new Map<string, DomainEvent<unknown>[]>()
+
+//   constructor(
+//     private readonly db: MongoDatabaseClient,
+//   ) {
+//   }
+
+//   async load<TEvent extends DomainEvent<TEvent['payload']>>(streamKey: string): Promise<TEvent[]> {
+//     const events = this.store.get(streamKey)
+//     return [...(events || [])] as TEvent[]
+//   }
+
+//   async append<TEvent extends DomainEvent<TEvent['payload']>>(streamKey: string, events: TEvent[]): Promise<void> {
+//     const existing = await this.load(streamKey)
+
+//     this.store.set(streamKey, [...existing, ...events])
+
+//     this.outbox.push(...events.map(event => ({ id: event.id, event, published: false })))
+//   }
+
+//   getOutboxBatch(limit?: number): OutboxEntry[] {
+//     return this.outbox
+//       .filter(entry => !entry.published)
+//       .slice(0, limit)
+//   }
+
+//   acknowledgeDispatch(id: string): void {
+//     const entry = this.outbox.find(e => e.id === id)
+//     if (entry)
+//       entry.published = true
+//   }
+// }

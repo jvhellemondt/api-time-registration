@@ -25,7 +25,7 @@ describe('registerTimeEntryHandler', () => {
 
   it('should register a time entry', async () => {
     const aggregateId = randomUUID()
-    const streamKey = makeStreamKey(TimeEntryRepository.streamName, aggregateId)
+    const streamKey = makeStreamKey(repository.streamName, aggregateId)
     const now = new Date()
     const payload: RegisterTimeEntryOutput = {
       userId: randomUUID(),

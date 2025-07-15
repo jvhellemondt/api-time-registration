@@ -33,8 +33,8 @@ describe('timeEntry', () => {
       expect(decision.at(0)).toStrictEqual({
         ...timeEntryRegisteredEvent,
         id: expect.any(String),
+        timestamp: expect.any(String),
         metadata: {
-          timestamp: expect.any(String),
         },
       })
     })

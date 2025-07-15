@@ -62,7 +62,7 @@ describe('example', () => {
         }),
       })
       const { id } = await res.json()
-      const streamKey = makeStreamKey(TimeEntryRepository.streamName, id)
+      const streamKey = makeStreamKey(repository.streamName, id)
       const events = await eventStore.load(streamKey)
 
       expect(res.status).toBe(201)

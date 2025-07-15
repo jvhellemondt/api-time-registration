@@ -8,7 +8,6 @@ import { listTimeEntriesByUserIdPayload } from '@/usecases/queries/ListTimeEntri
 
 export default function TimeEntryApi(aCommandBus: CommandBus, aQueryBus: QueryBus) {
   return new Hono()
-    .get('/health', c => c.text('HEALTH OK'))
     .get('/listTimeEntries/:userId', async (c) => {
       const anUserId = c.req.param('userId')
       const aPayload = listTimeEntriesByUserIdPayload.parse({ userId: anUserId })

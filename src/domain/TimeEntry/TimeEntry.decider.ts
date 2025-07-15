@@ -7,7 +7,7 @@ import { timeEntryRegistered } from '@/domain/TimeEntry/TimeEntryRegistered.even
 export type TimeEntryCommand = ReturnType<typeof registerTimeEntry>
 export type TimeEntryEvent = ReturnType<typeof timeEntryRegistered>
 
-interface TimeEntryState {
+export interface TimeEntryState {
   id: string
   userId: Maybe<RegisterTimeEntryOutput['userId']>
   startTime: Maybe<RegisterTimeEntryOutput['startTime']>

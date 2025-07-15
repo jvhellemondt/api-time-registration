@@ -19,15 +19,15 @@
     "release": "release-it"
   },
   "dependencies": {
-    "@jvhellemondt/arts-and-crafts.ts": "3.0.3",
+    "@jvhellemondt/arts-and-crafts.ts": "link:@jvhellemondt/arts-and-crafts.ts",
     "date-fns": "^4.1.0",
-    "hono": "^4.8.4",
+    "hono": "^4.8.5",
     "mongodb": "^6.17.0",
     "ts-case-convert": "^2.1.0",
     "zod": "^4.0.5"
   },
   "devDependencies": {
-    "@antfu/eslint-config": "^4.16.2",
+    "@antfu/eslint-config": "^4.17.0",
     "@commitlint/cli": "^19.8.1",
     "@commitlint/config-conventional": "^19.8.1",
     "@eslint/js": "^9.31.0",
@@ -44,7 +44,7 @@
     "husky": "^9.1.7",
     "release-it": "^19.0.3",
     "release-it-changelogen": "^0.1.0",
-    "typescript-eslint": "^8.36.0",
+    "typescript-eslint": "^8.37.0",
     "vitest": "^3.2.4"
   },
   "peerDependencies": {
