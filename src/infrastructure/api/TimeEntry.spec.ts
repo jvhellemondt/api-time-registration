@@ -53,14 +53,15 @@ describe('example', () => {
 
   describe('endpoint /registerTimeEntry', () => {
     it('should register a time entry', async () => {
-      const res = await server.request('registerTimeEntry', {
+      const body = JSON.stringify({
+        userId,
+        startTime: subHours(now, 1).toISOString(),
+        endTime: now.toISOString(),
+      })
+      const res = await server.request('register-time-entry', {
         method: 'POST',
         headers: new Headers({ 'Content-Type': 'application/json' }),
-        body: JSON.stringify({
-          userId,
-          startTime: subHours(now, 1).toISOString(),
-          endTime: now.toISOString(),
-        }),
+        body,
       })
       const { id } = await res.json()
       const streamKey = makeStreamKey(repository.streamName, id)
@@ -73,7 +74,7 @@ describe('example', () => {
     })
   })
 
-  describe('endpoint /listTimeEntries/:userId', () => {
+  describe('endpoint /list-time-entries/:userId', () => {
     const records = [
       { id: randomUUID(), userId, startTime: subHours(now, 1).toISOString(), endTime: now.toISOString() },
       { id: randomUUID(), userId, startTime: subHours(now, 2).toISOString(), endTime: subHours(now, 1).toISOString() },
@@ -85,8 +86,8 @@ describe('example', () => {
         database.execute(TimeEntriesProjectionHandler.tableName, { operation: Operation.CREATE, payload })))
     })
 
-    it('should register a time entry', async () => {
-      const res = await server.request(`listTimeEntries/${userId}`, {
+    it('should get a time entry', async () => {
+      const res = await server.request(`list-time-entries/${userId}`, {
         method: 'GET',
         headers: new Headers({ 'Content-Type': 'application/json' }),
       })
