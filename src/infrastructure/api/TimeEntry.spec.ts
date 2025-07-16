@@ -1,10 +1,10 @@
-import type { CommandBus, QueryBus } from '@jvhellemondt/arts-and-crafts.ts'
+import type { CommandBus, Database, QueryBus } from '@jvhellemondt/arts-and-crafts.ts'
 import { randomUUID } from 'node:crypto'
 import {
+  EventStore,
   InMemoryCommandBus,
   InMemoryDatabase,
   InMemoryEventBus,
-  InMemoryEventStore,
   InMemoryQueryBus,
   makeStreamKey,
   Operation,
@@ -19,16 +19,17 @@ describe('example', () => {
   const userId = randomUUID()
   const now = new Date()
   const eventBus = new InMemoryEventBus()
-  let eventStore: InMemoryEventStore
+  let database: Database
+  let eventStore: EventStore
   let repository: TimeEntryRepository
 
   let commandBus: CommandBus
   let queryBus: QueryBus
-  let database: InMemoryDatabase
   let server: ReturnType<typeof TimeEntryApi>
 
   beforeEach(() => {
-    eventStore = new InMemoryEventStore()
+    database = new InMemoryDatabase()
+    eventStore = new EventStore(database)
     commandBus = new InMemoryCommandBus()
     repository = new TimeEntryRepository(eventStore)
     queryBus = new InMemoryQueryBus()

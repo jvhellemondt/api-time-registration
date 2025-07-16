@@ -1,6 +1,6 @@
-import type { Statement } from '@jvhellemondt/arts-and-crafts.ts'
-import { InMemoryCommandBus, InMemoryEventBus, InMemoryEventStore, InMemoryQueryBus, Operation } from '@jvhellemondt/arts-and-crafts.ts'
-import { randomUUIDv7, serve } from 'bun'
+/* eslint-disable no-console */
+import { EventStore, InMemoryCommandBus, InMemoryEventBus, InMemoryQueryBus } from '@jvhellemondt/arts-and-crafts.ts'
+import { serve } from 'bun'
 import { Hono } from 'hono'
 import { TimeRegistrationModule } from '@/TimeRegistration.module.ts'
 import TimeEntryApi from './infrastructure/api/TimeEntry'
@@ -10,16 +10,13 @@ import { TimeEntryRepository } from './repositories/TimeEntryRepository/TimeEntr
 async function bootstrap() {
   const app = new Hono()
 
+  const database = await MongoDatabase.connect()
   const eventBus = new InMemoryEventBus()
-  const eventStore = new InMemoryEventStore()
+  const eventStore = new EventStore(database)
   const repository = new TimeEntryRepository(eventStore)
 
-  const database = await MongoDatabase.connect()
   const commandBus = new InMemoryCommandBus()
   const queryBus = new InMemoryQueryBus()
-
-  const stmt: Statement = { operation: Operation.CREATE, payload: { id: randomUUIDv7(), userId: randomUUIDv7(), projectId: randomUUIDv7() } }
-  await database.execute('test', stmt)
 
   const timeRegistrationModule = new TimeRegistrationModule(
     repository,
@@ -33,7 +30,6 @@ async function bootstrap() {
   const api = TimeEntryApi(commandBus, queryBus)
 
   return app
-    .get('/health', c => c.text('HEALTH OK'))
     .route('/', api)
 }
 

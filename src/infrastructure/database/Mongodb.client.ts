@@ -1,7 +1,9 @@
-import type { Database, DatabaseRecord, Statement } from '@jvhellemondt/arts-and-crafts.ts'
+/* eslint-disable no-console */
+import type { Database, DatabaseRecord, Specification, Statement } from '@jvhellemondt/arts-and-crafts.ts'
 import process from 'node:process'
 import { Operation } from '@jvhellemondt/arts-and-crafts.ts'
 import { MongoClient, ServerApiVersion } from 'mongodb'
+import { buildMongoQuery } from './buildMongoQuery'
 
 interface MongoRecord { _id: string, [key: string]: any }
 
@@ -64,9 +66,17 @@ export const MongoDatabase: Database & { connect: () => Promise<typeof MongoData
     return this
   },
 
-  async query <T extends DatabaseRecord>(_collectionName: string, _query: Partial<T>[]): Promise<T[]> {
+  async query<T = DatabaseRecord>(
+    collectionName: string,
+    specification: Specification<T>,
+  ): Promise<T[]> {
     await ensureConnected()
-    throw new Error('Function not implemented.')
+    const db = client!.db(collectionName)
+    const collection = db.collection<MongoRecord>(collectionName)
+
+    const mongoQuery = buildMongoQuery(specification.toQuery())
+    const results = await collection.find(mongoQuery).toArray()
+    return results as T[]
   },
 
   async execute(collectionName: string, statement: Statement): Promise<void> {
@@ -100,5 +110,4 @@ export const MongoDatabase: Database & { connect: () => Promise<typeof MongoData
         throw new Error(`Unsupported operation: ${operation}`)
     }
   },
-
 }
