@@ -1,4 +1,5 @@
 /* eslint-disable no-console */
+import process from 'node:process'
 import { EventStore, InMemoryCommandBus, InMemoryEventBus, InMemoryQueryBus } from '@jvhellemondt/arts-and-crafts.ts'
 import { serve } from 'bun'
 import { Hono } from 'hono'
@@ -35,5 +36,5 @@ async function bootstrap() {
 
 bootstrap()
   .then(app => serve({ fetch: app.fetch }))
-  .then(() => console.log('Server started'))
+  .then(() => console.log(`Server started. Running on http://${process.env.HOST}:${process.env.PORT}`))
   .catch(err => console.error('Error starting server:', err))
