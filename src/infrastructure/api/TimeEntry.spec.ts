@@ -13,6 +13,7 @@ import { subHours } from 'date-fns'
 import { TimeEntryRepository } from '@/repositories/TimeEntryRepository/TimeEntry.repository'
 import { TimeRegistrationModule } from '@/TimeRegistration.module'
 import { TimeEntriesProjectionHandler } from '@/usecases/projectors/TimeEntriesProjection/TimeEntriesProjection.handler'
+import { ListTimeEntriesQuery } from '../queryAdapters/ListTimeEntriesQuery'
 import TimeEntryApi from './TimeEntry'
 
 describe('example', () => {
@@ -76,10 +77,10 @@ describe('example', () => {
 
   describe('endpoint /list-time-entries/:userId', () => {
     const records = [
-      { id: randomUUID(), userId, startTime: subHours(now, 1).toISOString(), endTime: now.toISOString() },
-      { id: randomUUID(), userId, startTime: subHours(now, 2).toISOString(), endTime: subHours(now, 1).toISOString() },
-      { id: randomUUID(), userId, startTime: subHours(now, 3).toISOString(), endTime: subHours(now, 2).toISOString() },
-      { id: randomUUID(), userId, startTime: subHours(now, 4).toISOString(), endTime: subHours(now, 3).toISOString() },
+      { id: randomUUID(), user_id: userId, start_time: subHours(now, 1).toISOString(), end_time: now.toISOString() },
+      { id: randomUUID(), user_id: userId, start_time: subHours(now, 2).toISOString(), end_time: subHours(now, 1).toISOString() },
+      { id: randomUUID(), user_id: userId, start_time: subHours(now, 3).toISOString(), end_time: subHours(now, 2).toISOString() },
+      { id: randomUUID(), user_id: userId, start_time: subHours(now, 4).toISOString(), end_time: subHours(now, 3).toISOString() },
     ]
     beforeEach(async () => {
       await Promise.all(records.map(payload =>
@@ -94,7 +95,7 @@ describe('example', () => {
       const result = await res.json()
 
       expect(res.status).toBe(200)
-      expect(result).toStrictEqual(records)
+      expect(result).toStrictEqual(records.map(ListTimeEntriesQuery.mapFrom))
     })
   })
 })

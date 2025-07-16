@@ -1,6 +1,7 @@
 import type { CommandBus, Database, EventBus, Module, QueryBus, Repository } from '@jvhellemondt/arts-and-crafts.ts'
 import type { TimeEntryEvent, TimeEntryState } from './domain/TimeEntry/TimeEntry.decider'
 import { RegisterTimeEntryHandler } from '@/usecases/commands/RegisterTimeEntry/RegisterTimeEntry.handler.ts'
+import { ListTimeEntriesQuery } from './infrastructure/queryAdapters/ListTimeEntriesQuery'
 import { TimeEntriesProjectionHandler } from './usecases/projectors/TimeEntriesProjection/TimeEntriesProjection.handler'
 import { ListTimeEntriesByUserIdHandler } from './usecases/queries/ListTimeEntries/ListTimeEntries.handler'
 
@@ -19,6 +20,7 @@ export class TimeRegistrationModule implements Module {
 
     new TimeEntriesProjectionHandler(this.eventBus, this.database).start()
 
-    this.queryBus.register('ListTimeEntriesByUserId', new ListTimeEntriesByUserIdHandler(TimeEntriesProjectionHandler.tableName, this.database))
+    const listTimeEntriesQuery = new ListTimeEntriesQuery(TimeEntriesProjectionHandler.tableName, this.database)
+    this.queryBus.register('ListTimeEntriesByUserId', new ListTimeEntriesByUserIdHandler(listTimeEntriesQuery))
   }
 };

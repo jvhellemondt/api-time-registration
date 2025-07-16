@@ -3,6 +3,7 @@ import type { RegisterTimeEntryOutput } from '@/usecases/commands/RegisterTimeEn
 import { randomUUID } from 'node:crypto'
 import { InMemoryDatabase, Operation } from '@jvhellemondt/arts-and-crafts.ts'
 import { subHours } from 'date-fns'
+import { ListTimeEntriesQuery } from '@/infrastructure/queryAdapters/ListTimeEntriesQuery'
 import { TimeEntriesProjectionHandler } from '@/usecases/projectors/TimeEntriesProjection/TimeEntriesProjection.handler'
 import { ListTimeEntriesByUserIdHandler } from './ListTimeEntries.handler'
 import { listTimeEntriesByUserId } from './ListTimeEntries.query'
@@ -10,18 +11,18 @@ import { listTimeEntriesByUserIdPayload } from './ports/inbound'
 
 describe('listTimeEntriesByUserIdHandler', () => {
   let database: Database
-  const userId = randomUUID()
+  let listTimeEntriesQuery: ListTimeEntriesQuery
   const aggregateId = randomUUID()
-  const now = new Date()
   const entry: RegisterTimeEntryOutput = {
-    userId,
-    startTime: subHours(now, 1).toISOString(),
-    endTime: now.toISOString(),
+    userId: randomUUID(),
+    startTime: subHours(new Date(), 1).toISOString(),
+    endTime: new Date().toISOString(),
   }
-  const dbRecord = { id: aggregateId, ...entry }
+  const dbRecord = { id: aggregateId, user_id: entry.userId, start_time: entry.startTime, end_time: entry.endTime }
 
   beforeEach(async () => {
     database = new InMemoryDatabase()
+    listTimeEntriesQuery = new ListTimeEntriesQuery(TimeEntriesProjectionHandler.tableName, database)
     await database.execute(TimeEntriesProjectionHandler.tableName, { operation: Operation.CREATE, payload: dbRecord })
   })
 
@@ -30,10 +31,10 @@ describe('listTimeEntriesByUserIdHandler', () => {
   })
 
   it('should retrieve the time entries', async () => {
-    const aPayload = listTimeEntriesByUserIdPayload.parse({ userId })
+    const aPayload = listTimeEntriesByUserIdPayload.parse({ userId: entry.userId })
     const aQuery = listTimeEntriesByUserId(aPayload)
-    const handler = new ListTimeEntriesByUserIdHandler(TimeEntriesProjectionHandler.tableName, database)
+    const handler = new ListTimeEntriesByUserIdHandler(listTimeEntriesQuery)
     const result = await handler.execute(aQuery)
-    expect(result).toStrictEqual([dbRecord])
+    expect(result).toStrictEqual([{ id: aggregateId, ...entry }])
   })
 })

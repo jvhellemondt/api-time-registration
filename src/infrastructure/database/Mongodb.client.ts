@@ -69,13 +69,13 @@ export const MongoDatabase: Database & { connect: () => Promise<typeof MongoData
   async query<T = DatabaseRecord>(
     collectionName: string,
     specification: Specification<T>,
-  ): Promise<T[]> {
+  ) {
     await ensureConnected()
     const db = client!.db(collectionName)
     const collection = db.collection<MongoRecord>(collectionName)
 
     const mongoQuery = buildMongoQuery(specification.toQuery())
-    const results = await collection.find(mongoQuery).toArray()
+    const results = await collection.find(mongoQuery).toArray() as T[]
     return results as T[]
   },
 
