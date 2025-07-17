@@ -1,4 +1,5 @@
 import type { CommandBus, QueryBus } from '@jvhellemondt/arts-and-crafts.ts'
+import type { RegisterTimeEntryInput } from '@/usecases/commands/RegisterTimeEntry/ports/inbound.ts'
 import { randomUUID } from 'node:crypto'
 import { Hono } from 'hono'
 import { RegisterTimeEntryPayload } from '@/usecases/commands/RegisterTimeEntry/ports/inbound.ts'
@@ -18,7 +19,7 @@ export default function TimeEntryApi(aCommandBus: CommandBus, aQueryBus: QueryBu
       return c.json(aResult, 200)
     })
     .post('/register-time-entry', async (c) => {
-      const aBody = await c.req.json()
+      const aBody = await c.req.json() as unknown as RegisterTimeEntryInput
       const aPayload = RegisterTimeEntryPayload.parse(aBody)
       const aCommand = registerTimeEntry(randomUUID(), aPayload)
       const aResult = await aCommandBus.execute(aCommand)

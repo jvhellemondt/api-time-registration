@@ -3,12 +3,14 @@ import globals from 'globals'
 
 export default antfu(
   {
+    type: 'library',
     typescript: {
       tsconfigPath: 'tsconfig.json',
     },
   },
-  { languageOptions: { globals: globals.node } },
   {
+    languageOptions: { globals: globals.node },
+    files: ['src/**/*.ts'],
     rules: {
       'no-console': 'warn',
       'unused-imports/no-unused-vars': 'off',

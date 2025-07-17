@@ -1,3 +1,4 @@
+/* eslint-disable ts/no-unsafe-assignment */
 import type { TimeEntryEvent } from './TimeEntry.decider'
 import { randomUUID } from 'node:crypto'
 import { createDomainEvent } from '@jvhellemondt/arts-and-crafts.ts'

@@ -19,8 +19,5 @@ export function buildMongoQuery(node: QueryNode): Record<string, unknown> {
 
     case 'not':
       return { $not: buildMongoQuery(node.node) }
-
-    default:
-      throw new Error(`Unsupported query node type: ${(node as any).type}`)
   }
 }

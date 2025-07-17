@@ -58,9 +58,4 @@ describe('buildMongoQuery', () => {
       $not: { status: 'active' },
     })
   })
-
-  it('throws on unknown node type', () => {
-    const node = { type: 'unknown' } as any
-    expect(() => buildMongoQuery(node)).toThrow('Unsupported query node type')
-  })
 })

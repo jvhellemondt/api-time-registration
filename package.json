@@ -1,22 +1,25 @@
 {
   "name": "time-registration",
-  "module": "src/timeRegistration.module.ts",
-  "version": "0.0.0",
   "type": "module",
+  "version": "0.0.0",
+  "module": "src/timeRegistration.module.ts",
   "scripts": {
     "dev": "bun --hot --watch src/main.ts",
     "build": "bun build ./src/main.ts --splitting --outdir=./dist --target=bun --tsconfig=tsconfig.build.json",
     "start": "NODE_ENV=production bun dist/main.js",
     "prepare": "husky",
     "commit": "cz",
-    "lint": "eslint",
-    "lint:fix": "eslint --fix",
+    "lint": "eslint src",
+    "lint:fix": "eslint src --fix",
     "test": "NODE_ENV=test vitest",
     "test:watch": "NODE_ENV=test vitest --coverage --watch",
     "test:ui": "NODE_ENV=test vitest --watch --coverage --ui",
     "coverage": "NODE_ENV=test vitest --coverage",
     "typecheck": "tsc --noEmit",
     "release": "release-it"
+  },
+  "peerDependencies": {
+    "typescript": "^5.8.3"
   },
   "dependencies": {
     "@jvhellemondt/arts-and-crafts.ts": "link:@jvhellemondt/arts-and-crafts.ts",
@@ -46,9 +49,6 @@
     "release-it-changelogen": "^0.1.0",
     "typescript-eslint": "^8.37.0",
     "vitest": "^3.2.4"
-  },
-  "peerDependencies": {
-    "typescript": "^5.8.3"
   },
   "bun": {
     "target": "esnext"

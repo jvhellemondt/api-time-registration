@@ -7,9 +7,9 @@ import { buildMongoQuery } from './buildMongoQuery'
 
 interface MongoRecord { _id: string, [key: string]: any }
 
-const MONGODB_USER = process.env.MONGODB_USER || 'root'
-const MONGODB_PASSWORD = process.env.MONGODB_PASSWORD || 'password'
-const MONGODB_HOST = process.env.MONGODB_HOST || 'localhost:27017'
+const MONGODB_USER = process.env.MONGODB_USER ?? 'root'
+const MONGODB_PASSWORD = process.env.MONGODB_PASSWORD ?? 'password'
+const MONGODB_HOST = process.env.MONGODB_HOST ?? 'localhost:27017'
 const MONGODB_URI = `mongodb://${MONGODB_USER}:${MONGODB_PASSWORD}@${MONGODB_HOST}/?retryWrites=true&w=majority`
 
 let client: MongoClient | null = null
@@ -34,7 +34,7 @@ async function ensureConnected(): Promise<void> {
     }
   }
 
-  if (!client) {
+  if (client === null) {
     try {
       client = new MongoClient(MONGODB_URI, {
         monitorCommands: true,
@@ -76,7 +76,7 @@ export const MongoDatabase: Database & { connect: () => Promise<typeof MongoData
 
     const mongoQuery = buildMongoQuery(specification.toQuery())
     const results = await collection.find(mongoQuery).toArray() as T[]
-    return results as T[]
+    return results
   },
 
   async execute(collectionName: string, statement: Statement): Promise<void> {
@@ -105,9 +105,6 @@ export const MongoDatabase: Database & { connect: () => Promise<typeof MongoData
           throw new Error('Missing id for delete')
         await collection.deleteOne({ _id })
         break
-
-      default:
-        throw new Error(`Unsupported operation: ${operation}`)
     }
   },
 }

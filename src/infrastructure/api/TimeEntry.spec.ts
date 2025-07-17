@@ -13,7 +13,7 @@ import { subHours } from 'date-fns'
 import { TimeEntryRepository } from '@/repositories/TimeEntryRepository/TimeEntry.repository'
 import { TimeRegistrationModule } from '@/TimeRegistration.module'
 import { TimeEntriesProjectionHandler } from '@/usecases/projectors/TimeEntriesProjection/TimeEntriesProjection.handler'
-import { ListTimeEntriesQuery } from '../queryAdapters/ListTimeEntriesQuery'
+import { mapModelToResult } from '../queryAdapters/mapModelToResult'
 import TimeEntryApi from './TimeEntry'
 
 describe('example', () => {
@@ -64,7 +64,7 @@ describe('example', () => {
         headers: new Headers({ 'Content-Type': 'application/json' }),
         body,
       })
-      const { id } = await res.json()
+      const { id } = await res.json() as { id: string }
       const streamKey = makeStreamKey(repository.streamName, id)
       const events = await eventStore.load(streamKey)
 
@@ -83,7 +83,7 @@ describe('example', () => {
       { id: randomUUID(), user_id: userId, start_time: subHours(now, 4).toISOString(), end_time: subHours(now, 3).toISOString() },
     ]
     beforeEach(async () => {
-      await Promise.all(records.map(payload =>
+      await Promise.all(records.map(async payload =>
         database.execute(TimeEntriesProjectionHandler.tableName, { operation: Operation.CREATE, payload })))
     })
 
@@ -92,10 +92,10 @@ describe('example', () => {
         method: 'GET',
         headers: new Headers({ 'Content-Type': 'application/json' }),
       })
-      const result = await res.json()
+      const result = await res.json() as Record<string, unknown>[]
 
       expect(res.status).toBe(200)
-      expect(result).toStrictEqual(records.map(ListTimeEntriesQuery.mapFrom))
+      expect(result).toStrictEqual(records.map(mapModelToResult))
     })
   })
 })
