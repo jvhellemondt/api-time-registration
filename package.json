@@ -23,7 +23,6 @@
   },
   "dependencies": {
     "@jvhellemondt/arts-and-crafts.ts": "link:@jvhellemondt/arts-and-crafts.ts",
-    "date-fns": "^4.1.0",
     "hono": "^4.8.5",
     "mongodb": "^6.17.0",
     "ts-case-convert": "^2.1.0",
@@ -42,6 +41,7 @@
     "changelogen": "^0.6.2",
     "commitizen": "^4.3.1",
     "cz-conventional-changelog": "^3.3.0",
+    "date-fns": "^4.1.0",
     "eslint": "^9.31.0",
     "globals": "^16.3.0",
     "husky": "^9.1.7",
