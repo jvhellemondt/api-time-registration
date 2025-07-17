@@ -10,6 +10,6 @@ export class ListTimeEntriesByUserIdHandler implements QueryHandler<ListTimeEntr
   ) {}
 
   async execute(aQuery: ReturnType<typeof listTimeEntriesByUserId>): Promise<ListTimeEntriesByUserIdResult[]> {
-    return this.listTimeEntriesQuery.execute(aQuery.payload.userId)
+    return this.listTimeEntriesQuery.execute(aQuery.payload.userId) satisfies Promise<ListTimeEntriesByUserIdResult[]>
   }
 }

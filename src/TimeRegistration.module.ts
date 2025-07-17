@@ -1,7 +1,7 @@
 import type { CommandBus, Database, EventBus, Module, QueryBus, Repository } from '@jvhellemondt/arts-and-crafts.ts'
 import type { TimeEntryEvent, TimeEntryState } from './domain/TimeEntry/TimeEntry.decider'
 import { RegisterTimeEntryHandler } from '@/usecases/commands/RegisterTimeEntry/RegisterTimeEntry.handler.ts'
-import { ListTimeEntriesQuery } from './infrastructure/queryAdapters/ListTimeEntriesQuery'
+import { ListTimeEntriesQuery } from './infrastructure/database/queries/ListTimeEntriesQuery/ListTimeEntriesQuery'
 import { TimeEntriesProjectionHandler } from './usecases/projectors/TimeEntriesProjection/TimeEntriesProjection.handler'
 import { ListTimeEntriesByUserIdHandler } from './usecases/queries/ListTimeEntries/ListTimeEntries.handler'
 

@@ -1,8 +1,9 @@
 /* eslint-disable no-console */
-import type { Database, DatabaseRecord, Specification, Statement } from '@jvhellemondt/arts-and-crafts.ts'
+import type { Database, Specification, Statement } from '@jvhellemondt/arts-and-crafts.ts'
 import process from 'node:process'
 import { Operation } from '@jvhellemondt/arts-and-crafts.ts'
 import { MongoClient, ServerApiVersion } from 'mongodb'
+import { objectToCamel, objectToSnake } from 'ts-case-convert'
 import { buildMongoQuery } from './buildMongoQuery'
 
 interface MongoRecord { _id: string, [key: string]: any }
@@ -66,17 +67,14 @@ export const MongoDatabase: Database & { connect: () => Promise<typeof MongoData
     return this
   },
 
-  async query<T = DatabaseRecord>(
-    collectionName: string,
-    specification: Specification<T>,
-  ) {
+  async query<T>(collectionName: string, specification: Specification<T>): Promise<T[]> {
     await ensureConnected()
     const db = client!.db(collectionName)
-    const collection = db.collection<MongoRecord>(collectionName)
+    const collection = db.collection(collectionName)
 
     const mongoQuery = buildMongoQuery(specification.toQuery())
-    const results = await collection.find(mongoQuery).toArray() as T[]
-    return results
+    const results = await collection.find(objectToSnake(mongoQuery)).toArray()
+    return results.map(({ _id, ...rest }) => objectToCamel({ id: _id, ...rest })) as T[]
   },
 
   async execute(collectionName: string, statement: Statement): Promise<void> {
@@ -91,13 +89,13 @@ export const MongoDatabase: Database & { connect: () => Promise<typeof MongoData
 
     switch (operation) {
       case Operation.CREATE:
-        await collection.insertOne({ _id, ...payload })
+        await collection.insertOne({ _id, ...objectToSnake(payload) })
         break
 
       case Operation.UPDATE:
         if (!id)
           throw new Error('Missing _id for update')
-        await collection.updateOne({ _id }, { $set: payload })
+        await collection.updateOne({ _id }, { $set: objectToSnake(payload) })
         break
 
       case Operation.DELETE:

@@ -3,6 +3,7 @@ services:
     image: mongo:latest
     container_name: mongodb
     hostname: mongodb
+    restart: no
     volumes:
       - mongodb-data:/data/db/
       - mongodb-log:/var/log/mongodb/
@@ -12,14 +13,14 @@ services:
       MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
       MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
     ports:
-      - '27017:27017'
+      - "27017:27017"
     # networks:
     #   - mongodb_network
 
   mongo-express:
     image: mongo-express:latest
     container_name: mongo-express
-    restart: always
+    restart: no
     environment:
       ME_CONFIG_BASICAUTH: false
       ME_CONFIG_MONGODB_ENABLE_ADMIN: true

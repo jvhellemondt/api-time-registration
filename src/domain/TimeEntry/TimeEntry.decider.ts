@@ -1,6 +1,6 @@
 import type { Decider, Maybe } from '@jvhellemondt/arts-and-crafts.ts'
-import type { RegisterTimeEntryOutput } from '@/usecases/commands/RegisterTimeEntry/ports/inbound'
 import type { registerTimeEntry } from '@/usecases/commands/RegisterTimeEntry/RegisterTimeEntry.command'
+import type { RegisterTimeEntryCommandPayload } from '@/usecases/commands/RegisterTimeEntry/RegisterTimeEntry.ports'
 import { isDeepStrictEqual } from 'node:util'
 import { timeEntryRegistered } from '@/domain/TimeEntry/TimeEntryRegistered.event.ts'
 
@@ -9,9 +9,9 @@ export type TimeEntryEvent = ReturnType<typeof timeEntryRegistered>
 
 export interface TimeEntryState {
   id: string
-  userId: Maybe<RegisterTimeEntryOutput['userId']>
-  startTime: Maybe<RegisterTimeEntryOutput['startTime']>
-  endTime: Maybe<RegisterTimeEntryOutput['endTime']>
+  userId: Maybe<RegisterTimeEntryCommandPayload['userId']>
+  startTime: Maybe<RegisterTimeEntryCommandPayload['startTime']>
+  endTime: Maybe<RegisterTimeEntryCommandPayload['endTime']>
 }
 
 function initialTimeEntryState(id: string): TimeEntryState {

@@ -1,7 +1,9 @@
 import type { DomainEventMetadata } from '@jvhellemondt/arts-and-crafts.ts'
-import type { RegisterTimeEntryOutput } from '@/usecases/commands/RegisterTimeEntry/ports/inbound.ts'
+import type { RegisterTimeEntryCommandPayload } from '@/usecases/commands/RegisterTimeEntry/RegisterTimeEntry.ports'
 import { createDomainEvent } from '@jvhellemondt/arts-and-crafts.ts'
 
-export function timeEntryRegistered(aggregateId: string, payload: RegisterTimeEntryOutput, metadata?: DomainEventMetadata) {
+export function timeEntryRegistered(aggregateId: string, payload: RegisterTimeEntryCommandPayload, metadata?: DomainEventMetadata) {
   return createDomainEvent('TimeEntryRegistered', aggregateId, payload, metadata)
 }
+
+export type TimeEntryRegisteredEvent = ReturnType<typeof timeEntryRegistered>

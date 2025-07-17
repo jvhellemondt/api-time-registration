@@ -4,19 +4,14 @@ import { randomUUID } from 'node:crypto'
 import { createDomainEvent } from '@jvhellemondt/arts-and-crafts.ts'
 import { subHours } from 'date-fns'
 import { timeEntryRegistered } from '@/domain/TimeEntry/TimeEntryRegistered.event.ts'
-import { RegisterTimeEntryPayload } from '@/usecases/commands/RegisterTimeEntry/ports/inbound'
 import { registerTimeEntry } from '@/usecases/commands/RegisterTimeEntry/RegisterTimeEntry.command'
+import { registerTimeEntryCommandPayload } from '@/usecases/commands/RegisterTimeEntry/RegisterTimeEntry.ports'
 import { TimeEntry } from './TimeEntry.decider'
 
 describe('timeEntry', () => {
   let pastEvents: TimeEntryEvent[]
-  const aggregateId = randomUUID()
-  const userId = randomUUID()
-  const startTime = subHours(new Date(), 2).toISOString()
-  const endTime = new Date().toISOString()
-
-  const payload = RegisterTimeEntryPayload.parse({ userId, startTime, endTime })
-  const registerTimeEntryCommand = registerTimeEntry(aggregateId, payload)
+  const payload = registerTimeEntryCommandPayload.parse({ userId: randomUUID(), startTime: subHours(new Date(), 2).toISOString(), endTime: new Date().toISOString() })
+  const registerTimeEntryCommand = registerTimeEntry(randomUUID(), payload)
   const timeEntryRegisteredEvent = timeEntryRegistered(registerTimeEntryCommand.aggregateId, registerTimeEntryCommand.payload)
 
   it('should be defined', () => {

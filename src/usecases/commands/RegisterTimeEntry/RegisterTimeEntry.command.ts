@@ -1,7 +1,7 @@
 import type { UUID } from 'node:crypto'
-import type { RegisterTimeEntryOutput } from '@/usecases/commands/RegisterTimeEntry/ports/inbound.ts'
+import type { RegisterTimeEntryCommandPayload } from './RegisterTimeEntry.ports'
 import { createCommand } from '@jvhellemondt/arts-and-crafts.ts'
 
-export function registerTimeEntry(aggregateId: UUID, props: RegisterTimeEntryOutput) {
+export function registerTimeEntry(aggregateId: UUID, props: RegisterTimeEntryCommandPayload) {
   return createCommand('RegisterTimeEntry', aggregateId, props)
 }

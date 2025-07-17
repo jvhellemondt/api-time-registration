@@ -10,7 +10,7 @@
     "experimentalDecorators": true,
     "baseUrl": "./",
     "module": "ESNext",
-    "moduleResolution": "bundler",
+    "moduleResolution": "Bundler",
 
     "paths": {
       "@/*": ["./src/*"]
@@ -40,6 +40,11 @@
     "isolatedModules": true
   },
   "files": ["package.json"],
-  "include": ["src/**/*.ts", "**/*.d.ts", "tests/**/*.ts"],
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.d.ts",
+    "tests/**/*.ts",
+    "types/**/*.d.ts"
+  ],
   "exclude": ["node_modules"]
 }

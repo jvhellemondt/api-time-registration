@@ -3,7 +3,7 @@ import globals from 'globals'
 
 export default antfu(
   {
-    type: 'library',
+    type: 'app',
     typescript: {
       tsconfigPath: 'tsconfig.json',
     },

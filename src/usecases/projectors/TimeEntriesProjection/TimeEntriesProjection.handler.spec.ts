@@ -1,5 +1,4 @@
 import type { Database, EventBus } from '@jvhellemondt/arts-and-crafts.ts'
-import type { TimeEntryModel } from '@/infrastructure/models/TimeEntry.model'
 import { randomUUID } from 'node:crypto'
 import { FieldEquals, InMemoryDatabase, InMemoryEventBus } from '@jvhellemondt/arts-and-crafts.ts'
 import { timeEntryRegistered } from '@/domain/TimeEntry/TimeEntryRegistered.event'
@@ -24,9 +23,9 @@ describe('afterTimeEntryRegisteredHandler', () => {
   it('should make the projection of the time entry', async () => {
     const event = timeEntryRegistered(randomUUID(), { userId: randomUUID(), startTime: new Date().toISOString(), endTime: new Date().toISOString() })
     await eventBus.publish(event)
-    const specification = new FieldEquals('user_id', event.payload.userId)
-    const result = await database.query<TimeEntryModel>(TimeEntriesProjectionHandler.tableName, specification)
+    const specification = new FieldEquals('userId', event.payload.userId)
+    const result = await database.query(TimeEntriesProjectionHandler.tableName, specification)
     expect(result).toHaveLength(1)
-    expect(result[0].user_id).toBe(event.payload.userId)
+    expect(result[0].userId).toBe(event.payload.userId)
   })
 })

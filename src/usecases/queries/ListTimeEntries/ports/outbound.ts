@@ -1,7 +1,7 @@
-import type { DatabaseRecord } from '@jvhellemondt/arts-and-crafts.ts'
+import type { withId } from '@/types/withId'
 
-export interface ListTimeEntriesByUserIdResult extends DatabaseRecord {
+export type ListTimeEntriesByUserIdResult = {
   userId: string
   startTime: string
   endTime: string
-}
+} & withId

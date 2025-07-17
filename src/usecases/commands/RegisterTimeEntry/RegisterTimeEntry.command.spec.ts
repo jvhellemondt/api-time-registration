@@ -1,7 +1,7 @@
 import { randomUUID } from 'node:crypto'
 import { subHours } from 'date-fns'
-import { RegisterTimeEntryPayload } from '@/usecases/commands/RegisterTimeEntry/ports/inbound.ts'
 import { registerTimeEntry } from './RegisterTimeEntry.command.ts'
+import { registerTimeEntryCommandPayload } from './RegisterTimeEntry.ports.ts'
 
 describe('registerTimeEntryCommand', () => {
   it('should be defined', () => {
@@ -13,7 +13,7 @@ describe('registerTimeEntryCommand', () => {
     const userId = randomUUID()
     const endTime = new Date().toISOString()
     const startTime = subHours(endTime, 3).toISOString()
-    const payload = RegisterTimeEntryPayload.parse({ userId, startTime, endTime })
+    const payload = registerTimeEntryCommandPayload.parse({ userId, startTime, endTime })
 
     const command = registerTimeEntry(aggregateId, payload)
 
