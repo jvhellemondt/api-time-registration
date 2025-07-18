@@ -1,11 +1,12 @@
 import type { Decider, Maybe } from '@jvhellemondt/arts-and-crafts.ts'
-import type { registerTimeEntry } from '@/usecases/commands/RegisterTimeEntry/RegisterTimeEntry.command'
+import type { TimeEntryRegisteredEvent } from '@/domain/TimeEntry/TimeEntryRegistered.event.ts'
+import type { RegisterTimeEntryCommand } from '@/usecases/commands/RegisterTimeEntry/RegisterTimeEntry.command'
 import type { RegisterTimeEntryCommandPayload } from '@/usecases/commands/RegisterTimeEntry/RegisterTimeEntry.ports'
 import { isDeepStrictEqual } from 'node:util'
-import { timeEntryRegistered } from '@/domain/TimeEntry/TimeEntryRegistered.event.ts'
+import { createTimeEntryRegisteredEvent } from '@/domain/TimeEntry/TimeEntryRegistered.event.ts'
 
-export type TimeEntryCommand = ReturnType<typeof registerTimeEntry>
-export type TimeEntryEvent = ReturnType<typeof timeEntryRegistered>
+export type TimeEntryCommand = RegisterTimeEntryCommand
+export type TimeEntryEvent = TimeEntryRegisteredEvent
 
 export interface TimeEntryState {
   id: string
@@ -43,7 +44,7 @@ function decideTimeEntryState(command: TimeEntryCommand, currentState: TimeEntry
       if (!isInitialState(currentState)) {
         return []
       }
-      return [timeEntryRegistered(command.aggregateId, command.payload, command.metadata)]
+      return [createTimeEntryRegisteredEvent(command.aggregateId, command.payload, command.metadata)]
     }
   }
 }

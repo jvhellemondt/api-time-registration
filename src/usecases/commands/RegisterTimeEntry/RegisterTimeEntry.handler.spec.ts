@@ -1,11 +1,11 @@
-import type { CommandHandler, Database } from '@jvhellemondt/arts-and-crafts.ts'
+import type { CommandHandler, Database, EventStore } from '@jvhellemondt/arts-and-crafts.ts'
 import type { RegisterTimeEntryCommandPayload } from './RegisterTimeEntry.ports'
-import { EventStore, InMemoryDatabase, makeStreamKey } from '@jvhellemondt/arts-and-crafts.ts'
+import { GenericEventStore, InMemoryDatabase, makeStreamKey } from '@jvhellemondt/arts-and-crafts.ts'
 import { subHours } from 'date-fns'
 import { v7 as uuidv7 } from 'uuid'
 import { beforeAll } from 'vitest'
 import { TimeEntryRepository } from '@/repositories/TimeEntryRepository/TimeEntry.repository'
-import { registerTimeEntry } from '@/usecases/commands/RegisterTimeEntry/RegisterTimeEntry.command.ts'
+import { createRegisterTimeEntryCommand } from '@/usecases/commands/RegisterTimeEntry/RegisterTimeEntry.command.ts'
 import { RegisterTimeEntryHandler } from './RegisterTimeEntry.handler'
 
 describe('registerTimeEntryHandler', () => {
@@ -16,7 +16,7 @@ describe('registerTimeEntryHandler', () => {
 
   beforeAll(() => {
     database = new InMemoryDatabase()
-    eventStore = new EventStore(database)
+    eventStore = new GenericEventStore(database)
     repository = new TimeEntryRepository(eventStore)
     handler = new RegisterTimeEntryHandler(repository)
   })
@@ -34,7 +34,7 @@ describe('registerTimeEntryHandler', () => {
       startTime: subHours(now, 1).toISOString(),
       endTime: now.toISOString(),
     }
-    const command = registerTimeEntry(aggregateId, payload)
+    const command = createRegisterTimeEntryCommand(aggregateId, payload)
     const result = await handler.execute(command)
 
     const events = await eventStore.load(streamKey)

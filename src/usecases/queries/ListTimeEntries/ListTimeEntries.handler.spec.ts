@@ -6,7 +6,7 @@ import { v7 as uuidv7 } from 'uuid'
 import { ListTimeEntriesQuery } from '@/infrastructure/database/queries/ListTimeEntriesQuery/ListTimeEntriesQuery'
 import { TimeEntriesProjectionHandler } from '@/usecases/projectors/TimeEntriesProjection/TimeEntriesProjection.handler'
 import { ListTimeEntriesByUserIdHandler } from './ListTimeEntries.handler'
-import { listTimeEntriesByUserId } from './ListTimeEntries.query'
+import { createListTimeEntriesByUserIdQuery } from './ListTimeEntries.query'
 import { listTimeEntriesByUserIdPayload } from './ports/inbound'
 
 describe('listTimeEntriesByUserIdHandler', () => {
@@ -31,7 +31,7 @@ describe('listTimeEntriesByUserIdHandler', () => {
 
   it('should retrieve the time entries', async () => {
     const aPayload = listTimeEntriesByUserIdPayload.parse({ userId: entry.userId })
-    const aQuery = listTimeEntriesByUserId(aPayload)
+    const aQuery = createListTimeEntriesByUserIdQuery(aPayload)
     const handler = new ListTimeEntriesByUserIdHandler(listTimeEntriesQuery)
     const result = await handler.execute(aQuery)
     expect(result).toStrictEqual([{ id: aggregateId, ...entry }])

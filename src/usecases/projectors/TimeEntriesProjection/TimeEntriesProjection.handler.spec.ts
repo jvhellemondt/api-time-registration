@@ -1,7 +1,7 @@
 import type { Database, EventBus } from '@jvhellemondt/arts-and-crafts.ts'
 import { FieldEquals, InMemoryDatabase, InMemoryEventBus } from '@jvhellemondt/arts-and-crafts.ts'
 import { v7 as uuidv7 } from 'uuid'
-import { timeEntryRegistered } from '@/domain/TimeEntry/TimeEntryRegistered.event'
+import { createTimeEntryRegisteredEvent } from '@/domain/TimeEntry/TimeEntryRegistered.event'
 import { TimeEntriesProjectionHandler } from './TimeEntriesProjection.handler'
 
 describe('afterTimeEntryRegisteredHandler', () => {
@@ -21,7 +21,7 @@ describe('afterTimeEntryRegisteredHandler', () => {
   })
 
   it('should make the projection of the time entry', async () => {
-    const event = timeEntryRegistered(uuidv7(), { userId: uuidv7(), startTime: new Date().toISOString(), endTime: new Date().toISOString() })
+    const event = createTimeEntryRegisteredEvent(uuidv7(), { userId: uuidv7(), startTime: new Date().toISOString(), endTime: new Date().toISOString() })
     await eventBus.publish(event)
     const specification = new FieldEquals('userId', event.payload.userId)
     const result = await database.query(TimeEntriesProjectionHandler.tableName, specification)

@@ -1,9 +1,9 @@
-import type { Database } from '@jvhellemondt/arts-and-crafts.ts'
+import type { Database, EventStore } from '@jvhellemondt/arts-and-crafts.ts'
 import type { TimeEntryEvent } from '@/domain/TimeEntry/TimeEntry.decider'
-import { EventStore, InMemoryDatabase } from '@jvhellemondt/arts-and-crafts.ts'
+import { GenericEventStore, InMemoryDatabase } from '@jvhellemondt/arts-and-crafts.ts'
 import { subHours } from 'date-fns'
 import { v7 as uuidv7 } from 'uuid'
-import { timeEntryRegistered } from '@/domain/TimeEntry/TimeEntryRegistered.event'
+import { createTimeEntryRegisteredEvent } from '@/domain/TimeEntry/TimeEntryRegistered.event'
 import { TimeEntryRepository } from './TimeEntry.repository'
 
 describe('time-entry repository', () => {
@@ -17,9 +17,9 @@ describe('time-entry repository', () => {
     const userId = uuidv7()
     const startTime = subHours(new Date(), 2).toISOString()
     const endTime = new Date().toISOString()
-    event = timeEntryRegistered(aggregateId, { userId, startTime, endTime })
+    event = createTimeEntryRegisteredEvent(aggregateId, { userId, startTime, endTime })
     database = new InMemoryDatabase()
-    eventStore = new EventStore(database)
+    eventStore = new GenericEventStore(database)
     repository = new TimeEntryRepository(eventStore)
     await repository.store([event])
   })

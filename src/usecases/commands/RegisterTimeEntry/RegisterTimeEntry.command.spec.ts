@@ -1,11 +1,11 @@
 import { subHours } from 'date-fns'
 import { v7 as uuidv7 } from 'uuid'
-import { registerTimeEntry } from './RegisterTimeEntry.command.ts'
+import { createRegisterTimeEntryCommand } from './RegisterTimeEntry.command.ts'
 import { registerTimeEntryCommandPayload } from './RegisterTimeEntry.ports.ts'
 
 describe('registerTimeEntryCommand', () => {
   it('should be defined', () => {
-    expect(registerTimeEntry).toBeDefined()
+    expect(createRegisterTimeEntryCommand).toBeDefined()
   })
 
   it('should contain the right payload', () => {
@@ -15,7 +15,7 @@ describe('registerTimeEntryCommand', () => {
     const startTime = subHours(endTime, 3).toISOString()
     const payload = registerTimeEntryCommandPayload.parse({ userId, startTime, endTime })
 
-    const command = registerTimeEntry(aggregateId, payload)
+    const command = createRegisterTimeEntryCommand(aggregateId, payload)
 
     expect(command.payload).toBe(payload)
   })

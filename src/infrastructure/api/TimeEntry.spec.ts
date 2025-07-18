@@ -1,6 +1,6 @@
-import type { CommandBus, Database, QueryBus } from '@jvhellemondt/arts-and-crafts.ts'
+import type { CommandBus, Database, EventStore, QueryBus } from '@jvhellemondt/arts-and-crafts.ts'
 import {
-  EventStore,
+  GenericEventStore,
   InMemoryCommandBus,
   InMemoryDatabase,
   InMemoryEventBus,
@@ -29,7 +29,7 @@ describe('example', () => {
 
   beforeEach(() => {
     database = new InMemoryDatabase()
-    eventStore = new EventStore(database)
+    eventStore = new GenericEventStore(database)
     commandBus = new InMemoryCommandBus()
     repository = new TimeEntryRepository(eventStore)
     queryBus = new InMemoryQueryBus()

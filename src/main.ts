@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
 import process from 'node:process'
-import { EventStore, InMemoryCommandBus, InMemoryEventBus, InMemoryOutbox, InMemoryQueryBus, OutboxWorker } from '@jvhellemondt/arts-and-crafts.ts'
+import { GenericEventStore, InMemoryCommandBus, InMemoryEventBus, InMemoryOutbox, InMemoryOutboxWorker, InMemoryQueryBus } from '@jvhellemondt/arts-and-crafts.ts'
 import { serve } from 'bun'
 import { Hono } from 'hono'
 import { TimeRegistrationModule } from '@/TimeRegistration.module.ts'
@@ -14,8 +14,8 @@ async function bootstrap() {
   const database = await MongoDatabase.connect()
   const eventBus = new InMemoryEventBus()
   const outbox = new InMemoryOutbox()
-  const outboxWorker = new OutboxWorker(outbox, eventBus)
-  const eventStore = new EventStore(database, outbox)
+  const outboxWorker = new InMemoryOutboxWorker(outbox, eventBus)
+  const eventStore = new GenericEventStore(database, { outbox })
   const repository = new TimeEntryRepository(eventStore)
 
   const commandBus = new InMemoryCommandBus()

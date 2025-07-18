@@ -2,9 +2,9 @@ import type { CommandBus, QueryBus } from '@jvhellemondt/arts-and-crafts.ts'
 import type { RegisterTimeEntryCommandPayload } from '@/usecases/commands/RegisterTimeEntry/RegisterTimeEntry.ports'
 import { Hono } from 'hono'
 import { v7 as uuidv7 } from 'uuid'
-import { registerTimeEntry } from '@/usecases/commands/RegisterTimeEntry/RegisterTimeEntry.command'
+import { createRegisterTimeEntryCommand } from '@/usecases/commands/RegisterTimeEntry/RegisterTimeEntry.command'
 import { registerTimeEntryCommandPayload } from '@/usecases/commands/RegisterTimeEntry/RegisterTimeEntry.ports'
-import { listTimeEntriesByUserId } from '@/usecases/queries/ListTimeEntries/ListTimeEntries.query'
+import { createListTimeEntriesByUserIdQuery } from '@/usecases/queries/ListTimeEntries/ListTimeEntries.query'
 import { listTimeEntriesByUserIdPayload } from '@/usecases/queries/ListTimeEntries/ports/inbound'
 
 export default function TimeEntryApi(aCommandBus: CommandBus, aQueryBus: QueryBus) {
@@ -13,7 +13,7 @@ export default function TimeEntryApi(aCommandBus: CommandBus, aQueryBus: QueryBu
     .get('/list-time-entries', async (c) => {
       const anUserId = '01981dd1-2567-720c-9da6-a33e79275bb1'
       const aPayload = listTimeEntriesByUserIdPayload.parse({ userId: anUserId })
-      const aQuery = listTimeEntriesByUserId(aPayload)
+      const aQuery = createListTimeEntriesByUserIdQuery(aPayload)
       const aResult = await aQueryBus.execute(aQuery)
       // @ts-expect-error queryBus execute should be generic
       return c.json(aResult, 200)
@@ -21,7 +21,7 @@ export default function TimeEntryApi(aCommandBus: CommandBus, aQueryBus: QueryBu
     .post('/register-time-entry', async (c) => {
       const aBody = await c.req.json<RegisterTimeEntryCommandPayload>()
       const aPayload = registerTimeEntryCommandPayload.parse(aBody)
-      const aCommand = registerTimeEntry(uuidv7(), aPayload)
+      const aCommand = createRegisterTimeEntryCommand(uuidv7(), aPayload)
       const aResult = await aCommandBus.execute(aCommand)
       return c.json({ ...aResult }, 201)
     })
