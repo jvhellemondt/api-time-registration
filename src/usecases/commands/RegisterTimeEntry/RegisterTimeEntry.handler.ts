@@ -10,7 +10,7 @@ export class RegisterTimeEntryHandler implements CommandHandler<'RegisterTimeEnt
   }
 
   async execute(aCommand: Command<'RegisterTimeEntry', RegisterTimeEntryCommandPayload>): Promise<CommandHandlerResult> {
-    const currentState = [].reduce(TimeEntry.evolve, TimeEntry.initialState(aCommand.aggregateId))
+    const currentState = await this.repository.load(aCommand.aggregateId)
     await this.repository.store(TimeEntry.decide(aCommand, currentState))
     return { id: aCommand.aggregateId }
   }
