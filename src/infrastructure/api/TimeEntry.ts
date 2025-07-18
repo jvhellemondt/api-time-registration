@@ -1,7 +1,7 @@
 import type { CommandBus, QueryBus } from '@jvhellemondt/arts-and-crafts.ts'
 import type { RegisterTimeEntryCommandPayload } from '@/usecases/commands/RegisterTimeEntry/RegisterTimeEntry.ports'
-import { randomUUID } from 'node:crypto'
 import { Hono } from 'hono'
+import { v7 as uuidv7 } from 'uuid'
 import { registerTimeEntry } from '@/usecases/commands/RegisterTimeEntry/RegisterTimeEntry.command'
 import { registerTimeEntryCommandPayload } from '@/usecases/commands/RegisterTimeEntry/RegisterTimeEntry.ports'
 import { listTimeEntriesByUserId } from '@/usecases/queries/ListTimeEntries/ListTimeEntries.query'
@@ -10,8 +10,8 @@ import { listTimeEntriesByUserIdPayload } from '@/usecases/queries/ListTimeEntri
 export default function TimeEntryApi(aCommandBus: CommandBus, aQueryBus: QueryBus) {
   return new Hono()
     .get('/health', c => c.text('HEALTH OK'))
-    .get('/list-time-entries/:userId', async (c) => {
-      const anUserId = c.req.param('userId')
+    .get('/list-time-entries', async (c) => {
+      const anUserId = '01981dd1-2567-720c-9da6-a33e79275bb1'
       const aPayload = listTimeEntriesByUserIdPayload.parse({ userId: anUserId })
       const aQuery = listTimeEntriesByUserId(aPayload)
       const aResult = await aQueryBus.execute(aQuery)
@@ -21,7 +21,7 @@ export default function TimeEntryApi(aCommandBus: CommandBus, aQueryBus: QueryBu
     .post('/register-time-entry', async (c) => {
       const aBody = await c.req.json<RegisterTimeEntryCommandPayload>()
       const aPayload = registerTimeEntryCommandPayload.parse(aBody)
-      const aCommand = registerTimeEntry(randomUUID(), aPayload)
+      const aCommand = registerTimeEntry(uuidv7(), aPayload)
       const aResult = await aCommandBus.execute(aCommand)
       return c.json({ ...aResult }, 201)
     })

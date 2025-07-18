@@ -1,4 +1,4 @@
-import { randomUUID } from 'node:crypto'
+import { v7 as uuidv7 } from 'uuid'
 import { listTimeEntriesByUserIdPayload } from './inbound'
 
 describe('listTimeEntriesByUserId', () => {
@@ -7,7 +7,7 @@ describe('listTimeEntriesByUserId', () => {
   })
 
   it('should succeed parsing', () => {
-    const userId = randomUUID()
+    const userId = uuidv7()
     const payload = listTimeEntriesByUserIdPayload.parse({ userId })
     expect(payload).toBeDefined()
     expect(payload.userId).toBe(userId)

@@ -1,5 +1,4 @@
 import type { CommandBus, Database, QueryBus } from '@jvhellemondt/arts-and-crafts.ts'
-import { randomUUID } from 'node:crypto'
 import {
   EventStore,
   InMemoryCommandBus,
@@ -10,13 +9,14 @@ import {
   Operation,
 } from '@jvhellemondt/arts-and-crafts.ts'
 import { subHours } from 'date-fns'
+import { v7 as uuidv7 } from 'uuid'
 import { TimeEntryRepository } from '@/repositories/TimeEntryRepository/TimeEntry.repository'
 import { TimeRegistrationModule } from '@/TimeRegistration.module'
 import { TimeEntriesProjectionHandler } from '@/usecases/projectors/TimeEntriesProjection/TimeEntriesProjection.handler'
 import TimeEntryApi from './TimeEntry'
 
 describe('example', () => {
-  const userId = randomUUID()
+  const userId = '01981dd1-2567-720c-9da6-a33e79275bb1'
   const now = new Date()
   const eventBus = new InMemoryEventBus()
   let database: Database
@@ -74,12 +74,12 @@ describe('example', () => {
     })
   })
 
-  describe('endpoint /list-time-entries/:userId', () => {
+  describe('endpoint /list-time-entries', () => {
     const records = [
-      { id: randomUUID(), userId, startTime: subHours(now, 1).toISOString(), endTime: now.toISOString() },
-      { id: randomUUID(), userId, startTime: subHours(now, 2).toISOString(), endTime: subHours(now, 1).toISOString() },
-      { id: randomUUID(), userId, startTime: subHours(now, 3).toISOString(), endTime: subHours(now, 2).toISOString() },
-      { id: randomUUID(), userId, startTime: subHours(now, 4).toISOString(), endTime: subHours(now, 3).toISOString() },
+      { id: uuidv7(), userId, startTime: subHours(now, 1).toISOString(), endTime: now.toISOString() },
+      { id: uuidv7(), userId, startTime: subHours(now, 2).toISOString(), endTime: subHours(now, 1).toISOString() },
+      { id: uuidv7(), userId, startTime: subHours(now, 3).toISOString(), endTime: subHours(now, 2).toISOString() },
+      { id: uuidv7(), userId, startTime: subHours(now, 4).toISOString(), endTime: subHours(now, 3).toISOString() },
     ]
     beforeEach(async () => {
       await Promise.all(records.map(async payload =>
@@ -87,7 +87,7 @@ describe('example', () => {
     })
 
     it('should get a time entry', async () => {
-      const res = await server.request(`list-time-entries/${userId}`, {
+      const res = await server.request(`list-time-entries`, {
         method: 'GET',
         headers: new Headers({ 'Content-Type': 'application/json' }),
       })

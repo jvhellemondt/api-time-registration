@@ -1,8 +1,8 @@
 import type { CommandHandler, Database } from '@jvhellemondt/arts-and-crafts.ts'
 import type { RegisterTimeEntryCommandPayload } from './RegisterTimeEntry.ports'
-import { randomUUID } from 'node:crypto'
 import { EventStore, InMemoryDatabase, makeStreamKey } from '@jvhellemondt/arts-and-crafts.ts'
 import { subHours } from 'date-fns'
+import { v7 as uuidv7 } from 'uuid'
 import { beforeAll } from 'vitest'
 import { TimeEntryRepository } from '@/repositories/TimeEntryRepository/TimeEntry.repository'
 import { registerTimeEntry } from '@/usecases/commands/RegisterTimeEntry/RegisterTimeEntry.command.ts'
@@ -26,11 +26,11 @@ describe('registerTimeEntryHandler', () => {
   })
 
   it('should register a time entry', async () => {
-    const aggregateId = randomUUID()
+    const aggregateId = uuidv7()
     const streamKey = makeStreamKey(repository.streamName, aggregateId)
     const now = new Date()
     const payload: RegisterTimeEntryCommandPayload = {
-      userId: randomUUID(),
+      userId: uuidv7(),
       startTime: subHours(now, 1).toISOString(),
       endTime: now.toISOString(),
     }

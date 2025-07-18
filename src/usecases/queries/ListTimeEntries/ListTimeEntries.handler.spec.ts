@@ -1,8 +1,8 @@
 import type { Database } from '@jvhellemondt/arts-and-crafts.ts'
 import type { RegisterTimeEntryCommandPayload } from '@/usecases/commands/RegisterTimeEntry/RegisterTimeEntry.ports'
-import { randomUUID } from 'node:crypto'
 import { InMemoryDatabase, Operation } from '@jvhellemondt/arts-and-crafts.ts'
 import { subHours } from 'date-fns'
+import { v7 as uuidv7 } from 'uuid'
 import { ListTimeEntriesQuery } from '@/infrastructure/database/queries/ListTimeEntriesQuery/ListTimeEntriesQuery'
 import { TimeEntriesProjectionHandler } from '@/usecases/projectors/TimeEntriesProjection/TimeEntriesProjection.handler'
 import { ListTimeEntriesByUserIdHandler } from './ListTimeEntries.handler'
@@ -12,9 +12,9 @@ import { listTimeEntriesByUserIdPayload } from './ports/inbound'
 describe('listTimeEntriesByUserIdHandler', () => {
   let database: Database
   let listTimeEntriesQuery: ListTimeEntriesQuery
-  const aggregateId = randomUUID()
+  const aggregateId = uuidv7()
   const entry: RegisterTimeEntryCommandPayload = {
-    userId: randomUUID(),
+    userId: uuidv7(),
     startTime: subHours(new Date(), 1).toISOString(),
     endTime: new Date().toISOString(),
   }
