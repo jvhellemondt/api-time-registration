@@ -11,8 +11,6 @@ import { createRegisterTimeEntryCommand } from '@/usecases/commands/RegisterTime
 import { createListTimeEntriesByUserIdQuery } from '@/usecases/queries/ListTimeEntries/ListTimeEntries.query'
 
 describe('scenario test: list time entries', () => {
-  vi.useFakeTimers()
-
   const id = uuidv7()
   let database: Database
   let eventStore: EventStore
@@ -34,32 +32,28 @@ describe('scenario test: list time entries', () => {
     outboxWorker = new InMemoryOutboxWorker(outbox, eventBus)
     repository = new TimeEntryRepository(eventStore)
 
-    scenarioTest = new ScenarioTest(repository.streamName, eventBus, eventStore, commandBus, queryBus, repository, outboxWorker)
     new TimeRegistrationModule(repository, database, commandBus, queryBus, eventBus).registerModule()
+    scenarioTest = new ScenarioTest(repository.streamName, eventBus, eventStore, commandBus, queryBus, repository, outboxWorker)
   })
 
-  it.skip('should have a registered time entry and list it', async () => {
+  it('should have a registered time entry and list it', async () => {
     const command = createRegisterTimeEntryCommand(id, {
       userId: '01981dd1-2567-720c-9da6-a33e79275bb1',
       startTime: subHours(new Date(), 2).toISOString(),
       endTime: new Date().toISOString(),
     })
-    const event = createTimeEntryRegisteredEvent(command.aggregateId, command.payload, command.metadata)
-    const query = createListTimeEntriesByUserIdQuery({ userId: command.aggregateId })
-    const result: TimeEntryModel[] = [{
+    const aTimeEntryWasRegistered = createTimeEntryRegisteredEvent(command.aggregateId, command.payload, command.metadata)
+    const aListOfTimeEntriesByUserIsRequested = createListTimeEntriesByUserIdQuery({ userId: command.payload.userId })
+    const theTimeEntryIsListed: TimeEntryModel[] = [{
       id: command.aggregateId,
       userId: command.payload.userId,
       startTime: command.payload.startTime,
       endTime: command.payload.endTime,
     }]
 
-    outboxWorker.start(1)
-
-    scenarioTest.given(event)
-    scenarioTest.when(query)
-
-    await vi.advanceTimersByTimeAsync(1)
-
-    await scenarioTest.then(result)
+    await scenarioTest
+      .given(aTimeEntryWasRegistered)
+      .when(aListOfTimeEntriesByUserIsRequested)
+      .then(theTimeEntryIsListed)
   })
 })
