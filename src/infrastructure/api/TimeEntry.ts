@@ -7,13 +7,14 @@ import { registerTimeEntryCommandPayload } from '@/usecases/commands/RegisterTim
 import { createListTimeEntriesByUserIdQuery } from '@/usecases/queries/ListTimeEntries/ListTimeEntries.query'
 import { listTimeEntriesByUserIdPayload } from '@/usecases/queries/ListTimeEntries/ports/inbound'
 
-export default function TimeEntryApi(aCommandBus: CommandBus, aQueryBus: QueryBus) {
+export default function TimeEntryApi() {
   return new Hono()
     .get('/health', c => c.text('HEALTH OK'))
     .get('/list-time-entries', async (c) => {
       const anUserId = '01981dd1-2567-720c-9da6-a33e79275bb1'
       const aPayload = listTimeEntriesByUserIdPayload.parse({ userId: anUserId })
       const aQuery = createListTimeEntriesByUserIdQuery(aPayload)
+      
       const aResult = await aQueryBus.execute(aQuery)
       // @ts-expect-error queryBus execute should be generic
       return c.json(aResult, 200)

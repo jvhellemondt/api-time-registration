@@ -7,7 +7,3 @@ export const registerTimeEntryCommandPayload = z.strictObject({
 })
 
 export type RegisterTimeEntryCommandPayload = z.infer<typeof registerTimeEntryCommandPayload>
-
-export interface RegisterTimeEntryResult {
-  id: string
-}

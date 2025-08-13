@@ -1,5 +1,5 @@
 import type { CommandBus, Database, EventBus, EventStore, Outbox, OutboxWorker, QueryBus, Repository } from '@jvhellemondt/arts-and-crafts.ts'
-import type { TimeEntryEvent, TimeEntryState } from '@/domain/TimeEntry/TimeEntry.decider'
+import type { TimeEntryEvent, TimeEntryModel } from '@/domain/TimeEntry/TimeEntry.decider'
 import { GenericEventStore, InMemoryCommandBus, InMemoryDatabase, InMemoryEventBus, InMemoryOutbox, InMemoryOutboxWorker, InMemoryQueryBus, ScenarioTest } from '@jvhellemondt/arts-and-crafts.ts'
 import { subHours } from 'date-fns'
 import { v7 as uuidv7 } from 'uuid'
@@ -16,9 +16,9 @@ describe('scenario test: register time entries', () => {
   let outbox: Outbox
   let commandBus: CommandBus
   let queryBus: QueryBus
-  let repository: Repository<TimeEntryState, TimeEntryEvent>
+  let repository: Repository<TimeEntryModel, TimeEntryEvent>
   let outboxWorker: OutboxWorker
-  let scenarioTest: ScenarioTest<TimeEntryState, TimeEntryEvent>
+  let scenarioTest: ScenarioTest<TimeEntryModel, TimeEntryEvent>
 
   beforeEach(() => {
     database = new InMemoryDatabase()

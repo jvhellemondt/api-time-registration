@@ -1,21 +1,14 @@
-import type { Decider, Maybe } from '@jvhellemondt/arts-and-crafts.ts'
+import type { Decider } from '@jvhellemondt/arts-and-crafts.ts'
+import type { TimeEntryEntity } from './TimeEntry.entity'
 import type { TimeEntryRegisteredEvent } from '@/domain/TimeEntry/TimeEntryRegistered.event.ts'
 import type { RegisterTimeEntryCommand } from '@/usecases/commands/RegisterTimeEntry/RegisterTimeEntry.command'
-import type { RegisterTimeEntryCommandPayload } from '@/usecases/commands/RegisterTimeEntry/RegisterTimeEntry.ports'
 import { isDeepStrictEqual } from 'node:util'
 import { createTimeEntryRegisteredEvent } from '@/domain/TimeEntry/TimeEntryRegistered.event.ts'
 
 export type TimeEntryCommand = RegisterTimeEntryCommand
 export type TimeEntryEvent = TimeEntryRegisteredEvent
 
-export interface TimeEntryState {
-  id: string
-  userId: Maybe<RegisterTimeEntryCommandPayload['userId']>
-  startTime: Maybe<RegisterTimeEntryCommandPayload['startTime']>
-  endTime: Maybe<RegisterTimeEntryCommandPayload['endTime']>
-}
-
-function initialTimeEntryState(id: string): TimeEntryState {
+function initialTimeEntryState(id: string): TimeEntryEntity {
   return {
     id,
     userId: null,
@@ -24,12 +17,12 @@ function initialTimeEntryState(id: string): TimeEntryState {
   }
 }
 
-function isInitialState(state: TimeEntryState): boolean {
+function isInitialState(state: TimeEntryEntity): boolean {
   const initialState = initialTimeEntryState(state.id)
   return isDeepStrictEqual(initialState, state)
 }
 
-function evolveTimeEntryState(currentState: TimeEntryState, event: TimeEntryEvent): TimeEntryState {
+function evolveTimeEntryState(currentState: TimeEntryEntity, event: TimeEntryEvent): TimeEntryEntity {
   switch (event.type) {
     case 'TimeEntryRegistered':
       return { ...currentState, ...event.payload }
@@ -38,7 +31,7 @@ function evolveTimeEntryState(currentState: TimeEntryState, event: TimeEntryEven
   }
 }
 
-function decideTimeEntryState(command: TimeEntryCommand, currentState: TimeEntryState) {
+function decideTimeEntryState(command: TimeEntryCommand, currentState: TimeEntryEntity) {
   switch (command.type) {
     case 'RegisterTimeEntry': {
       if (!isInitialState(currentState)) {
@@ -49,7 +42,7 @@ function decideTimeEntryState(command: TimeEntryCommand, currentState: TimeEntry
   }
 }
 
-export const TimeEntry: Decider<TimeEntryState, TimeEntryCommand, TimeEntryEvent> = {
+export const TimeEntry: Decider<TimeEntryEntity, TimeEntryCommand, TimeEntryEvent> = {
   initialState: initialTimeEntryState,
   evolve: evolveTimeEntryState,
   decide: decideTimeEntryState,

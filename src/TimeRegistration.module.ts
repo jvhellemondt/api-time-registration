@@ -1,5 +1,5 @@
 import type { CommandBus, Database, EventBus, Module, QueryBus, Repository } from '@jvhellemondt/arts-and-crafts.ts'
-import type { TimeEntryEvent, TimeEntryState } from './domain/TimeEntry/TimeEntry.decider'
+import type { TimeEntryEvent, TimeEntryModel } from './domain/TimeEntry/TimeEntry.decider'
 import { RegisterTimeEntryHandler } from '@/usecases/commands/RegisterTimeEntry/RegisterTimeEntry.handler.ts'
 import { ListTimeEntriesQuery } from './infrastructure/database/queries/ListTimeEntriesQuery/ListTimeEntriesQuery'
 import { TimeEntriesProjectionHandler } from './usecases/projectors/TimeEntriesProjection/TimeEntriesProjection.handler'
@@ -7,7 +7,7 @@ import { ListTimeEntriesByUserIdHandler } from './usecases/queries/ListTimeEntri
 
 export class TimeRegistrationModule implements Module {
   constructor(
-    private readonly repository: Repository<TimeEntryState, TimeEntryEvent>,
+    private readonly repository: Repository<TimeEntryModel, TimeEntryEvent>,
     private readonly database: Database,
     private readonly commandBus: CommandBus,
     private readonly queryBus: QueryBus,

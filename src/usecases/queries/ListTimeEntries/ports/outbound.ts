@@ -1,6 +1,6 @@
 import type { withId } from '@/types/withId'
 
-export type ListTimeEntriesByUserIdResult = {
+export type TimeEntries = {
   userId: string
   startTime: string
   endTime: string

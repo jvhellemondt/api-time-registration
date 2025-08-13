@@ -12,6 +12,7 @@
     "lint": "eslint src",
     "lint:fix": "eslint src --fix",
     "test": "NODE_ENV=test vitest",
+    "test:integration": "NODE_ENV=test vitest --config vitest.integration.config.ts",
     "test:watch": "NODE_ENV=test vitest --coverage --watch",
     "test:ui": "NODE_ENV=test vitest --watch --coverage --ui",
     "coverage": "NODE_ENV=test vitest --coverage",

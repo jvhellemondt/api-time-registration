@@ -8,6 +8,7 @@ export default defineConfig({
     reporters: ['verbose'],
     include: ['src/**/*.{test,spec,scenario}.?(c|m)[jt]s?(x)'],
     exclude: [
+      'src/**/*.integration.ts',
       '**/main.ts',
       '**/node_modules/**',
       '**/dist/**',

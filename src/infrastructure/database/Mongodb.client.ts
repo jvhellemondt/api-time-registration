@@ -1,19 +1,18 @@
 /* eslint-disable no-console */
-import type { Database, Specification, Statement } from '@jvhellemondt/arts-and-crafts.ts'
 import process from 'node:process'
-import { Operation } from '@jvhellemondt/arts-and-crafts.ts'
+import { fail, invariant } from '@jvhellemondt/arts-and-crafts.ts'
 import { MongoClient, ServerApiVersion } from 'mongodb'
-import { objectToCamel, objectToSnake } from 'ts-case-convert'
-import { buildMongoQuery } from './buildMongoQuery'
-
-interface MongoRecord { _id: string, [key: string]: any }
 
 const MONGODB_USER = process.env.MONGODB_USER ?? 'root'
 const MONGODB_PASSWORD = process.env.MONGODB_PASSWORD ?? 'password'
 const MONGODB_HOST = process.env.MONGODB_HOST ?? 'localhost:27017'
-const MONGODB_URI = `mongodb://${MONGODB_USER}:${MONGODB_PASSWORD}@${MONGODB_HOST}/?retryWrites=true&w=majority`
+const MONGODB_DBNAME = process.env.MONGODB_DBNAME ?? 'development'
+const MONGODB_QUERYPARAMS = process.env.MONGODB_QUERYPARAMS ?? 'retryWrites=true&w=majority'
+const MONGODB_URI = `mongodb://${MONGODB_USER}:${MONGODB_PASSWORD}@${MONGODB_HOST}/${MONGODB_DBNAME}?${MONGODB_QUERYPARAMS}`
 
 let client: MongoClient | null = null
+
+export type MongoRecord<T> = T & { _id: string }
 
 async function ensureConnected(): Promise<void> {
   if (client) {
@@ -46,6 +45,7 @@ async function ensureConnected(): Promise<void> {
         },
       })
       await client.connect()
+      console.log('MongoDatabase: Connected to MongoDB')
     }
     catch (connectError) {
       console.error('Failed to connect to MongoDB Event Store:', connectError)
@@ -55,54 +55,8 @@ async function ensureConnected(): Promise<void> {
   }
 }
 
-export const MongoDatabase: Database & { connect: () => Promise<typeof MongoDatabase> } = {
-  async connect() {
-    ensureConnected()
-      .then(() => {
-        console.log('MongoDatabase: Connected to MongoDB')
-      })
-      .catch((error) => {
-        console.error('MongoDatabase: Failed to connect to MongoDB:', error)
-      })
-    return this
-  },
-
-  async query<T>(collectionName: string, specification: Specification<T>): Promise<T[]> {
-    await ensureConnected()
-    const db = client!.db(collectionName)
-    const collection = db.collection(collectionName)
-
-    const mongoQuery = buildMongoQuery(specification.toQuery())
-    const results = await collection.find(objectToSnake(mongoQuery)).toArray()
-    return results.map(({ _id, ...rest }) => objectToCamel({ id: _id, ...rest })) as T[]
-  },
-
-  async execute(collectionName: string, statement: Statement): Promise<void> {
-    await ensureConnected()
-    const db = client?.db(collectionName)
-    if (!db)
-      throw new Error('Database not connected')
-
-    const collection = db.collection<MongoRecord>(collectionName)
-    const { operation, payload: { id, ...payload } } = statement
-    const _id = id
-
-    switch (operation) {
-      case Operation.CREATE:
-        await collection.insertOne({ _id, ...objectToSnake(payload) })
-        break
-
-      case Operation.UPDATE:
-        if (!id)
-          throw new Error('Missing _id for update')
-        await collection.updateOne({ _id }, { $set: objectToSnake(payload) })
-        break
-
-      case Operation.DELETE:
-        if (!id)
-          throw new Error('Missing id for delete')
-        await collection.deleteOne({ _id })
-        break
-    }
-  },
+export async function getClient(): Promise<MongoClient> {
+  await ensureConnected()
+  invariant(client !== null, fail(new Error('MongoDatabase: Client is not initialized')))
+  return client
 }

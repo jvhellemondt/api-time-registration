@@ -1,15 +1,14 @@
 import type { QueryHandler } from '@jvhellemondt/arts-and-crafts.ts'
-import type { createListTimeEntriesByUserIdQuery } from './ListTimeEntries.query'
-import type { ListTimeEntriesByUserIdOutput } from './ports/inbound'
-import type { ListTimeEntriesByUserIdResult } from './ports/outbound'
-import type { ListTimeEntriesQueryPort } from './ports/query'
+import type { ListTimeEntriesByUserIdQuery } from './ListTimeEntries.query'
+import type { ListTimeEntriesDirectivePort } from './ports/directive'
+import type { TimeEntryEntity } from '@/domain/TimeEntry/TimeEntry.entity'
 
-export class ListTimeEntriesByUserIdHandler implements QueryHandler<ListTimeEntriesByUserIdOutput, ListTimeEntriesByUserIdResult[]> {
+export class ListTimeEntriesByUserIdHandler implements QueryHandler<ListTimeEntriesByUserIdQuery, object> {
   constructor(
-    private readonly listTimeEntriesQuery: ListTimeEntriesQueryPort,
+    private readonly directive: ListTimeEntriesDirectivePort,
   ) {}
 
-  async execute(aQuery: ReturnType<typeof createListTimeEntriesByUserIdQuery>): Promise<ListTimeEntriesByUserIdResult[]> {
-    return this.listTimeEntriesQuery.execute(aQuery.payload.userId) satisfies Promise<ListTimeEntriesByUserIdResult[]>
+  async execute(aQuery: ListTimeEntriesByUserIdQuery): Promise<TimeEntryEntity[]> {
+    return this.directive.execute(aQuery.payload.userId)
   }
 }
