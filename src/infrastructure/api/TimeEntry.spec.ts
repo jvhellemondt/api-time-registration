@@ -1,42 +1,30 @@
-import type { CommandBus, Database, EventStore, QueryBus } from '@jvhellemondt/arts-and-crafts.ts'
-import {
-  GenericEventStore,
-  InMemoryCommandBus,
-  InMemoryDatabase,
-  InMemoryEventBus,
-  InMemoryQueryBus,
-  makeStreamKey,
-  Operation,
-} from '@jvhellemondt/arts-and-crafts.ts'
+import type { CreateStatement, Database, StoredEvent } from '@jvhellemondt/arts-and-crafts.ts'
+import type { TimeEntryEvent } from '@/domain/TimeEntry/TimeEntry.decider.ts'
+import type { TimeRegistrationModule } from '@/TimeRegistration.module'
+import type { TimeEntryModel } from '@/usecases/projectors/TimeEntriesProjection/TimeEntriesProjection.ports'
+import { Operation, SimpleDatabase, SimpleEventStore } from '@jvhellemondt/arts-and-crafts.ts'
 import { subHours } from 'date-fns'
 import { v7 as uuidv7 } from 'uuid'
+import { ListTimeEntriesInMemoryDirective } from '@/infrastructure/database/in-memory/directives/ListTimeEntries/ListTimeEntries.in-memory.directive'
 import { TimeEntryRepository } from '@/repositories/TimeEntryRepository/TimeEntry.repository'
-import { TimeRegistrationModule } from '@/TimeRegistration.module'
-import { TimeEntriesProjectionHandler } from '@/usecases/projectors/TimeEntriesProjection/TimeEntriesProjection.handler'
+import { symEventStore, symListTimeEntriesDirective, symRepository } from '@/TimeRegistration.module'
 import TimeEntryApi from './TimeEntry'
 
-describe('example', () => {
+describe('time-entry api', () => {
+  const database: Database<TimeEntryModel> = new SimpleDatabase()
+  const eventStore = new SimpleEventStore(new SimpleDatabase<StoredEvent<TimeEntryEvent>>())
+  const module: TimeRegistrationModule = {
+    [symEventStore]: eventStore,
+    [symRepository]: new TimeEntryRepository(eventStore),
+    [symListTimeEntriesDirective]: new ListTimeEntriesInMemoryDirective('time_entries', database),
+  }
+
   const userId = '01981dd1-2567-720c-9da6-a33e79275bb1'
   const now = new Date()
-  const eventBus = new InMemoryEventBus()
-  let database: Database
-  let eventStore: EventStore
-  let repository: TimeEntryRepository
-
-  let commandBus: CommandBus
-  let queryBus: QueryBus
   let server: ReturnType<typeof TimeEntryApi>
 
   beforeEach(() => {
-    database = new InMemoryDatabase()
-    eventStore = new GenericEventStore(database)
-    commandBus = new InMemoryCommandBus()
-    repository = new TimeEntryRepository(eventStore)
-    queryBus = new InMemoryQueryBus()
-    database = new InMemoryDatabase()
-
-    new TimeRegistrationModule(repository, database, commandBus, queryBus, eventBus).registerModule()
-    server = TimeEntryApi(commandBus, queryBus)
+    server = TimeEntryApi(module)
   })
 
   describe('endpoint /health', () => {
@@ -64,8 +52,7 @@ describe('example', () => {
         body,
       })
       const { id } = await res.json() as { id: string }
-      const streamKey = makeStreamKey(repository.streamName, id)
-      const events = await eventStore.load(streamKey)
+      const events = await eventStore.load(module[symRepository].streamName, id)
 
       expect(res.status).toBe(201)
       expect(events).toHaveLength(1)
@@ -75,26 +62,39 @@ describe('example', () => {
   })
 
   describe('endpoint /list-time-entries', () => {
-    const records = [
-      { id: uuidv7(), userId, startTime: subHours(now, 1).toISOString(), endTime: now.toISOString() },
-      { id: uuidv7(), userId, startTime: subHours(now, 2).toISOString(), endTime: subHours(now, 1).toISOString() },
-      { id: uuidv7(), userId, startTime: subHours(now, 3).toISOString(), endTime: subHours(now, 2).toISOString() },
-      { id: uuidv7(), userId, startTime: subHours(now, 4).toISOString(), endTime: subHours(now, 3).toISOString() },
+    const users = {
+      Elon: { id: uuidv7(), name: 'Elon Musk' },
+      Jeff: { id: uuidv7(), name: 'Jeff Bezos' },
+    }
+    const documents: TimeEntryModel[] = [
+      { id: uuidv7(), userId: users.Elon.id, startTime: subHours(new Date(), 2).toISOString(), endTime: new Date().toISOString() },
+      { id: uuidv7(), userId: users.Elon.id, startTime: subHours(new Date(), 3).toISOString(), endTime: subHours(new Date(), 2).toISOString() },
+      { id: uuidv7(), userId: users.Jeff.id, startTime: subHours(new Date(), 2).toISOString(), endTime: new Date().toISOString() },
+      { id: uuidv7(), userId: users.Jeff.id, startTime: subHours(new Date(), 6).toISOString(), endTime: subHours(new Date(), 2).toISOString() },
     ]
-    beforeEach(async () => {
-      await Promise.all(records.map(async payload =>
-        database.execute(TimeEntriesProjectionHandler.tableName, { operation: Operation.CREATE, payload })))
+
+    beforeAll(async () => {
+      await Promise.all(documents.map(async (document) => {
+        const statement: CreateStatement<TimeEntryModel> = { operation: Operation.CREATE, payload: document }
+        await database.execute('time_entries', statement)
+      }))
     })
 
-    it('should get a time entry', async () => {
+    it.each([
+      users.Elon,
+      users.Jeff,
+    ])('should get a time entry for $name', async (user) => {
       const res = await server.request(`list-time-entries`, {
         method: 'GET',
-        headers: new Headers({ 'Content-Type': 'application/json' }),
+        headers: new Headers({
+          'Content-Type': 'application/json',
+          'User-Id': user.id,
+        }),
       })
       const result = await res.json() as Record<string, unknown>[]
 
       expect(res.status).toBe(200)
-      expect(result).toStrictEqual(records)
+      expect(result).toStrictEqual(documents.filter(document => document.userId === user.id))
     })
   })
 })

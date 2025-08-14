@@ -2,8 +2,8 @@ import type { MongoClient } from 'mongodb'
 import { subHours } from 'date-fns'
 import { v7 as uuidv7 } from 'uuid'
 import { createTimeEntryRegisteredEvent } from '@/domain/TimeEntry/TimeEntryRegistered.event'
-import { getClient } from '../database/Mongodb.client'
-import { eventStore } from './MongoDBEventStore'
+import { getClient } from '@/infrastructure/database/mongo/Mongodb.client'
+import { MongoEventStore } from './MongoDBEventStore'
 
 describe('mongodb EventStore', () => {
   const streamName = 'time_entries'
@@ -22,16 +22,16 @@ describe('mongodb EventStore', () => {
   })
 
   it('should be defined', () => {
-    expect(eventStore).toBeDefined()
+    expect(MongoEventStore).toBeDefined()
   })
 
   it('should store the event', async () => {
-    const promise = eventStore(client.db()).append(streamName, [event])
+    const promise = MongoEventStore(client.db()).append(streamName, [event])
     await expect(promise).resolves.not.toThrow()
   })
 
   it('should load the stored event', async () => {
-    const result = await eventStore(client.db()).load(streamName, event.aggregateId)
+    const result = await MongoEventStore(client.db()).load(streamName, event.aggregateId)
     expect(result.length).toBeGreaterThan(0)
     expect(result.findLast(e => e.id === event.id)).toStrictEqual(event)
   })

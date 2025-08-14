@@ -2,13 +2,13 @@ import type { EventStore, StoredEvent } from '@jvhellemondt/arts-and-crafts.ts'
 import type { Db } from 'mongodb'
 import type { TimeEntryEvent } from '@/domain/TimeEntry/TimeEntry.decider'
 import { createStoredEvent, fail, FieldEquals, invariant, makeStreamKey } from '@jvhellemondt/arts-and-crafts.ts'
+import { buildMongoQuery } from '@/infrastructure/database/mongo/buildMongoQuery'
+import { mapIdToMongoId } from '@/infrastructure/database/mongo/utils/mapMongoId'
 import { SameEntityOnly } from '@/specifications/SameEntityOnly.specification'
-import { buildMongoQuery } from '../database/buildMongoQuery'
-import { mapIdToMongoId } from '../database/utils/mapMongoId'
 
 export type EventStoreRecord<T> = Omit<StoredEvent<T>, 'id'> & { _id: string }
 
-export const eventStore: (database: Db) => EventStore<TimeEntryEvent> = (database: Db) => {
+export const MongoEventStore: (database: Db) => EventStore<TimeEntryEvent> = (database: Db) => {
   const store = 'event_store'
 
   return {

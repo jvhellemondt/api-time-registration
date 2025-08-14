@@ -1,7 +1,7 @@
-import type { withId } from '@/types/withId'
+import type { WithIdentifier } from '@jvhellemondt/arts-and-crafts.ts'
 
 export type TimeEntries = {
   userId: string
   startTime: string
   endTime: string
-} & withId
+} & WithIdentifier

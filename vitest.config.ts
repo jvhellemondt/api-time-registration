@@ -8,8 +8,7 @@ export default defineConfig({
     reporters: ['verbose'],
     include: ['src/**/*.{test,spec,scenario}.?(c|m)[jt]s?(x)'],
     exclude: [
-      'src/**/*.integration.ts',
-      '**/main.ts',
+      'src/infrastructure/database/mongo/**/*',
       '**/node_modules/**',
       '**/dist/**',
       '**/cypress/**',
@@ -26,7 +25,7 @@ export default defineConfig({
         branches: 100,
       },
       exclude: [
-        'src/infrastructure/database/Mongodb.client.ts',
+        'src/infrastructure/database/mongo/**/*',
         '**/*.seed.ts',
         '**/main.ts',
         '**/node_modules/**',
@@ -34,6 +33,7 @@ export default defineConfig({
         '**/cypress/**',
         '**/.{idea,git,cache,output,temp}/**',
         '**/{karma,rollup,webpack,vite,vitest,jest,ava,babel,nyc,cypress,tsup,build,eslint,prettier}.config.*',
+        '*.ts'
       ],
     },
   },

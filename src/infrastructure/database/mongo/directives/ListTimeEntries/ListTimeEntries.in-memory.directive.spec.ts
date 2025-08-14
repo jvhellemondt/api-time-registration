@@ -3,26 +3,27 @@ import type { TimeEntryModel } from '@/usecases/projectors/TimeEntriesProjection
 import { Operation, SimpleDatabase } from '@jvhellemondt/arts-and-crafts.ts'
 import { subHours } from 'date-fns'
 import { v7 as uuidv7 } from 'uuid'
-import { ListTimeEntriesInMemoryDirective } from '@/infrastructure/database/in-memory/directives/ListTimeEntries/ListTimeEntries.in-memory.directive'
-import { ListTimeEntriesByUserIdHandler } from './ListTimeEntries.handler'
-import { createListTimeEntriesByUserIdQuery } from './ListTimeEntries.query'
-import { listTimeEntriesByUserIdPayload } from './ports/inbound'
+import { ListTimeEntriesInMemoryDirective } from './ListTimeEntries.in-memory.directive'
 
-describe('listTimeEntriesByUserIdHandler', () => {
+describe('in-memory ListTimeEntriesDirective', () => {
   const collectionName = 'time_entries'
+  let database: Database<TimeEntryModel>
   const users = {
     Elon: { id: uuidv7(), name: 'Elon Musk' },
     Jeff: { id: uuidv7(), name: 'Jeff Bezos' },
+    Bill: { id: uuidv7(), name: 'Bill Gates' },
+    Mark: { id: uuidv7(), name: 'Mark Zuckerberg' },
   }
   const documents: TimeEntryModel[] = [
     { id: uuidv7(), userId: users.Elon.id, startTime: subHours(new Date(), 2).toISOString(), endTime: new Date().toISOString() },
     { id: uuidv7(), userId: users.Elon.id, startTime: subHours(new Date(), 3).toISOString(), endTime: subHours(new Date(), 2).toISOString() },
+    { id: uuidv7(), userId: users.Elon.id, startTime: subHours(new Date(), 5).toISOString(), endTime: subHours(new Date(), 3).toISOString() },
     { id: uuidv7(), userId: users.Jeff.id, startTime: subHours(new Date(), 2).toISOString(), endTime: new Date().toISOString() },
-    { id: uuidv7(), userId: users.Jeff.id, startTime: subHours(new Date(), 6).toISOString(), endTime: subHours(new Date(), 2).toISOString() },
+    { id: uuidv7(), userId: users.Jeff.id, startTime: subHours(new Date(), 3).toISOString(), endTime: subHours(new Date(), 2).toISOString() },
+    { id: uuidv7(), userId: users.Jeff.id, startTime: subHours(new Date(), 6).toISOString(), endTime: subHours(new Date(), 3).toISOString() },
+    { id: uuidv7(), userId: users.Bill.id, startTime: subHours(new Date(), 4).toISOString(), endTime: new Date().toISOString() },
+    { id: uuidv7(), userId: users.Mark.id, startTime: subHours(new Date(), 6).toISOString(), endTime: new Date().toISOString() },
   ]
-
-  let database: Database<TimeEntryModel>
-  let directive: ListTimeEntriesInMemoryDirective
 
   beforeAll(async () => {
     database = new SimpleDatabase()
@@ -32,22 +33,18 @@ describe('listTimeEntriesByUserIdHandler', () => {
     }))
   })
 
-  beforeEach(async () => {
-    directive = new ListTimeEntriesInMemoryDirective(collectionName, database)
-  })
-
   it('should be defined', () => {
-    expect(ListTimeEntriesByUserIdHandler).toBeDefined()
+    expect(ListTimeEntriesInMemoryDirective).toBeDefined()
   })
 
   it.each([
     users.Elon,
     users.Jeff,
-  ])('should retrieve the time entries for $name', async (user) => {
-    const aPayload = listTimeEntriesByUserIdPayload.parse({ userId: user.id })
-    const aQuery = createListTimeEntriesByUserIdQuery(aPayload)
-    const anHandler = new ListTimeEntriesByUserIdHandler(directive)
-    const result = await anHandler.execute(aQuery)
+    users.Bill,
+    users.Mark,
+  ])('should retrieve the documents of a user ($name)', async (user) => {
+    const directive = new ListTimeEntriesInMemoryDirective(collectionName, database)
+    const result = await directive.execute(user.id)
     expect(result).toStrictEqual(documents.filter(document => document.userId === user.id))
   })
 })
