@@ -31,7 +31,7 @@ jobs:
             ${{ runner.os }}-bun-
 
       - name: 📦 Install Dependencies
-        run: bun install --frozen-
+        run: bun install --frozen-lockfile
 
       - name: 🧹 Format
         run: bun run lint
