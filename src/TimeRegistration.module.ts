@@ -5,6 +5,9 @@ import { ListTimeEntriesDirective } from '@/infrastructure/database/mongo/direct
 import { MongoEventStore } from '@/infrastructure/database/mongo/eventStore/MongoDBEventStore'
 import { getClient } from '@/infrastructure/database/mongo/Mongodb.client'
 import { TimeEntryRepository } from '@/repositories/TimeEntryRepository/TimeEntry.repository'
+import { EventBus } from './infrastructure/eventBus/EventBus'
+import { Outbox } from './infrastructure/outbox/Outbox'
+import { OutboxWorker } from './infrastructure/outbox/OutboxWorker'
 
 export const symDatabase = Symbol('Database')
 export const symRepository = Symbol('Repository')
@@ -20,7 +23,12 @@ export interface TimeRegistrationModule {
 export async function timeRegistrationModule(): Promise<TimeRegistrationModule> {
   const client = await getClient()
   const database = client.db()
-  const eventStore = MongoEventStore(database)
+  const outbox = new Outbox()
+  const eventStore = MongoEventStore(database, outbox)
+
+  const eventBus = new EventBus()
+  const outboxWorker = new OutboxWorker(outbox, eventBus)
+  outboxWorker.start(250)
 
   return {
     [symEventStore]: eventStore,

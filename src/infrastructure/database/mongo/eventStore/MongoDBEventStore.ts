@@ -1,4 +1,4 @@
-import type { EventStore, StoredEvent } from '@jvhellemondt/arts-and-crafts.ts'
+import type { EventStore, Outbox, StoredEvent } from '@jvhellemondt/arts-and-crafts.ts'
 import type { Db } from 'mongodb'
 import type { TimeEntryEvent } from '@/domain/TimeEntry/TimeEntry.decider'
 import { createStoredEvent, fail, FieldEquals, invariant, makeStreamKey } from '@jvhellemondt/arts-and-crafts.ts'
@@ -8,7 +8,7 @@ import { SameEntityOnly } from '@/specifications/SameEntityOnly.specification'
 
 export type EventStoreRecord<T> = Omit<StoredEvent<T>, 'id'> & { _id: string }
 
-export const MongoEventStore: (database: Db) => EventStore<TimeEntryEvent> = (database: Db) => {
+export const MongoEventStore: (database: Db, outbox?: Outbox) => EventStore<TimeEntryEvent> = (database: Db, outbox?: Outbox) => {
   const store = 'event_store'
 
   return {
@@ -37,7 +37,7 @@ export const MongoEventStore: (database: Db) => EventStore<TimeEntryEvent> = (da
       await database
         .collection<EventStoreRecord<TimeEntryEvent>>(store)
         .insertMany(eventsToStore)
-      // await Promise.all(events.map(async event => this.outbox?.enqueue(event)))
+      await Promise.all(events.map(async event => outbox?.enqueue(event)))
     },
   }
 }
