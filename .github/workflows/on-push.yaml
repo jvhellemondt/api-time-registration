@@ -1,0 +1,39 @@
+name: On Push trigger
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  validate-build:
+    name: validate
+    strategy:
+      matrix:
+        os:
+          - ubuntu-latest
+          - macos-latest
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/cache@v4
+        with:
+          path: ~/.bun/install/cache
+          key: ${{ runner.os }}-bun-${{ hashFiles('bun.lockb') }}
+          restore-keys: |
+            ${{ runner.os }}-bun-
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+      - name: 📦 Install Dependencies
+        run: bun install --frozen-lockfile
+      - name: 🧹 Format
+        run: bun run lint
+      - name: 🛠️ Typecheck
+        run: bun run typecheck
+      - name: 📋 Coverage
+        run: bun run coverage
+
+  integration-tests:
+    uses: ./.github/workflows/integration-tests.yaml

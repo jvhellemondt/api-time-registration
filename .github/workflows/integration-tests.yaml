@@ -1,0 +1,27 @@
+name: Integration Tests
+on:
+  workflow_call:
+
+jobs:
+  integration:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/cache@v4
+        with:
+          path: ~/.bun/install/cache
+          key: ${{ runner.os }}-bun-${{ hashFiles('bun.lockb') }}
+          restore-keys: |
+            ${{ runner.os }}-bun-
+
+      - run: docker compose -f docker/docker-compose.yaml up -d
+      - run: |
+          until docker exec $(docker ps -qf "name=mongo") \
+            mongosh --eval "db.stats()" >/dev/null 2>&1; do
+            echo "Waiting for Mongo..."
+            sleep 2
+          done
+      - run: bun install --frozen-lockfile
+      - run: bun run test:integration
+      - run: docker compose -f docker/docker-compose.yaml down -v
