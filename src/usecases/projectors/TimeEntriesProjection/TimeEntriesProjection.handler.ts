@@ -6,7 +6,7 @@ export class TimeEntriesProjector implements EventHandler<TimeEntryEvent> {
     throw new Error('Method not implemented.')
   }
 
-  start(this: void, eventBus: EventBus<TimeEntryEvent>): void {
-    throw new Error('Method not implemented.')
+  start(eventBus: EventBus<TimeEntryEvent>): void {
+    eventBus.subscribe('TimeEntryRegisteredEvent', this)
   }
 }
