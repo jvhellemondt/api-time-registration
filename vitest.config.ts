@@ -26,7 +26,7 @@ export default defineConfig({
       },
       exclude: [
         'src/infrastructure/database/mongo/**/*',
-        '**/*.seed.ts',
+        '**/*.module.ts',
         '**/main.ts',
         '**/node_modules/**',
         '**/dist/**',
