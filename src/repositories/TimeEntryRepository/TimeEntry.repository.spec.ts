@@ -33,4 +33,8 @@ describe('time-entry repository', () => {
     expect(state.startTime).toBe(event.payload.startTime)
     expect(state.endTime).toBe(event.payload.endTime)
   })
+
+  it('should reject if no events are provided', async () => {
+    await expect(repository.store([])).rejects.toThrowError('TimeEntryRepository::store: no events provided')
+  })
 })

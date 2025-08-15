@@ -19,7 +19,7 @@ implements Repository<TimeEntryEvent, TimeEntryEntity, WithIdentifier> {
 
   async store(events: TimeEntryEvent[]): Promise<WithIdentifier> {
     if (!events.length)
-      return Promise.reject(new Error('No events to store'))
+      return Promise.reject(new Error('TimeEntryRepository::store: no events provided'))
 
     await Promise.all(
       events.map(
