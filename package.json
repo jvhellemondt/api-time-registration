@@ -23,7 +23,7 @@
     "typescript": "^5.8.3"
   },
   "dependencies": {
-    "@jvhellemondt/arts-and-crafts.ts": "link:@jvhellemondt/arts-and-crafts.ts",
+    "@jvhellemondt/arts-and-crafts.ts": "3.10.0",
     "hono": "^4.8.5",
     "mongodb": "^6.17.0",
     "ts-case-convert": "^2.1.0",
