@@ -1,5 +1,6 @@
 /* eslint-disable ts/no-unsafe-assignment */
 import type { TimeEntryEvent } from './TimeEntry.decider'
+import { createDomainEvent } from '@jvhellemondt/arts-and-crafts.ts'
 import { subHours } from 'date-fns'
 import { v7 as uuidv7 } from 'uuid'
 import { createTimeEntryRegisteredEvent } from '@/domain/TimeEntry/TimeEntryRegistered.event.ts'
@@ -32,6 +33,15 @@ describe('time entry decider', () => {
         metadata: {
         },
       })
+    })
+
+    it('should handle faulty events', () => {
+      const faultyEvent = createDomainEvent('FaultyEvent', registerTimeEntryCommand.aggregateId, { message: 'faulty event' })
+
+      // @ts-expect-error required test for default
+      pastEvents = [faultyEvent]
+      const currentState = pastEvents.reduce(TimeEntry.evolve, TimeEntry.initialState(registerTimeEntryCommand.aggregateId))
+      expect(currentState).toStrictEqual(TimeEntry.initialState(registerTimeEntryCommand.aggregateId))
     })
 
     it('should not change anything if the registered event is consumed twice', () => {
