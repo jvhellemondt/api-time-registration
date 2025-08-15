@@ -7,15 +7,11 @@ services:
     volumes:
       - mongodb-data:/data/db/
       - mongodb-log:/var/log/mongodb/
-    env_file:
-      - .env
     environment:
       MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
       MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
     ports:
       - "27017:27017"
-    # networks:
-    #   - mongodb_network
 
   mongo-express:
     image: mongo-express:latest
@@ -28,14 +24,12 @@ services:
       ME_CONFIG_MONGODB_ADMINPASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
       ME_CONFIG_MONGODB_PORT: 27017
       ME_CONFIG_MONGODB_SERVER: mongodb
-      # ME_CONFIG_BASICAUTH_USERNAME: ${MONGO_EXPRESS_USERNAME}
-      # ME_CONFIG_BASICAUTH_PASSWORD: ${MONGO_EXPRESS_PASSWORD}
     ports:
       - 8081:8081
-    # networks:
-    #   - mongodb_network
     depends_on:
       - mongodb
+    deploy:
+      replicas: ${MONGO_EXPRESS_REPLICAS:-1}
 
 volumes:
   mongodb-data:
@@ -44,7 +38,3 @@ volumes:
   mongodb-log:
     driver: local
     name: mongo-log
-# networks:
-#   mongodb_network:
-#     driver: bridge
-#     name: mongo-network

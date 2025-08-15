@@ -5,9 +5,17 @@ on:
 jobs:
   integration:
     runs-on: ubuntu-latest
+    environment: test
+    env:
+      NODE_ENV: test
 
     steps:
       - uses: actions/checkout@v4
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
       - uses: actions/cache@v4
         with:
           path: ~/.bun/install/cache
@@ -16,12 +24,26 @@ jobs:
             ${{ runner.os }}-bun-
 
       - run: docker compose -f docker/docker-compose.yaml up -d
+        env:
+          MONGO_EXPRESS_REPLICAS: 0
+          MONGO_INITDB_ROOT_USERNAME: ${{ vars.MONGO_INITDB_ROOT_USERNAME }}
+          MONGO_INITDB_ROOT_PASSWORD: ${{ vars.MONGO_INITDB_ROOT_PASSWORD }}
+
       - run: |
           until docker exec $(docker ps -qf "name=mongo") \
             mongosh --eval "db.stats()" >/dev/null 2>&1; do
             echo "Waiting for Mongo..."
             sleep 2
           done
+
       - run: bun install --frozen-lockfile
+
       - run: bun run test:integration
+        env:
+          MONGODB_DBNAME: ${{ vars.MONGODB_DBNAME }}
+          MONGODB_USER: ${{ vars.MONGO_INITDB_ROOT_USERNAME }}
+          MONGODB_PASSWORD: ${{ vars.MONGO_INITDB_ROOT_PASSWORD }}
+          MONGODB_HOST: ${{ vars.MONGODB_HOST }}
+          MONGODB_QUERYPARAMS: ${{ vars.MONGODB_QUERYPARAMS }}
+
       - run: docker compose -f docker/docker-compose.yaml down -v
