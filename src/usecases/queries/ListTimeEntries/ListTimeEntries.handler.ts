@@ -1,6 +1,6 @@
 import type { QueryHandler } from '@jvhellemondt/arts-and-crafts.ts'
+import type { ListTimeEntriesDirectivePort } from './ListTimeEntries.ports'
 import type { ListTimeEntriesByUserIdQuery } from './ListTimeEntries.query'
-import type { ListTimeEntriesDirectivePort } from './ports/directive'
 import type { TimeEntryEntity } from '@/domain/TimeEntry/TimeEntry.entity'
 
 export class ListTimeEntriesByUserIdHandler implements QueryHandler<ListTimeEntriesByUserIdQuery, object> {

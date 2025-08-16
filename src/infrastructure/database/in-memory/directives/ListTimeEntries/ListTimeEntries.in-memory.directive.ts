@@ -1,6 +1,6 @@
 import type { Database } from '@jvhellemondt/arts-and-crafts.ts'
 import type { TimeEntryModel } from '@/usecases/projectors/TimeEntriesProjection/TimeEntriesProjection.ports'
-import type { ListTimeEntriesDirectivePort } from '@/usecases/queries/ListTimeEntries/ports/directive'
+import type { ListTimeEntriesDirectivePort } from '@/usecases/queries/ListTimeEntries/ListTimeEntries.ports'
 import { FieldEquals } from '@jvhellemondt/arts-and-crafts.ts'
 
 export class ListTimeEntriesInMemoryDirective implements ListTimeEntriesDirectivePort {

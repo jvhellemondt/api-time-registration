@@ -7,8 +7,8 @@ import { createRegisterTimeEntryCommand } from '@/usecases/commands/RegisterTime
 import { RegisterTimeEntryHandler } from '@/usecases/commands/RegisterTimeEntry/RegisterTimeEntry.handler'
 import { registerTimeEntryCommandPayload } from '@/usecases/commands/RegisterTimeEntry/RegisterTimeEntry.ports'
 import { ListTimeEntriesByUserIdHandler } from '@/usecases/queries/ListTimeEntries/ListTimeEntries.handler'
+import { listTimeEntriesByUserIdPayload } from '@/usecases/queries/ListTimeEntries/ListTimeEntries.ports'
 import { createListTimeEntriesByUserIdQuery } from '@/usecases/queries/ListTimeEntries/ListTimeEntries.query'
-import { listTimeEntriesByUserIdPayload } from '@/usecases/queries/ListTimeEntries/ports/inbound'
 
 export default function TimeEntryApi(module: TimeRegistrationModule) {
   return new Hono()

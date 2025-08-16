@@ -1,6 +1,6 @@
 import { v7 as uuidv7 } from 'uuid'
+import { listTimeEntriesByUserIdPayload } from './ListTimeEntries.ports'
 import { createListTimeEntriesByUserIdQuery } from './ListTimeEntries.query'
-import { listTimeEntriesByUserIdPayload } from './ports/inbound'
 
 describe('listTimeEntriesByUserId', () => {
   it('should be defined', () => {

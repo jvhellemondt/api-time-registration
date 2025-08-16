@@ -1,6 +1,6 @@
 import type { EventStore } from '@jvhellemondt/arts-and-crafts.ts'
+import type { ListTimeEntriesDirectivePort } from './usecases/queries/ListTimeEntries/ListTimeEntries.ports'
 import type { TimeEntryEvent } from '@/domain/TimeEntry/TimeEntry.decider.ts'
-import type { ListTimeEntriesDirectivePort } from '@/usecases/queries/ListTimeEntries/ports/directive'
 import { ListTimeEntriesDirective } from '@/infrastructure/database/mongo/directives/ListTimeEntries/ListTimeEntries.directive'
 import { MongoEventStore } from '@/infrastructure/database/mongo/eventStore/MongoDBEventStore'
 import { getClient } from '@/infrastructure/database/mongo/Mongodb.client'

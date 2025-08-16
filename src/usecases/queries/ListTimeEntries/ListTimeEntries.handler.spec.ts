@@ -5,8 +5,8 @@ import { subHours } from 'date-fns'
 import { v7 as uuidv7 } from 'uuid'
 import { ListTimeEntriesInMemoryDirective } from '@/infrastructure/database/in-memory/directives/ListTimeEntries/ListTimeEntries.in-memory.directive'
 import { ListTimeEntriesByUserIdHandler } from './ListTimeEntries.handler'
+import { listTimeEntriesByUserIdPayload } from './ListTimeEntries.ports'
 import { createListTimeEntriesByUserIdQuery } from './ListTimeEntries.query'
-import { listTimeEntriesByUserIdPayload } from './ports/inbound'
 
 describe('listTimeEntriesByUserIdHandler', () => {
   const collectionName = 'time_entries'

@@ -1,7 +1,7 @@
 import type { Db } from 'mongodb'
 import type { MongoRecord } from '../../Mongodb.client'
 import type { TimeEntryModel } from '@/usecases/projectors/TimeEntriesProjection/TimeEntriesProjection.ports'
-import type { ListTimeEntriesDirectivePort } from '@/usecases/queries/ListTimeEntries/ports/directive'
+import type { ListTimeEntriesDirectivePort } from '@/usecases/queries/ListTimeEntries/ListTimeEntries.ports'
 import { FieldEquals } from '@jvhellemondt/arts-and-crafts.ts'
 import { buildMongoQuery } from '../../buildMongoQuery'
 import { mapMongoIdToId } from '../../utils/mapMongoId'
