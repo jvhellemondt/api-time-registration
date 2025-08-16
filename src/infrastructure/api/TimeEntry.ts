@@ -1,5 +1,4 @@
 import type { TimeRegistrationModule } from '@/TimeRegistration.module'
-import type { RegisterTimeEntryCommandPayload } from '@/usecases/commands/RegisterTimeEntry/RegisterTimeEntry.ports'
 import { Hono } from 'hono'
 import { v7 as uuidv7 } from 'uuid'
 import { symListTimeEntriesDirective, symRepository } from '@/TimeRegistration.module'
@@ -24,8 +23,9 @@ export default function TimeEntryApi(module: TimeRegistrationModule) {
     })
 
     .post('/register-time-entry', async (c) => {
-      const aBody = await c.req.json<RegisterTimeEntryCommandPayload>()
-      const aPayload = registerTimeEntryCommandPayload.parse(aBody)
+      const anUserId = c.req.header('User-Id')
+      const aBody = await c.req.json <{ startTime: string, endTime: string }>()
+      const aPayload = registerTimeEntryCommandPayload.parse({ userId: anUserId, ...aBody })
       const aCommand = createRegisterTimeEntryCommand(uuidv7(), aPayload)
       const anHandler = new RegisterTimeEntryHandler(module[symRepository])
       const aResult = await anHandler.execute(aCommand)

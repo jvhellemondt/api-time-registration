@@ -42,13 +42,12 @@ describe('time-entry api', () => {
   describe('endpoint /registerTimeEntry', () => {
     it('should register a time entry', async () => {
       const body = JSON.stringify({
-        userId,
         startTime: subHours(now, 1).toISOString(),
         endTime: now.toISOString(),
       })
       const res = await server.request('register-time-entry', {
         method: 'POST',
-        headers: new Headers({ 'Content-Type': 'application/json' }),
+        headers: new Headers({ 'Content-Type': 'application/json', 'User-Id': userId }),
         body,
       })
       const { id } = await res.json() as { id: string }
