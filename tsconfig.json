@@ -41,6 +41,7 @@
   },
   "files": ["package.json"],
   "include": [
+    "*.ts",
     "src/**/*.ts",
     "src/**/*.d.ts",
     "tests/**/*.ts",
