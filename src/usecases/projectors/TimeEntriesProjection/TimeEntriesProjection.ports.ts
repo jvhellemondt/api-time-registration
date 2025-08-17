@@ -1,11 +1,14 @@
-import type { WithIdentifier } from '@jvhellemondt/arts-and-crafts.ts'
+import z from 'zod'
 
-export type TimeEntryModel = {
-  userId: string
-  startTime: string
-  endTime: string
-} & WithIdentifier
+export const timeEntryModel = z.strictObject({
+  id: z.uuid(),
+  userId: z.uuid(),
+  startTime: z.iso.datetime(),
+  endTime: z.iso.datetime(),
+})
+
+export type TimeEntryModel = z.infer<typeof timeEntryModel>
 
 export interface StoreTimeEntriesDirectivePort {
-  execute: (payload: TimeEntryModel) => Promise<void>
+  execute(payload: TimeEntryModel): Promise<void>
 }

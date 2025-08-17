@@ -2,11 +2,11 @@ import type { MongoClient } from 'mongodb'
 import { subHours } from 'date-fns'
 import { v7 as uuidv7 } from 'uuid'
 import { createTimeEntryRegisteredEvent } from '@/domain/TimeEntry/TimeEntryRegistered.event'
-import { getClient } from '@/infrastructure/database/mongo/Mongodb.client'
+import { getClient } from '..'
 import { MongoEventStore } from './MongoDBEventStore'
 
 describe('mongodb EventStore', () => {
-  const streamName = 'time_entries'
+  const streamName = 'time-entry'
   let client: MongoClient
   const event = createTimeEntryRegisteredEvent(
     uuidv7(),

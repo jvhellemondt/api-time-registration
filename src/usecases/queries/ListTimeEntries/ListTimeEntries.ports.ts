@@ -8,5 +8,5 @@ export const listTimeEntriesByUserIdPayload = z.strictObject({
 export type ListTimeEntriesByUserIdPayload = z.infer<typeof listTimeEntriesByUserIdPayload>
 
 export interface ListTimeEntriesDirectivePort {
-  execute: (userId: string) => Promise<TimeEntryModel[]>
+  execute(userId: string): Promise<TimeEntryModel[]>
 }

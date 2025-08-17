@@ -1,14 +1,17 @@
-import type { Db, MongoClient } from 'mongodb'
+import type { Collection, Db, MongoClient } from 'mongodb'
+import type { MongoRecord } from '../../MongoRecord'
 import type { TimeEntryModel } from '@/usecases/projectors/TimeEntriesProjection/TimeEntriesProjection.ports'
 import { subHours } from 'date-fns'
 import { v7 as uuidv7 } from 'uuid'
-import { getClient } from '../../Mongodb.client'
+import { getClient } from '../..'
+import { useCollection } from '../../useCollection'
+import { mapIdToMongoId } from '../../utils/mapMongoId'
 import { ListTimeEntriesDirective } from './ListTimeEntries.directive'
 
 describe('mongodb ListTimeEntriesDirective', () => {
-  const collectionName = 'time_entries'
   let client: MongoClient
   let database: Db
+  let collection: Collection<MongoRecord<TimeEntryModel>>
   const users = {
     Elon: { id: uuidv7(), name: 'Elon Musk' },
     Jeff: { id: uuidv7(), name: 'Jeff Bezos' },
@@ -29,9 +32,9 @@ describe('mongodb ListTimeEntriesDirective', () => {
   beforeAll(async () => {
     client = await getClient()
     database = client.db()
-    await database
-      .collection<TimeEntryModel>(collectionName)
-      .insertMany(structuredClone(documents))
+    collection = useCollection(database)<MongoRecord<TimeEntryModel>>('time_entries')
+    await collection
+      .insertMany(documents.map(mapIdToMongoId))
   })
 
   afterAll(async () => {
@@ -48,8 +51,8 @@ describe('mongodb ListTimeEntriesDirective', () => {
     users.Bill,
     users.Mark,
   ])('should retrieve the documents of a user ($name)', async (user) => {
-    const directive = new ListTimeEntriesDirective(collectionName, database)
+    const directive = new ListTimeEntriesDirective(collection)
     const result = await directive.execute(user.id)
-    expect(result).toStrictEqual(documents.filter(document => document.userId === user.id))
+    expect(result).toStrictEqual(documents.filter(document => document.userId === user.id).sort((a, b) => a.startTime.localeCompare(b.startTime)))
   })
 })

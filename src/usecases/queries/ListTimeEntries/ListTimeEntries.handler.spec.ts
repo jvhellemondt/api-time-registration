@@ -1,15 +1,16 @@
 import type { CreateStatement, Database } from '@jvhellemondt/arts-and-crafts.ts'
+import type { UseCollection } from '@/infrastructure/database/in-memory/useCollection'
 import type { TimeEntryModel } from '@/usecases/projectors/TimeEntriesProjection/TimeEntriesProjection.ports'
 import { Operation, SimpleDatabase } from '@jvhellemondt/arts-and-crafts.ts'
 import { subHours } from 'date-fns'
 import { v7 as uuidv7 } from 'uuid'
 import { ListTimeEntriesInMemoryDirective } from '@/infrastructure/database/in-memory/directives/ListTimeEntries/ListTimeEntries.in-memory.directive'
+import { useCollection } from '@/infrastructure/database/in-memory/useCollection'
 import { ListTimeEntriesByUserIdHandler } from './ListTimeEntries.handler'
 import { listTimeEntriesByUserIdPayload } from './ListTimeEntries.ports'
 import { createListTimeEntriesByUserIdQuery } from './ListTimeEntries.query'
 
 describe('listTimeEntriesByUserIdHandler', () => {
-  const collectionName = 'time_entries'
   const users = {
     Elon: { id: uuidv7(), name: 'Elon Musk' },
     Jeff: { id: uuidv7(), name: 'Jeff Bezos' },
@@ -22,18 +23,20 @@ describe('listTimeEntriesByUserIdHandler', () => {
   ]
 
   let database: Database<TimeEntryModel>
+  let collection: UseCollection<TimeEntryModel>
   let directive: ListTimeEntriesInMemoryDirective
 
   beforeAll(async () => {
     database = new SimpleDatabase()
+    collection = useCollection(database, 'time_entries')
     await Promise.all(documents.map(async (document) => {
       const statement: CreateStatement<TimeEntryModel> = { operation: Operation.CREATE, payload: document }
-      await database.execute(collectionName, statement)
+      await collection.execute(statement)
     }))
   })
 
   beforeEach(async () => {
-    directive = new ListTimeEntriesInMemoryDirective(collectionName, database)
+    directive = new ListTimeEntriesInMemoryDirective(collection)
   })
 
   it('should be defined', () => {

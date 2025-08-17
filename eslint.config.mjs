@@ -12,6 +12,7 @@ export default antfu(
     languageOptions: { globals: globals.node },
     files: ['src/**/*.ts'],
     rules: {
+      '@typescript-eslint/method-signature-style': ['error', 'method'],
       'no-console': 'warn',
       'unused-imports/no-unused-vars': 'off',
       '@typescript-eslint/no-unused-vars': [

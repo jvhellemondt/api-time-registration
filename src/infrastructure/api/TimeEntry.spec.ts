@@ -8,15 +8,17 @@ import { v7 as uuidv7 } from 'uuid'
 import { ListTimeEntriesInMemoryDirective } from '@/infrastructure/database/in-memory/directives/ListTimeEntries/ListTimeEntries.in-memory.directive'
 import { TimeEntryRepository } from '@/repositories/TimeEntryRepository/TimeEntry.repository'
 import { symEventStore, symListTimeEntriesDirective, symRepository } from '@/TimeRegistration.module'
+import { useCollection } from '../database/in-memory/useCollection'
 import TimeEntryApi from './TimeEntry'
 
 describe('time-entry api', () => {
   const database: Database<TimeEntryModel> = new SimpleDatabase()
   const eventStore = new SimpleEventStore(new SimpleDatabase<StoredEvent<TimeEntryEvent>>())
+  const collection = useCollection(database, 'time_entries')
   const module: TimeRegistrationModule = {
     [symEventStore]: eventStore,
     [symRepository]: new TimeEntryRepository(eventStore),
-    [symListTimeEntriesDirective]: new ListTimeEntriesInMemoryDirective('time_entries', database),
+    [symListTimeEntriesDirective]: new ListTimeEntriesInMemoryDirective(collection),
   }
 
   const userId = '01981dd1-2567-720c-9da6-a33e79275bb1'
@@ -82,7 +84,7 @@ describe('time-entry api', () => {
     it.each([
       users.Elon,
       users.Jeff,
-    ])('should get a time entry for $name', async (user) => {
+    ])('should get the time entries for $name', async (user) => {
       const res = await server.request(`list-time-entries`, {
         method: 'GET',
         headers: new Headers({

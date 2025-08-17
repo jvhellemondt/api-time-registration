@@ -2,21 +2,19 @@ import type { EventStore, Outbox, StoredEvent } from '@jvhellemondt/arts-and-cra
 import type { Db } from 'mongodb'
 import type { TimeEntryEvent } from '@/domain/TimeEntry/TimeEntry.decider'
 import { createStoredEvent, fail, FieldEquals, invariant, makeStreamKey } from '@jvhellemondt/arts-and-crafts.ts'
-import { buildMongoQuery } from '@/infrastructure/database/mongo/buildMongoQuery'
+import { buildMongoQuery } from '@/infrastructure/database/mongo/utils/buildMongoQuery'
 import { mapIdToMongoId } from '@/infrastructure/database/mongo/utils/mapMongoId'
 import { SameEntityOnly } from '@/specifications/SameEntityOnly.specification'
 
 export type EventStoreRecord<T> = Omit<StoredEvent<T>, 'id'> & { _id: string }
 
 export const MongoEventStore: (database: Db, outbox?: Outbox) => EventStore<TimeEntryEvent> = (database: Db, outbox?: Outbox) => {
-  const store = 'event_store'
-
   return {
     async load(streamName: string, aggregateId: string): Promise<TimeEntryEvent[]> {
       const streamKey = makeStreamKey(streamName, aggregateId)
       const specification = new FieldEquals('streamKey', streamKey)
       const storedEvents = await database
-        .collection<EventStoreRecord<TimeEntryEvent>>(store)
+        .collection<EventStoreRecord<TimeEntryEvent>>('event_store')
         .find(buildMongoQuery(specification.toQuery()))
         .toArray()
       return storedEvents
@@ -35,7 +33,7 @@ export const MongoEventStore: (database: Db, outbox?: Outbox) => EventStore<Time
         .map(event => createStoredEvent(streamName, currentStream.length + 1, event))
         .map(mapIdToMongoId)
       await database
-        .collection<EventStoreRecord<TimeEntryEvent>>(store)
+        .collection<EventStoreRecord<TimeEntryEvent>>('event_store')
         .insertMany(eventsToStore)
       await Promise.all(events.map(async event => outbox?.enqueue(event)))
     },

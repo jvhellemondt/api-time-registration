@@ -1,23 +1,22 @@
-import type { Db } from 'mongodb'
-import type { MongoRecord } from '../../Mongodb.client'
+import type { Collection } from 'mongodb'
+import type { MongoRecord } from '../../MongoRecord'
 import type { TimeEntryModel } from '@/usecases/projectors/TimeEntriesProjection/TimeEntriesProjection.ports'
 import type { ListTimeEntriesDirectivePort } from '@/usecases/queries/ListTimeEntries/ListTimeEntries.ports'
 import { FieldEquals } from '@jvhellemondt/arts-and-crafts.ts'
-import { buildMongoQuery } from '../../buildMongoQuery'
+import { buildMongoQuery } from '../../utils/buildMongoQuery'
 import { mapMongoIdToId } from '../../utils/mapMongoId'
 
 export class ListTimeEntriesDirective implements ListTimeEntriesDirectivePort {
   constructor(
-    private readonly collection: string,
-    private readonly database: Db,
+    private readonly collection: Collection<MongoRecord<TimeEntryModel>>,
   ) {}
 
   async execute(userId: string): Promise<TimeEntryModel[]> {
     const specification = new FieldEquals<TimeEntryModel>('userId', userId)
     const query = buildMongoQuery(specification.toQuery())
-    const results = await this.database
-      .collection<MongoRecord<Omit<TimeEntryModel, 'id'>>>(this.collection)
+    const results = await this.collection
       .find(query)
+      .sort({ startTime: 1 })
       .toArray()
     return results
       .map(mapMongoIdToId)

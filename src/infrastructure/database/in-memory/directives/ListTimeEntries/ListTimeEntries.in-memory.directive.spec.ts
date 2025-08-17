@@ -1,13 +1,15 @@
 import type { CreateStatement, Database } from '@jvhellemondt/arts-and-crafts.ts'
+import type { UseCollection } from '../../useCollection'
 import type { TimeEntryModel } from '@/usecases/projectors/TimeEntriesProjection/TimeEntriesProjection.ports'
 import { Operation, SimpleDatabase } from '@jvhellemondt/arts-and-crafts.ts'
 import { subHours } from 'date-fns'
 import { v7 as uuidv7 } from 'uuid'
+import { useCollection } from '../../useCollection'
 import { ListTimeEntriesInMemoryDirective } from './ListTimeEntries.in-memory.directive'
 
 describe('in-memory ListTimeEntriesDirective', () => {
-  const collectionName = 'time_entries'
   let database: Database<TimeEntryModel>
+  let collection: UseCollection<TimeEntryModel>
   const users = {
     Elon: { id: uuidv7(), name: 'Elon Musk' },
     Jeff: { id: uuidv7(), name: 'Jeff Bezos' },
@@ -27,9 +29,10 @@ describe('in-memory ListTimeEntriesDirective', () => {
 
   beforeAll(async () => {
     database = new SimpleDatabase()
+    collection = useCollection(database, 'time_entries')
     await Promise.all(documents.map(async (document) => {
       const statement: CreateStatement<TimeEntryModel> = { operation: Operation.CREATE, payload: document }
-      await database.execute(collectionName, statement)
+      await collection.execute(statement)
     }))
   })
 
@@ -43,7 +46,7 @@ describe('in-memory ListTimeEntriesDirective', () => {
     users.Bill,
     users.Mark,
   ])('should retrieve the documents of a user ($name)', async (user) => {
-    const directive = new ListTimeEntriesInMemoryDirective(collectionName, database)
+    const directive = new ListTimeEntriesInMemoryDirective(collection)
     const result = await directive.execute(user.id)
     expect(result).toStrictEqual(documents.filter(document => document.userId === user.id))
   })

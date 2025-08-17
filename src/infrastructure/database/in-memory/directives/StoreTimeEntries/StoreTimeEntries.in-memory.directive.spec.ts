@@ -1,14 +1,16 @@
 import type { Database } from '@jvhellemondt/arts-and-crafts.ts'
+import type { UseCollection } from '../../useCollection'
 import type { TimeEntryModel } from '@/usecases/projectors/TimeEntriesProjection/TimeEntriesProjection.ports'
 import { SimpleDatabase } from '@jvhellemondt/arts-and-crafts.ts'
 import { subHours } from 'date-fns'
 import { v7 as uuidv7 } from 'uuid'
+import { useCollection } from '../../useCollection'
 import { ListTimeEntriesInMemoryDirective } from '../ListTimeEntries/ListTimeEntries.in-memory.directive'
 import { StoreTimeEntriesInMemoryDirective } from './StoreTimeEntries.in-memory.directive'
 
 describe('in-memory StoreTimeEntriesDirective', () => {
-  const collectionName = 'time_entries'
   let database: Database<TimeEntryModel>
+  let collection: UseCollection<TimeEntryModel>
   const users = {
     Elon: { id: uuidv7(), name: 'Elon Musk' },
     Jeff: { id: uuidv7(), name: 'Jeff Bezos' },
@@ -28,6 +30,7 @@ describe('in-memory StoreTimeEntriesDirective', () => {
 
   beforeEach(async () => {
     database = new SimpleDatabase()
+    collection = useCollection(database, 'time_entries')
   })
 
   it('should be defined', () => {
@@ -40,13 +43,13 @@ describe('in-memory StoreTimeEntriesDirective', () => {
     users.Bill,
     users.Mark,
   ])('should store the documents of $name', async (user) => {
-    const storeDirective = new StoreTimeEntriesInMemoryDirective(collectionName, database)
+    const storeDirective = new StoreTimeEntriesInMemoryDirective(collection)
     await Promise.all(
       documents.map(async (document) => {
         await storeDirective.execute(document)
       }),
     )
-    const listDirective = new ListTimeEntriesInMemoryDirective(collectionName, database)
+    const listDirective = new ListTimeEntriesInMemoryDirective(collection)
     const result = await listDirective.execute(user.id)
     expect(result).toStrictEqual(documents.filter(document => document.userId === user.id))
   })
