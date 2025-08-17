@@ -1,4 +1,3 @@
-/* eslint-disable ts/no-unsafe-assignment */
 import type { TimeEntryEvent } from './TimeEntry.decider'
 import { createDomainEvent } from '@jvhellemondt/arts-and-crafts.ts'
 import { subHours } from 'date-fns'
@@ -28,7 +27,9 @@ describe('time entry decider', () => {
       expect(decision).toHaveLength(1)
       expect(decision.at(0)).toStrictEqual({
         ...timeEntryRegisteredEvent,
+        // eslint-disable-next-line ts/no-unsafe-assignment
         id: expect.any(String),
+        // eslint-disable-next-line ts/no-unsafe-assignment
         timestamp: expect.any(String),
         metadata: {
         },
