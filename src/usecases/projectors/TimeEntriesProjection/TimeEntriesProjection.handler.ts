@@ -1,6 +1,7 @@
 import type { EventBus, EventHandler } from '@jvhellemondt/arts-and-crafts.ts'
-import type { StoreTimeEntriesDirectivePort, TimeEntryModel } from './TimeEntriesProjection.ports'
+import type { StoreTimeEntriesDirectivePort } from './TimeEntriesProjection.ports'
 import type { TimeEntryEvent } from '@/domain/TimeEntry/TimeEntry.decider'
+import { timeEntryModel } from './TimeEntriesProjection.ports'
 
 export class TimeEntriesProjector implements EventHandler<TimeEntryEvent> {
   constructor(
@@ -8,12 +9,12 @@ export class TimeEntriesProjector implements EventHandler<TimeEntryEvent> {
   ) { }
 
   async handle(anEvent: TimeEntryEvent): Promise<void> {
-    const model: TimeEntryModel = {
+    const model = timeEntryModel.parse({
       id: anEvent.aggregateId,
       userId: anEvent.payload.userId,
       startTime: anEvent.payload.startTime,
       endTime: anEvent.payload.endTime,
-    }
+    })
     await this.directive.execute(model)
   }
 
