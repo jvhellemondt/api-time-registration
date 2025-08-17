@@ -10,7 +10,7 @@ export default defineConfig(({ mode }) => {
       watch: false,
       globals: true,
       reporters: ['verbose'],
-      include: ['src/**/*.integration.?(c|m)[jt]s?(x)'],
+      include: ['src/**/tests/property-based/*.spec.?(c|m)[jt]s?(x)'],
       coverage: {
         provider: 'istanbul',
         reporter: ['text', 'json', 'html'],
@@ -20,7 +20,7 @@ export default defineConfig(({ mode }) => {
           functions: 100,
           branches: 100,
         },
-        include: ['src/**/*.integration.?(c|m)[jt]s?(x)'],
+        include: ['src/**/tests/property-based/*.spec.?(c|m)[jt]s?(x)'],
       },
     },
     resolve: {

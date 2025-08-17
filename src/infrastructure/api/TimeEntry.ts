@@ -25,10 +25,19 @@ export default function TimeEntryApi(module: TimeRegistrationModule) {
     .post('/register-time-entry', async (c) => {
       const anUserId = c.req.header('User-Id')
       const aBody = await c.req.json <{ startTime: string, endTime: string }>()
-      const aPayload = registerTimeEntryCommandPayload.parse({ userId: anUserId, ...aBody })
-      const aCommand = createRegisterTimeEntryCommand(uuidv7(), aPayload)
+      const aPayloadParseResult = registerTimeEntryCommandPayload.safeParse({ userId: anUserId, ...aBody })
+      if (aPayloadParseResult.error) {
+        return c.json({ error: aPayloadParseResult.error.message }, 400)
+      }
+
+      const aCommand = createRegisterTimeEntryCommand(uuidv7(), aPayloadParseResult.data)
       const anHandler = new RegisterTimeEntryHandler(module[symRepository])
       const aResult = await anHandler.execute(aCommand)
       return c.json({ ...aResult }, 201)
+    })
+
+    .onError(async (err, c) => {
+      console.error(err)
+      return c.json({ error: err.message }, 500)
     })
 }

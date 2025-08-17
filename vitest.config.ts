@@ -10,6 +10,7 @@ export default defineConfig({
     exclude: [
       'src/infrastructure/database/mongo/**/*',
       '**/node_modules/**',
+      '**/tests/property-based/**/*',
       '**/dist/**',
       '**/cypress/**',
       '**/.{idea,git,cache,output,temp}/**',
@@ -25,15 +26,16 @@ export default defineConfig({
         branches: 100,
       },
       exclude: [
+        '*.ts',
         'src/infrastructure/database/mongo/**/*',
         '**/*.module.ts',
         '**/main.ts',
+        '**/tests/property-based/**/*',
         '**/node_modules/**',
         '**/dist/**',
         '**/cypress/**',
         '**/.{idea,git,cache,output,temp}/**',
         '**/{karma,rollup,webpack,vite,vitest,jest,ava,babel,nyc,cypress,tsup,build,eslint,prettier}.config.*',
-        '*.ts'
       ],
     },
   },
