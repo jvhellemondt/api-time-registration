@@ -41,8 +41,13 @@ describe('time-entry api', () => {
 
   describe('catchAll error', () => {
     it('should trigger the onError handler and return a 500 status', async () => {
-      server = TimeEntryApi({} as typeof module)
-      const res = await server.request('/list-time-entries')
+      server = TimeEntryApi({
+        [symListTimeEntriesDirective]: { execute: async () => { throw new Error('error') } },
+      } as unknown as typeof module)
+      const res = await server.request('list-time-entries', {
+        method: 'GET',
+        headers: new Headers({ 'Content-Type': 'application/json', 'User-Id': uuidv7() }),
+      })
       expect(res.status).toBe(500)
     })
   })
@@ -119,6 +124,17 @@ describe('time-entry api', () => {
 
       expect(res.status).toBe(200)
       expect(result).toStrictEqual(documents.filter(document => document.userId === user.id))
+    })
+
+    it.each([
+      { __scenario: 'MISSING_UUID', payload: { userId: '' } },
+      { __scenario: 'INVALID_UUID', payload: { userId: 'invalid-uuid-id' } },
+    ])('should return a validation error for $__scenario', async ({ payload: { userId } }) => {
+      const res = await server.request('list-time-entries', {
+        method: 'GET',
+        headers: new Headers({ 'Content-Type': 'application/json', 'User-Id': userId }),
+      })
+      expect(res.status).toBe(400)
     })
   })
 })

@@ -15,8 +15,11 @@ export default function TimeEntryApi(module: TimeRegistrationModule) {
 
     .get('/list-time-entries', async (c) => {
       const anUserId = c.req.header('User-Id')
-      const aPayload = listTimeEntriesByUserIdPayload.parse({ userId: anUserId })
-      const aQuery = createListTimeEntriesByUserIdQuery(aPayload)
+      const aPayloadParseResult = listTimeEntriesByUserIdPayload.safeParse({ userId: anUserId })
+      if (aPayloadParseResult.error) {
+        return c.json({ error: aPayloadParseResult.error.message }, 400)
+      }
+      const aQuery = createListTimeEntriesByUserIdQuery(aPayloadParseResult.data)
       const anHandler = new ListTimeEntriesByUserIdHandler(module[symListTimeEntriesDirective])
       const aResult = await anHandler.execute(aQuery)
       return c.json(aResult, 200)
@@ -37,7 +40,6 @@ export default function TimeEntryApi(module: TimeRegistrationModule) {
     })
 
     .onError(async (err, c) => {
-      console.error(err)
       return c.json({ error: err.message }, 500)
     })
 }
