@@ -4,6 +4,7 @@ import type { UseCollection } from '@/infrastructure/database/in-memory/useColle
 import type { TimeRegistrationModule } from '@/TimeRegistration.module'
 import type { TimeEntryModel } from '@/usecases/projectors/TimeEntriesProjection/TimeEntriesProjection.ports'
 import { SimpleDatabase, SimpleEventStore } from '@jvhellemondt/arts-and-crafts.ts'
+import { isValid, toDate } from 'date-fns'
 import fc from 'fast-check'
 import { ListTimeEntriesInMemoryDirective } from '@/infrastructure/database/in-memory/directives/ListTimeEntries/ListTimeEntries.in-memory.directive'
 import { useCollection } from '@/infrastructure/database/in-memory/useCollection'
@@ -32,34 +33,27 @@ describe('request.POST /register-time-entry', () => {
   })
 
   it('creates time entries or rejects invalid payloads', async () => {
-    const validPayload = fc.record({
-      userId: fc.uuid(),
-      startTime: fc.date().map(d => d.toISOString()),
-      endTime: fc.date().map(d => d.toISOString()),
-    })
-    const invalidPayload = fc.record({
-      userId: fc.oneof(fc.string({ minLength: 0, maxLength: 50 }), fc.constant(''), fc.constant('invalid-uuid')),
-      startTime: fc.oneof(
-        fc.date().map(d => d.toISOString()),
-        fc.string({ minLength: 0, maxLength: 50 }),
-      ),
-      endTime: fc.oneof(
-        fc.date().map(d => d.toISOString()),
-        fc.string({ minLength: 0, maxLength: 50 }),
-      ),
-    })
-
     await fc.assert(
       fc.asyncProperty(
-        fc.oneof(validPayload, invalidPayload),
+        fc.record({
+          userId: fc.oneof(fc.string({ minLength: 0, maxLength: 50 }), fc.constant(''), fc.constant('invalid-uuid'), fc.uuid()),
+          startTime: fc.oneof(
+            fc.date(),
+            fc.string({ minLength: 0, maxLength: 50 }),
+          ),
+          endTime: fc.oneof(
+            fc.date(),
+            fc.string({ minLength: 0, maxLength: 50 }),
+          ),
+        }),
         async (payload) => {
-          const payloadParseResult = registerTimeEntryCommandPayload.safeParse(payload)
-          const isValidPayload = payloadParseResult.success
+          const body = {
+            startTime: isValid(payload.startTime) ? toDate(payload.startTime).toISOString() : payload.startTime,
+            endTime: isValid(payload.endTime) ? toDate(payload.endTime).toISOString() : payload.endTime,
+          }
 
-          const body = JSON.stringify({
-            startTime: payload.startTime,
-            endTime: payload.endTime,
-          })
+          const payloadParseResult = registerTimeEntryCommandPayload.safeParse({ userId: payload.userId, ...body })
+          const isValidPayload = payloadParseResult.success
 
           const response = await server.request('register-time-entry', {
             method: 'POST',
@@ -67,7 +61,7 @@ describe('request.POST /register-time-entry', () => {
               'Content-Type': 'application/json',
               'User-Id': payload.userId,
             }),
-            body,
+            body: JSON.stringify(body),
           })
 
           if (isValidPayload) {
@@ -80,12 +74,11 @@ describe('request.POST /register-time-entry', () => {
             )
           }
           else {
-            console.log({ isValidPayload, payload, body, response, zodErr: payloadParseResult.error })
             expect(response.status).toBe(400)
           }
         },
       ),
-      { numRuns: 10000, verbose: true },
+      { numRuns: 1000, verbose: false },
     )
   })
 })

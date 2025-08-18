@@ -20,8 +20,6 @@ describe('time-entry api', () => {
     [symRepository]: new TimeEntryRepository(eventStore),
     [symListTimeEntriesDirective]: new ListTimeEntriesInMemoryDirective(collection),
   }
-
-  const userId = '01981dd1-2567-720c-9da6-a33e79275bb1'
   const now = new Date()
   let server: ReturnType<typeof TimeEntryApi>
 
@@ -41,7 +39,15 @@ describe('time-entry api', () => {
     })
   })
 
-  describe('endpoint /registerTimeEntry', () => {
+  describe('catchAll error', () => {
+    it('should trigger the onError handler and return a 500 status', async () => {
+      server = TimeEntryApi({} as typeof module)
+      const res = await server.request('/list-time-entries')
+      expect(res.status).toBe(500)
+    })
+  })
+
+  describe('endpoint /register-time-entry', () => {
     it('should register a time entry', async () => {
       const body = JSON.stringify({
         startTime: subHours(now, 1).toISOString(),
@@ -49,7 +55,7 @@ describe('time-entry api', () => {
       })
       const res = await server.request('register-time-entry', {
         method: 'POST',
-        headers: new Headers({ 'Content-Type': 'application/json', 'User-Id': userId }),
+        headers: new Headers({ 'Content-Type': 'application/json', 'User-Id': uuidv7() }),
         body,
       })
       const { id } = await res.json() as { id: string }
@@ -59,6 +65,23 @@ describe('time-entry api', () => {
       expect(events).toHaveLength(1)
       expect(events[0].type).toBe('TimeEntryRegistered')
       expect(id).toBeDefined()
+    })
+
+    it.each([
+      { __scenario: 'MISSING_UUID', payload: { userId: '', startTime: subHours(now, 1).toISOString(), endTime: now.toISOString() } },
+      { __scenario: 'MISSING_START_TIME', payload: { userId: uuidv7(), startTime: '', endTime: now.toISOString() } },
+      { __scenario: 'MISSING_END_TIME', payload: { userId: uuidv7(), startTime: subHours(now, 1).toISOString(), endTime: '' } },
+      { __scenario: 'MISSING_ALL_FIELDS', payload: { userId: '', startTime: '', endTime: '' } },
+      { __scenario: 'INVALID_UUID', payload: { userId: 'invalid-uuid-id', startTime: subHours(now, 1).toISOString(), endTime: now.toISOString() } },
+      { __scenario: 'INVALID_START_TIME', payload: { userId: uuidv7(), startTime: subHours(now, 1).toTimeString(), endTime: now.toISOString() } },
+      { __scenario: 'INVALID_END_TIME', payload: { userId: uuidv7(), startTime: subHours(now, 1).toISOString(), endTime: now.toUTCString() } },
+    ])('should return a validation error for $__scenario', async ({ payload: { userId, startTime, endTime } }) => {
+      const res = await server.request('register-time-entry', {
+        method: 'POST',
+        headers: new Headers({ 'Content-Type': 'application/json', 'User-Id': userId }),
+        body: JSON.stringify({ startTime, endTime }),
+      })
+      expect(res.status).toBe(400)
     })
   })
 
