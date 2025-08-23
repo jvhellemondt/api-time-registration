@@ -6,6 +6,9 @@ import { subHours } from 'date-fns'
 import { v7 as uuidv7 } from 'uuid'
 import { ListTimeEntriesInMemoryDirective } from '@/infrastructure/database/in-memory/directives/ListTimeEntries/ListTimeEntries.in-memory.directive'
 import { useCollection } from '@/infrastructure/database/in-memory/useCollection'
+import {
+  mapTimeEntryModelToListTimeEntriesItemMapper,
+} from '@/mappers/mapTimeEntryModelToListTimeEntriesItem.mapper.ts'
 import { ListTimeEntriesByUserIdHandler } from './ListTimeEntries.handler'
 import { listTimeEntriesByUserIdPayload } from './ListTimeEntries.ports'
 import { createListTimeEntriesByUserIdQuery } from './ListTimeEntries.query'
@@ -51,6 +54,10 @@ describe('listTimeEntriesByUserIdHandler', () => {
     const aQuery = createListTimeEntriesByUserIdQuery(aPayload)
     const anHandler = new ListTimeEntriesByUserIdHandler(directive)
     const result = await anHandler.execute(aQuery)
-    expect(result).toStrictEqual(documents.filter(document => document.userId === user.id))
+    expect(result).toStrictEqual(
+      documents
+        .filter(document => document.userId === user.id)
+        .map(mapTimeEntryModelToListTimeEntriesItemMapper),
+    )
   })
 })

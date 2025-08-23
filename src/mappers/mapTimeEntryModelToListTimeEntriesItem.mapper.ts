@@ -1,0 +1,10 @@
+import type { TimeEntryModel } from '@/usecases/projectors/TimeEntriesProjection/TimeEntriesProjection.ports.ts'
+import type { ListTimeEntriesItem } from '@/usecases/queries/ListTimeEntries/ListTimeEntries.ports.ts'
+
+export function mapTimeEntryModelToListTimeEntriesItemMapper(entry: TimeEntryModel): ListTimeEntriesItem {
+  return {
+    id: entry.id,
+    startTime: entry.startTime,
+    endTime: entry.endTime,
+  }
+}

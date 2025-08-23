@@ -5,7 +5,7 @@ import { SimpleDatabase, SimpleEventStore } from '@jvhellemondt/arts-and-crafts.
 import { subHours } from 'date-fns'
 import { v7 as uuidv7 } from 'uuid'
 import { beforeAll } from 'vitest'
-import { TimeEntryRepository } from '@/repositories/TimeEntryRepository/TimeEntry.repository'
+import { TimeEntryRepository } from '@/domain/repositories/TimeEntryRepository/TimeEntry.repository'
 import { createRegisterTimeEntryCommand } from '@/usecases/commands/RegisterTimeEntry/RegisterTimeEntry.command.ts'
 import { RegisterTimeEntryHandler } from './RegisterTimeEntry.handler'
 

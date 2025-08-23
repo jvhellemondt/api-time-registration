@@ -4,6 +4,9 @@ import type { TimeEntryModel } from '@/usecases/projectors/TimeEntriesProjection
 import { Operation, SimpleDatabase } from '@jvhellemondt/arts-and-crafts.ts'
 import { subHours } from 'date-fns'
 import { v7 as uuidv7 } from 'uuid'
+import {
+  mapTimeEntryModelToListTimeEntriesItemMapper,
+} from '@/mappers/mapTimeEntryModelToListTimeEntriesItem.mapper.ts'
 import { useCollection } from '../../useCollection'
 import { ListTimeEntriesInMemoryDirective } from './ListTimeEntries.in-memory.directive'
 
@@ -48,6 +51,10 @@ describe('in-memory ListTimeEntriesDirective', () => {
   ])('should retrieve the documents of a user ($name)', async (user) => {
     const directive = new ListTimeEntriesInMemoryDirective(collection)
     const result = await directive.execute(user.id)
-    expect(result).toStrictEqual(documents.filter(document => document.userId === user.id))
+    expect(result).toStrictEqual(
+      documents
+        .filter(document => document.userId === user.id)
+        .map(mapTimeEntryModelToListTimeEntriesItemMapper),
+    )
   })
 })

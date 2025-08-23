@@ -5,8 +5,9 @@ import type { TimeEntryModel } from '@/usecases/projectors/TimeEntriesProjection
 import { Operation, SimpleDatabase, SimpleEventStore } from '@jvhellemondt/arts-and-crafts.ts'
 import { subHours } from 'date-fns'
 import { v7 as uuidv7 } from 'uuid'
+import { TimeEntryRepository } from '@/domain/repositories/TimeEntryRepository/TimeEntry.repository'
 import { ListTimeEntriesInMemoryDirective } from '@/infrastructure/database/in-memory/directives/ListTimeEntries/ListTimeEntries.in-memory.directive'
-import { TimeEntryRepository } from '@/repositories/TimeEntryRepository/TimeEntry.repository'
+import { mapTimeEntryModelToListTimeEntriesItemMapper } from '@/mappers/mapTimeEntryModelToListTimeEntriesItem.mapper.ts'
 import { symEventStore, symListTimeEntriesDirective, symRepository } from '@/TimeRegistration.module'
 import { useCollection } from '../database/in-memory/useCollection'
 import TimeEntryApi from './TimeEntry'
@@ -123,7 +124,11 @@ describe('time-entry api', () => {
       const result = await res.json() as Record<string, unknown>[]
 
       expect(res.status).toBe(200)
-      expect(result).toStrictEqual(documents.filter(document => document.userId === user.id))
+      expect(result).toStrictEqual(
+        documents
+          .filter(document => document.userId === user.id)
+          .map(mapTimeEntryModelToListTimeEntriesItemMapper),
+      )
     })
 
     it.each([

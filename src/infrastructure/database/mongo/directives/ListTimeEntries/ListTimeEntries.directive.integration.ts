@@ -3,6 +3,9 @@ import type { MongoRecord } from '../../MongoRecord'
 import type { TimeEntryModel } from '@/usecases/projectors/TimeEntriesProjection/TimeEntriesProjection.ports'
 import { subHours } from 'date-fns'
 import { v7 as uuidv7 } from 'uuid'
+import {
+  mapTimeEntryModelToListTimeEntriesItemMapper,
+} from '@/mappers/mapTimeEntryModelToListTimeEntriesItem.mapper.ts'
 import { getClient } from '../..'
 import { useCollection } from '../../useCollection'
 import { mapIdToMongoId } from '../../utils/mapMongoId'
@@ -53,6 +56,11 @@ describe('mongodb ListTimeEntriesDirective', () => {
   ])('should retrieve the documents of a user ($name)', async (user) => {
     const directive = new ListTimeEntriesDirective(collection)
     const result = await directive.execute(user.id)
-    expect(result).toStrictEqual(documents.filter(document => document.userId === user.id).sort((a, b) => a.startTime.localeCompare(b.startTime)))
+    expect(result).toStrictEqual(
+      documents
+        .filter(document => document.userId === user.id)
+        .sort((a, b) => a.startTime.localeCompare(b.startTime))
+        .map(mapTimeEntryModelToListTimeEntriesItemMapper),
+    )
   })
 })

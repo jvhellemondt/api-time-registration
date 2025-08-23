@@ -1,4 +1,3 @@
-import type { TimeEntryModel } from '@/usecases/projectors/TimeEntriesProjection/TimeEntriesProjection.ports'
 import z from 'zod/v4'
 
 export const listTimeEntriesByUserIdPayload = z.strictObject({
@@ -7,6 +6,12 @@ export const listTimeEntriesByUserIdPayload = z.strictObject({
 
 export type ListTimeEntriesByUserIdPayload = z.infer<typeof listTimeEntriesByUserIdPayload>
 
+export interface ListTimeEntriesItem {
+  id: string
+  startTime: string
+  endTime: string
+}
+
 export interface ListTimeEntriesDirectivePort {
-  execute(userId: string): Promise<TimeEntryModel[]>
+  execute(userId: string): Promise<ListTimeEntriesItem[]>
 }

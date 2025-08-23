@@ -1,6 +1,6 @@
-import type { EventStore, Repository, WithIdentifier } from '@jvhellemondt/arts-and-crafts.ts'
+import type { EventStore, Repository, WithIdentifier } from '../../../../../../../shared/@arts-and-crafts/typescript'
 import type { TimeEntryEvent } from '@/domain/TimeEntry/TimeEntry.decider.ts'
-import type { TimeEntryEntity } from '@/domain/TimeEntry/TimeEntry.entity'
+import type { TimeEntryEntity } from '@/domain/TimeEntry/TimeEntry.entity.ts'
 import { TimeEntry } from '@/domain/TimeEntry/TimeEntry.decider.ts'
 
 export class TimeEntryRepository

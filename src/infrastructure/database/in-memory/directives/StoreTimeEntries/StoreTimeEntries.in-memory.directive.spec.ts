@@ -4,6 +4,9 @@ import type { TimeEntryModel } from '@/usecases/projectors/TimeEntriesProjection
 import { SimpleDatabase } from '@jvhellemondt/arts-and-crafts.ts'
 import { subHours } from 'date-fns'
 import { v7 as uuidv7 } from 'uuid'
+import {
+  mapTimeEntryModelToListTimeEntriesItemMapper,
+} from '@/mappers/mapTimeEntryModelToListTimeEntriesItem.mapper.ts'
 import { useCollection } from '../../useCollection'
 import { ListTimeEntriesInMemoryDirective } from '../ListTimeEntries/ListTimeEntries.in-memory.directive'
 import { StoreTimeEntriesInMemoryDirective } from './StoreTimeEntries.in-memory.directive'
@@ -51,6 +54,10 @@ describe('in-memory StoreTimeEntriesDirective', () => {
     )
     const listDirective = new ListTimeEntriesInMemoryDirective(collection)
     const result = await listDirective.execute(user.id)
-    expect(result).toStrictEqual(documents.filter(document => document.userId === user.id))
+    expect(result).toStrictEqual(
+      documents
+        .filter(document => document.userId === user.id)
+        .map(mapTimeEntryModelToListTimeEntriesItemMapper),
+    )
   })
 })

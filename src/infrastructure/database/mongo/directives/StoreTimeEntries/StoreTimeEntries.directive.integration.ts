@@ -3,6 +3,9 @@ import type { MongoRecord } from '../../MongoRecord'
 import type { TimeEntryModel } from '@/usecases/projectors/TimeEntriesProjection/TimeEntriesProjection.ports'
 import { subHours } from 'date-fns'
 import { v7 as uuidv7 } from 'uuid'
+import {
+  mapTimeEntryModelToListTimeEntriesItemMapper,
+} from '@/mappers/mapTimeEntryModelToListTimeEntriesItem.mapper.ts'
 import { getClient } from '../..'
 import { useCollection } from '../../useCollection'
 import { ListTimeEntriesDirective } from '../ListTimeEntries/ListTimeEntries.directive'
@@ -58,6 +61,9 @@ describe('mongodb StoreTimeEntriesDirective', () => {
     )
     const listDirective = new ListTimeEntriesDirective(collection)
     const result = await listDirective.execute(user.id)
-    expect(result).toStrictEqual(docs)
+    expect(result).toStrictEqual(
+      docs
+        .map(mapTimeEntryModelToListTimeEntriesItemMapper),
+    )
   })
 })
