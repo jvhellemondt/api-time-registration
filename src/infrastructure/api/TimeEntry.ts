@@ -1,5 +1,6 @@
 import type { TimeRegistrationModule } from '@/TimeRegistration.module'
 import { Hono } from 'hono'
+import { cors } from 'hono/cors'
 import { v7 as uuidv7 } from 'uuid'
 import { trafficLoggerMiddleware } from '@/infrastructure/api/middleware/trafficLogger.middleware.ts'
 import { symListTimeEntriesDirective, symRepository } from '@/TimeRegistration.module'
@@ -12,6 +13,7 @@ import { createListTimeEntriesByUserIdQuery } from '@/usecases/queries/ListTimeE
 
 export default function TimeEntryApi(module: TimeRegistrationModule) {
   return new Hono()
+    .use(cors())
     .use(trafficLoggerMiddleware)
 
     .get('/health', c => c.text('HEALTH OK'))
