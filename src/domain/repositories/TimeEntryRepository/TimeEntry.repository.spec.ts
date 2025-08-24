@@ -1,9 +1,9 @@
-import type { Database, EventStore, StoredEvent, WithIdentifier } from '../../../../../../../shared/@arts-and-crafts/typescript'
+import type { Database, EventStore, StoredEvent, WithIdentifier } from '@jvhellemondt/arts-and-crafts.ts'
 import type { TimeEntryEvent } from '@/domain/TimeEntry/TimeEntry.decider.ts'
+import { SimpleDatabase, SimpleEventStore } from '@jvhellemondt/arts-and-crafts.ts'
 import { subHours } from 'date-fns'
 import { v7 as uuidv7 } from 'uuid'
 import { createTimeEntryRegisteredEvent } from '@/domain/TimeEntry/TimeEntryRegistered.event.ts'
-import { SimpleDatabase, SimpleEventStore } from '../../../../../../../shared/@arts-and-crafts/typescript'
 import { TimeEntryRepository } from './TimeEntry.repository.ts'
 
 describe('time-entry repository', () => {
