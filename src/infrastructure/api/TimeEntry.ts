@@ -1,6 +1,7 @@
 import type { TimeRegistrationModule } from '@/TimeRegistration.module'
 import { Hono } from 'hono'
 import { v7 as uuidv7 } from 'uuid'
+import { trafficLoggerMiddleware } from '@/infrastructure/api/middleware/trafficLogger.middleware.ts'
 import { symListTimeEntriesDirective, symRepository } from '@/TimeRegistration.module'
 import { createRegisterTimeEntryCommand } from '@/usecases/commands/RegisterTimeEntry/RegisterTimeEntry.command'
 import { RegisterTimeEntryHandler } from '@/usecases/commands/RegisterTimeEntry/RegisterTimeEntry.handler'
@@ -11,6 +12,8 @@ import { createListTimeEntriesByUserIdQuery } from '@/usecases/queries/ListTimeE
 
 export default function TimeEntryApi(module: TimeRegistrationModule) {
   return new Hono()
+    .use(trafficLoggerMiddleware)
+
     .get('/health', c => c.text('HEALTH OK'))
 
     .get('/list-time-entries', async (c) => {
