@@ -14,7 +14,8 @@ import TimeEntryApi from './TimeEntry'
 
 describe('time-entry api', () => {
   const database: Database<TimeEntryModel> = new SimpleDatabase()
-  const eventStore = new SimpleEventStore(new SimpleDatabase<StoredEvent<TimeEntryEvent>>())
+  const eventsDb = new SimpleDatabase<StoredEvent<TimeEntryEvent>>()
+  const eventStore = new SimpleEventStore<TimeEntryEvent>(eventsDb)
   const collection = useCollection(database, 'time_entries')
   const module: TimeRegistrationModule = {
     [symEventStore]: eventStore,

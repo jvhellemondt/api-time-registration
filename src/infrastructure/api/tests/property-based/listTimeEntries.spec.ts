@@ -14,6 +14,7 @@ import TimeEntryApi from '../../TimeEntry'
 
 describe('request.GET /list-time-entries', () => {
   let database: Database<TimeEntryModel>
+  let eventsDb: Database<StoredEvent<TimeEntryEvent>>
   let eventStore: EventStore<TimeEntryEvent>
   let collection: UseCollection<TimeEntryModel>
   let module: TimeRegistrationModule
@@ -21,7 +22,8 @@ describe('request.GET /list-time-entries', () => {
 
   beforeAll(async () => {
     database = new SimpleDatabase()
-    eventStore = new SimpleEventStore(new SimpleDatabase<StoredEvent<TimeEntryEvent>>())
+    eventsDb = new SimpleDatabase<StoredEvent<TimeEntryEvent>>()
+    eventStore = new SimpleEventStore<TimeEntryEvent>(eventsDb)
     collection = useCollection(database, 'time_entries')
     module = {
       [symEventStore]: eventStore,

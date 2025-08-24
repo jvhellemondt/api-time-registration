@@ -21,7 +21,7 @@
     "allowJs": true,
 
     "strict": true,
-    "exactOptionalPropertyTypes": true,
+    "exactOptionalPropertyTypes": false,
     "noEmit": true,
     "verbatimModuleSyntax": true,
     "noFallthroughCasesInSwitch": true,
