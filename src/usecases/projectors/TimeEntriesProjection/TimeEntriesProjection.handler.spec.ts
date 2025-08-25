@@ -41,5 +41,15 @@ describe('time-entries projector', () => {
     const listTimeEntriesDirective = new ListTimeEntriesInMemoryDirective(collection)
     const result = await listTimeEntriesDirective.execute(userId)
     expect(result).toHaveLength(5)
+
+    expect(result.at(0)).toStrictEqual({
+      id: events[0].aggregateId,
+      startTime: events[0].payload.startTime,
+      endTime: events[0].payload.endTime,
+      duration: {
+        in: 'minutes',
+        value: 120,
+      },
+    })
   })
 })

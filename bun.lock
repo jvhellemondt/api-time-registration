@@ -5,6 +5,7 @@
       "name": "time-registration",
       "dependencies": {
         "@jvhellemondt/arts-and-crafts.ts": "^3.10.1",
+        "date-fns": "^4.1.0",
         "hono": "^4.9.2",
         "mongodb": "^6.18.0",
         "ts-case-convert": "^2.1.0",
@@ -25,7 +26,6 @@
         "changelogen": "^0.6.2",
         "commitizen": "^4.3.1",
         "cz-conventional-changelog": "^3.3.0",
-        "date-fns": "^4.1.0",
         "eslint": "^9.33.0",
         "fast-check": "^4.2.0",
         "globals": "^16.3.0",

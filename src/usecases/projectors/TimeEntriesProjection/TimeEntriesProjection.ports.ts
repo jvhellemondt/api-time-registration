@@ -5,6 +5,7 @@ export const timeEntryModel = z.strictObject({
   userId: z.uuid(),
   startTime: z.iso.datetime(),
   endTime: z.iso.datetime(),
+  minutes: z.number(),
 })
 
 export type TimeEntryModel = z.infer<typeof timeEntryModel>

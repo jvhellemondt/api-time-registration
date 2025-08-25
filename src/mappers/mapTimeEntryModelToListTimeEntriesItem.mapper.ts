@@ -6,5 +6,9 @@ export function mapTimeEntryModelToListTimeEntriesItemMapper(entry: TimeEntryMod
     id: entry.id,
     startTime: entry.startTime,
     endTime: entry.endTime,
+    duration: {
+      in: 'minutes',
+      value: entry.minutes,
+    },
   }
 }

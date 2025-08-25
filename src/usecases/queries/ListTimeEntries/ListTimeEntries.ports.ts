@@ -10,6 +10,10 @@ export interface ListTimeEntriesItem {
   id: string
   startTime: string
   endTime: string
+  duration: {
+    in: 'hours' | 'minutes' | 'seconds'
+    value: number
+  }
 }
 
 export interface ListTimeEntriesDirectivePort {
