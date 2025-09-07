@@ -10,14 +10,18 @@ export class TimeEntriesProjector implements EventHandler<TimeEntryEvent> {
   ) { }
 
   async handle(anEvent: TimeEntryEvent): Promise<void> {
-    const model = timeEntryModel.parse({
-      id: anEvent.aggregateId,
-      userId: anEvent.payload.userId,
-      startTime: anEvent.payload.startTime,
-      endTime: anEvent.payload.endTime,
-      minutes: differenceInMinutes(new Date(anEvent.payload.endTime), new Date(anEvent.payload.startTime)),
-    })
-    await this.directive.execute(model)
+    switch (anEvent.type) {
+      case 'TimeEntryRegistered': {
+        const model = timeEntryModel.parse({
+          id: anEvent.aggregateId,
+          userId: anEvent.payload.userId,
+          startTime: anEvent.payload.startTime,
+          endTime: anEvent.payload.endTime,
+          minutes: differenceInMinutes(new Date(anEvent.payload.endTime), new Date(anEvent.payload.startTime)),
+        })
+        await this.directive.execute(model)
+      }
+    }
   }
 
   start(eventBus: EventBus<TimeEntryEvent>): void {

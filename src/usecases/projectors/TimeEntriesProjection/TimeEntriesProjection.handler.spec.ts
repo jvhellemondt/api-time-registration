@@ -31,25 +31,26 @@ describe('time-entries projector', () => {
   it('should be defined', () => {
     expect(TimeEntriesProjector).toBeDefined()
   })
+  describe('timeEntryRegistered event', () => {
+    it('should be subscribed to the eventBus\' TimeEntryRegistered event and project time entries upon publish', async () => {
+      const userId = uuidv7()
+      const events = Array.from({ length: 5 }, () => createTimeEntryRegisteredEvent(uuidv7(), { userId, startTime: subHours(new Date(), 2).toISOString(), endTime: new Date().toISOString() }))
+      await Promise.all(
+        events.map(async event => eventBus.publish(event)),
+      )
+      const listTimeEntriesDirective = new ListTimeEntriesInMemoryDirective(collection)
+      const result = await listTimeEntriesDirective.execute(userId)
+      expect(result).toHaveLength(5)
 
-  it('should be subscribed to the eventBus and project time entries upon publish', async () => {
-    const userId = uuidv7()
-    const events = Array.from({ length: 5 }, () => createTimeEntryRegisteredEvent(uuidv7(), { userId, startTime: subHours(new Date(), 2).toISOString(), endTime: new Date().toISOString() }))
-    await Promise.all(
-      events.map(async event => eventBus.publish(event)),
-    )
-    const listTimeEntriesDirective = new ListTimeEntriesInMemoryDirective(collection)
-    const result = await listTimeEntriesDirective.execute(userId)
-    expect(result).toHaveLength(5)
-
-    expect(result.at(0)).toStrictEqual({
-      id: events[0].aggregateId,
-      startTime: events[0].payload.startTime,
-      endTime: events[0].payload.endTime,
-      duration: {
-        in: 'minutes',
-        value: 120,
-      },
+      expect(result.at(0)).toStrictEqual({
+        id: events[0].aggregateId,
+        startTime: events[0].payload.startTime,
+        endTime: events[0].payload.endTime,
+        duration: {
+          in: 'minutes',
+          value: 120,
+        },
+      })
     })
   })
 })
