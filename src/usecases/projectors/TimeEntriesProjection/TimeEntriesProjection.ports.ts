@@ -13,3 +13,7 @@ export type TimeEntryModel = z.infer<typeof timeEntryModel>
 export interface StoreTimeEntriesDirectivePort {
   execute(payload: TimeEntryModel): Promise<void>
 }
+
+export interface UpdateTimeEntriesDirectivePort {
+  execute(payload: Partial<TimeEntryModel>): Promise<void>
+}
