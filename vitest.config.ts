@@ -1,47 +1,29 @@
-import path from 'node:path'
 import { defineConfig } from 'vitest/config'
+import { vitestBaseConfig } from './vitest.base.config.ts'
 
 export default defineConfig({
+  ...vitestBaseConfig,
   test: {
-    watch: false,
-    globals: true,
-    reporters: ['verbose'],
+    ...vitestBaseConfig.test,
     include: ['src/**/*.{test,spec,scenario}.?(c|m)[jt]s?(x)'],
     exclude: [
-      'src/infrastructure/database/mongo/**/*',
-      '**/node_modules/**',
+      ...vitestBaseConfig.test.exclude,
+      '**/modules/infrastructure/database/mongo/**/*',
       '**/tests/property-based/**/*',
-      '**/dist/**',
-      '**/cypress/**',
-      '**/.{idea,git,cache,output,temp}/**',
-      '**/{karma,rollup,webpack,vite,vitest,jest,ava,babel,nyc,cypress,tsup,build,eslint,prettier}.config.*',
+      '**/*.integration.*',
+
     ],
     coverage: {
-      provider: 'istanbul',
-      reporter: ['text', 'json', 'html'],
-      thresholds: {
-        lines: 100,
-        statements: 100,
-        functions: 100,
-        branches: 100,
-      },
+      ...vitestBaseConfig.test.coverage,
       exclude: [
+        ...vitestBaseConfig.test.coverage.exclude,
         '*.ts',
-        'src/infrastructure/database/mongo/**/*',
+        '**/modules/infrastructure/database/mongo/**/*',
         '**/*.module.ts',
         '**/main.ts',
         '**/tests/property-based/**/*',
-        '**/node_modules/**',
-        '**/dist/**',
-        '**/cypress/**',
-        '**/.{idea,git,cache,output,temp}/**',
-        '**/{karma,rollup,webpack,vite,vitest,jest,ava,babel,nyc,cypress,tsup,build,eslint,prettier}.config.*',
+        '**/*.integration.*',
       ],
-    },
-  },
-  resolve: {
-    alias: {
-      '@': path.resolve(__dirname, './src'),
     },
   },
 })

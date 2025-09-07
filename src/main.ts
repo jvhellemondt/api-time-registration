@@ -1,17 +1,18 @@
 /* eslint-disable no-console */
 import process from 'node:process'
+import TimeEntryApi from '@modules/infrastructure/api/TimeEntry.ts'
+import { timeRegistrationModule } from '@modules/TimeRegistration.module.ts'
+import RestApi from '@shared/infrastructure/api/rest/server/RestApi.ts'
 import { serve } from 'bun'
-import { Hono } from 'hono'
-import TimeEntryApi from './infrastructure/api/TimeEntry'
-import { timeRegistrationModule } from './TimeRegistration.module'
 
 async function bootstrap() {
-  const app = new Hono()
+  const app = RestApi()
+
   const module = await timeRegistrationModule()
-  const api = TimeEntryApi(module)
+  const timeEntryRoutes = TimeEntryApi(module)
 
   return app
-    .route('/', api)
+    .route('/', timeEntryRoutes)
 }
 
 bootstrap()

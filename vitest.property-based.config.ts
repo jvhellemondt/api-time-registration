@@ -1,31 +1,18 @@
-import path from 'node:path'
 import process from 'node:process'
 import { defineConfig, loadEnv } from 'vite'
+import { vitestBaseConfig } from './vitest.base.config.ts'
 
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '')
   return {
+    ...vitestBaseConfig,
     test: {
+      ...vitestBaseConfig.test,
       env,
-      watch: false,
-      globals: true,
-      reporters: ['verbose'],
       include: ['src/**/tests/property-based/*.spec.?(c|m)[jt]s?(x)'],
       coverage: {
-        provider: 'istanbul',
-        reporter: ['text', 'json', 'html'],
-        thresholds: {
-          lines: 100,
-          statements: 100,
-          functions: 100,
-          branches: 100,
-        },
+        ...vitestBaseConfig.test.coverage,
         include: ['src/**/tests/property-based/*.spec.?(c|m)[jt]s?(x)'],
-      },
-    },
-    resolve: {
-      alias: {
-        '@': path.resolve(__dirname, './src'),
       },
     },
   }

@@ -13,7 +13,9 @@
     "moduleResolution": "Bundler",
 
     "paths": {
-      "@/*": ["./src/*"]
+      "@config/*": ["./src/config/*"],
+      "@modules/*": ["./src/modules/*"],
+			"@shared/*": ["./src/shared/*"]
     },
 
     "types": ["vitest/globals"],
