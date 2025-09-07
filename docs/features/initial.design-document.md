@@ -4,9 +4,7 @@
 
 To build a scalable, event-driven time tracking system that:
 
-- Logs when users start and stop working
-- Handles overlapping time entries with the **"last from wins"** rule
-- Supports retroactive logging and multiple time zones
+- Logs (based on entry) when users started and stopped doing a task
 - Enables flexible queries and analytics via projections
 
 ---
@@ -14,7 +12,6 @@ To build a scalable, event-driven time tracking system that:
 ## 🧩 Context
 
 - Users log time by specifying a start and end time.
-- Entries may overlap. If they do, the **entry with the latest start time takes priority** in that range.
 - System must support:
   - **CQRS** for separation of reads and writes
   - **Event Sourcing** for a full audit trail and replayability
@@ -44,7 +41,7 @@ To build a scalable, event-driven time tracking system that:
 ### 🔹 Command
 
 ```typescript
-interface CreateTimeEntry {
+interface RegisterTimeEntry {
   userId: UUID
   from: Date // UTC
   to: Date // UTC
@@ -55,7 +52,7 @@ interface CreateTimeEntry {
 
 **TimeEntryDecider**:
 - Accepts `CreateTimeEntry`
-- Validates `from < to`
+- Validates `from < to` (nice-to-have)
 - Emits `TimeEntryCreated` event
 
 ### 🔹 Event
@@ -76,10 +73,6 @@ interface TimeEntryCreated {
 
 - Keyed by `userId` + **local date**
 - Handles `TimeEntryCreated` events
-- Converts `from/to` to user's **local time zone**
-- Splits across days if needed
-- Applies **"last `from` wins"** rule:
-  - New entry overrides overlapping blocks where `entry.from > block.from`
 
 ### 🔹 Projection Structure
 
@@ -95,8 +88,6 @@ interface TimeBlock {
 ## 🌍 Time Zone Handling
 
 - All time is stored as UTC
-- Each user has a configured IANA time zone (e.g. `"Europe/Berlin"`)
-- Projection uses this to resolve the **local day key**
 
 ---
 
@@ -119,9 +110,7 @@ Command → TimeEntryDecider → Event → Event Store → UserTimelineProjectio
 
 ## ✅ Business Rules
 
-- `from < to`
 - Overlaps are allowed
-- In overlaps, **entry with later `from` wins for overlapping region**
 - No activity description (for now)
 
 ---
@@ -129,5 +118,5 @@ Command → TimeEntryDecider → Event → Event Store → UserTimelineProjectio
 ## 🧩 Extensibility
 
 - Add categories/tags to events later
-- Add `DeleteTimeEntry` command + event if needed
+- Add `changeStartTime`, `changeEndTime` and `changeDate` command + event if needed
 - Aggregate stats projection (`TotalHoursPerDay`, `Streaks`, etc.)
