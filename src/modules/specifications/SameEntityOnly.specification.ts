@@ -1,5 +1,5 @@
-import type { QueryNode, WithIdentifier } from '@jvhellemondt/arts-and-crafts.ts'
-import { createQueryNode, Specification } from '@jvhellemondt/arts-and-crafts.ts'
+import type { QueryNode, WithIdentifier } from '@arts-n-crafts/ts'
+import { createQueryNode, Specification } from '@arts-n-crafts/ts'
 
 export class SameEntityOnly<TEntity extends WithIdentifier> extends Specification<TEntity[]> {
   constructor(

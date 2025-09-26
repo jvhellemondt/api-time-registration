@@ -1,10 +1,10 @@
-import type { EventStore, Repository, WithIdentifier } from '@jvhellemondt/arts-and-crafts.ts'
+import type { EventStore, Repository } from '@arts-n-crafts/ts'
 import type { TimeEntryEvent } from '@modules/domain/TimeEntry/TimeEntry.decider.ts'
 import type { TimeEntryEntity } from '@modules/domain/TimeEntry/TimeEntry.entity.ts'
 import { TimeEntry } from '@modules/domain/TimeEntry/TimeEntry.decider.ts'
 
 export class TimeEntryRepository
-implements Repository<TimeEntryEvent, TimeEntryEntity, WithIdentifier> {
+implements Repository<TimeEntryEvent, Promise<TimeEntryEntity>> {
   readonly streamName = 'time-entry'
 
   constructor(
@@ -17,7 +17,7 @@ implements Repository<TimeEntryEvent, TimeEntryEntity, WithIdentifier> {
     return pastEvents.reduce(TimeEntry.evolve, TimeEntry.initialState(aggregateId))
   }
 
-  async store(events: TimeEntryEvent[]): Promise<WithIdentifier> {
+  async store(events: TimeEntryEvent[]): Promise<void> {
     if (!events.length)
       return Promise.reject(new Error('TimeEntryRepository::store: no events provided'))
 
@@ -26,6 +26,5 @@ implements Repository<TimeEntryEvent, TimeEntryEntity, WithIdentifier> {
         async event => this.eventStore.append(this.streamName, [event]),
       ),
     )
-    return { id: events[0].aggregateId }
   }
 }

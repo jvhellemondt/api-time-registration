@@ -1,10 +1,10 @@
-import type { PatchStatement, WithIdentifier } from '@jvhellemondt/arts-and-crafts.ts'
+import type { PatchStatement, WithIdentifier } from '@arts-n-crafts/ts'
 import type {
   TimeEntryModel,
   UpdateTimeEntriesDirectivePort,
 } from '@modules/usecases/projectors/TimeEntriesProjection/TimeEntriesProjection.ports.ts'
 import type { UseCollection } from '../../useCollection.ts'
-import { Operation } from '@jvhellemondt/arts-and-crafts.ts'
+import { Operation } from '@arts-n-crafts/ts'
 
 export class UpdateTimeEntriesInMemoryDirective implements UpdateTimeEntriesDirectivePort {
   constructor(

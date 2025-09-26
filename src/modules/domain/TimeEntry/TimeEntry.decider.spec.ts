@@ -1,5 +1,5 @@
 import type { TimeEntryEvent } from './TimeEntry.decider.ts'
-import { createDomainEvent } from '@jvhellemondt/arts-and-crafts.ts'
+import { createDomainEvent } from '@arts-n-crafts/ts'
 import { createTimeEntryRegisteredEvent } from '@modules/domain/TimeEntry/TimeEntryRegistered.event.ts'
 import { createRegisterTimeEntryCommand } from '@modules/usecases/commands/RegisterTimeEntry/RegisterTimeEntry.command.ts'
 import { registerTimeEntryCommandPayload } from '@modules/usecases/commands/RegisterTimeEntry/RegisterTimeEntry.ports.ts'

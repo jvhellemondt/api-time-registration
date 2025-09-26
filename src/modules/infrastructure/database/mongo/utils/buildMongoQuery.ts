@@ -1,4 +1,4 @@
-import type { QueryNode } from '@jvhellemondt/arts-and-crafts.ts'
+import type { QueryNode } from '@arts-n-crafts/ts'
 
 export function buildMongoQuery(node: QueryNode): Record<string, unknown> {
   switch (node.type) {

@@ -5,7 +5,7 @@ import type {
 } from '@modules/usecases/queries/ListTimeEntries/ListTimeEntries.ports.ts'
 import type { Collection } from 'mongodb'
 import type { MongoRecord } from '../../MongoRecord.ts'
-import { FieldEquals } from '@jvhellemondt/arts-and-crafts.ts'
+import { FieldEquals } from '@arts-n-crafts/ts'
 import {
   mapTimeEntryModelToListTimeEntriesItemMapper,
 } from '@modules/mappers/mapTimeEntryModelToListTimeEntriesItem.mapper.ts'

@@ -1,6 +1,6 @@
-import type { Database, EventStore, StoredEvent, WithIdentifier } from '@jvhellemondt/arts-and-crafts.ts'
+import type { Database, EventStore, StoredEvent, WithIdentifier } from '@arts-n-crafts/ts'
 import type { TimeEntryEvent } from '@modules/domain/TimeEntry/TimeEntry.decider.ts'
-import { SimpleDatabase, SimpleEventStore } from '@jvhellemondt/arts-and-crafts.ts'
+import { SimpleDatabase, SimpleEventStore } from '@arts-n-crafts/ts'
 import { createTimeEntryRegisteredEvent } from '@modules/domain/TimeEntry/TimeEntryRegistered.event.ts'
 import { subHours } from 'date-fns'
 import { v7 as uuidv7 } from 'uuid'

@@ -1,7 +1,7 @@
-import type { Database } from '@jvhellemondt/arts-and-crafts.ts'
+import type { Database } from '@arts-n-crafts/ts'
 import type { TimeEntryModel } from '@modules/usecases/projectors/TimeEntriesProjection/TimeEntriesProjection.ports.ts'
 import type { UseCollection } from '../../useCollection.ts'
-import { SimpleDatabase } from '@jvhellemondt/arts-and-crafts.ts'
+import { SimpleDatabase } from '@arts-n-crafts/ts'
 import {
   mapTimeEntryModelToListTimeEntriesItemMapper,
 } from '@modules/mappers/mapTimeEntryModelToListTimeEntriesItem.mapper.ts'

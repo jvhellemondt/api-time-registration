@@ -1,6 +1,6 @@
-import type { Database } from '@jvhellemondt/arts-and-crafts.ts'
+import type { Database } from '@arts-n-crafts/ts'
 import type { UseCollection } from './useCollection.ts'
-import { FieldEquals, Operation, SimpleDatabase } from '@jvhellemondt/arts-and-crafts.ts'
+import { FieldEquals, Operation, SimpleDatabase } from '@arts-n-crafts/ts'
 import { useCollection } from './useCollection.ts'
 
 interface Entry { id: string, name?: string, updated?: boolean }

@@ -1,6 +1,6 @@
-import type { QueryMetadata } from '@jvhellemondt/arts-and-crafts.ts'
+import type { QueryMetadata } from '@arts-n-crafts/ts'
 import type { ListTimeEntriesByUserIdPayload } from './ListTimeEntries.ports.ts'
-import { createQuery } from '@jvhellemondt/arts-and-crafts.ts'
+import { createQuery } from '@arts-n-crafts/ts'
 
 export function createListTimeEntriesByUserIdQuery(
   payload: ListTimeEntriesByUserIdPayload,

@@ -1,8 +1,8 @@
-import type { QueryHandler } from '@jvhellemondt/arts-and-crafts.ts'
+import type { QueryHandler } from '@arts-n-crafts/ts'
 import type { ListTimeEntriesDirectivePort, ListTimeEntriesItem } from './ListTimeEntries.ports.ts'
 import type { ListTimeEntriesByUserIdQuery } from './ListTimeEntries.query.ts'
 
-export class ListTimeEntriesByUserIdHandler implements QueryHandler<ListTimeEntriesByUserIdQuery, ListTimeEntriesItem[]> {
+export class ListTimeEntriesByUserIdHandler implements QueryHandler<ListTimeEntriesByUserIdQuery, Promise<ListTimeEntriesItem[]>> {
   constructor(
     private readonly directive: ListTimeEntriesDirectivePort,
   ) {}

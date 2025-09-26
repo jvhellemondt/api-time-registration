@@ -1,13 +1,13 @@
-import type { CreateStatement, Database, DeleteStatement, PatchStatement, PutStatement, Specification } from '@jvhellemondt/arts-and-crafts.ts'
+import type { CreateStatement, Database, DeleteStatement, PatchStatement, PutStatement, Specification } from '@arts-n-crafts/ts'
 import type { COLLECTION } from '../collections.ts'
-import { Operation } from '@jvhellemondt/arts-and-crafts.ts'
+import { Operation } from '@arts-n-crafts/ts'
 
 export interface UseCollection<T> {
   query(specification: Specification<T>): Promise<T[]>
   execute(statement: CreateStatement<T> | PutStatement<T> | PatchStatement<T> | DeleteStatement): Promise<void>
 }
 
-export function useCollection<T>(database: Database<T>, collectionName: COLLECTION): UseCollection<T> {
+export function useCollection<T>(database: Database<T, Promise<void>, Promise<T[]>>, collectionName: COLLECTION): UseCollection<T> {
   return {
     query: async (specification: Specification<T>) => {
       return database.query(collectionName, specification)

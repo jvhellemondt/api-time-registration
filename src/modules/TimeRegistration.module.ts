@@ -1,4 +1,4 @@
-import type { EventStore } from '@jvhellemondt/arts-and-crafts.ts'
+import type { EventStore } from '@arts-n-crafts/ts'
 import type { TimeEntryEvent } from '@modules/domain/TimeEntry/TimeEntry.decider.ts'
 import type { MongoRecord } from '@modules/infrastructure/database/mongo/MongoRecord.ts'
 import type { TimeEntryModel } from './usecases/projectors/TimeEntriesProjection/TimeEntriesProjection.ports.ts'
@@ -26,17 +26,18 @@ export interface TimeRegistrationModule {
 }
 
 export async function timeRegistrationModule(): Promise<TimeRegistrationModule> {
+  const stream = 'time_entries'
   const client = await getClient()
   const database = client.db()
   const outbox = new Outbox()
   const eventStore = MongoEventStore(database, outbox)
 
   const eventBus = new EventBus()
-  const outboxWorker = new OutboxWorker(outbox, eventBus)
+  const outboxWorker = new OutboxWorker(outbox, eventBus, stream)
   outboxWorker.start(250)
 
-  const timeEntriesCollection = useCollection(database)<MongoRecord<TimeEntryModel>>('time_entries')
-  new TimeEntriesProjector(new StoreTimeEntriesDirective(timeEntriesCollection)).start(eventBus)
+  const timeEntriesCollection = useCollection(database)<MongoRecord<TimeEntryModel>>(stream)
+  eventBus.subscribe(stream, new TimeEntriesProjector(new StoreTimeEntriesDirective(timeEntriesCollection)))
 
   return {
     [symEventStore]: eventStore,

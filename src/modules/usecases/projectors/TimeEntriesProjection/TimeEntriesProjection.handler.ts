@@ -1,4 +1,4 @@
-import type { EventBus, EventHandler } from '@jvhellemondt/arts-and-crafts.ts'
+import type { EventHandler } from '@arts-n-crafts/ts'
 import type { TimeEntryEvent } from '@modules/domain/TimeEntry/TimeEntry.decider.ts'
 import type { StoreTimeEntriesDirectivePort } from './TimeEntriesProjection.ports.ts'
 import { differenceInMinutes } from 'date-fns'
@@ -22,9 +22,5 @@ export class TimeEntriesProjector implements EventHandler<TimeEntryEvent> {
         await this.directive.execute(model)
       }
     }
-  }
-
-  start(eventBus: EventBus<TimeEntryEvent>): void {
-    eventBus.subscribe('TimeEntryRegistered', this)
   }
 }

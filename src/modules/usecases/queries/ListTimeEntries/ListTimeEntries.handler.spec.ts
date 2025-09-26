@@ -1,7 +1,7 @@
-import type { CreateStatement, Database } from '@jvhellemondt/arts-and-crafts.ts'
+import type { CreateStatement, Database } from '@arts-n-crafts/ts'
 import type { UseCollection } from '@modules/infrastructure/database/in-memory/useCollection.ts'
 import type { TimeEntryModel } from '@modules/usecases/projectors/TimeEntriesProjection/TimeEntriesProjection.ports.ts'
-import { Operation, SimpleDatabase } from '@jvhellemondt/arts-and-crafts.ts'
+import { Operation, SimpleDatabase } from '@arts-n-crafts/ts'
 import { ListTimeEntriesInMemoryDirective } from '@modules/infrastructure/database/in-memory/directives/ListTimeEntries/ListTimeEntries.in-memory.directive.ts'
 import { useCollection } from '@modules/infrastructure/database/in-memory/useCollection.ts'
 import {

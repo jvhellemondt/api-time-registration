@@ -1,4 +1,4 @@
-import type { Decider } from '@jvhellemondt/arts-and-crafts.ts'
+import type { Decider } from '@arts-n-crafts/ts'
 import type { TimeEntryRegisteredEvent } from '@modules/domain/TimeEntry/TimeEntryRegistered.event.ts'
 import type { RegisterTimeEntryCommand } from '@modules/usecases/commands/RegisterTimeEntry/RegisterTimeEntry.command.ts'
 import type { TimeEntryEntity } from './TimeEntry.entity.ts'

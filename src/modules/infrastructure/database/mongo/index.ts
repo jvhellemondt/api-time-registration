@@ -1,5 +1,5 @@
 import process from 'node:process'
-import { fail } from '@jvhellemondt/arts-and-crafts.ts'
+import { fail } from '@arts-n-crafts/ts'
 import { MongoClient, ServerApiVersion } from 'mongodb'
 import { ensureConnected } from './ensureConnected.ts'
 import { initializeCollections } from './initializeCollections.ts'

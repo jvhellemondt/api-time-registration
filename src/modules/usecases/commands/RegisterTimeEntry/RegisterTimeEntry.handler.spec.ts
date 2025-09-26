@@ -1,7 +1,7 @@
-import type { Command, CommandHandler, Database, EventStore, StoredEvent, WithIdentifier } from '@jvhellemondt/arts-and-crafts.ts'
+import type { Command, CommandHandler, Database, EventStore, StoredEvent, WithIdentifier } from '@arts-n-crafts/ts'
 import type { TimeEntryEvent } from '@modules/domain/TimeEntry/TimeEntry.decider.ts'
 import type { RegisterTimeEntryCommandPayload } from './RegisterTimeEntry.ports.ts'
-import { SimpleDatabase, SimpleEventStore } from '@jvhellemondt/arts-and-crafts.ts'
+import { SimpleDatabase, SimpleEventStore } from '@arts-n-crafts/ts'
 import { TimeEntryRepository } from '@modules/domain/repositories/TimeEntryRepository/TimeEntry.repository.ts'
 import { createRegisterTimeEntryCommand } from '@modules/usecases/commands/RegisterTimeEntry/RegisterTimeEntry.command.ts'
 import { subHours } from 'date-fns'
@@ -13,7 +13,7 @@ describe('registerTimeEntryHandler', () => {
   let database: Database<StoredEvent<TimeEntryEvent>>
   let eventStore: EventStore<TimeEntryEvent>
   let repository: TimeEntryRepository
-  let handler: CommandHandler<Command<'RegisterTimeEntry', RegisterTimeEntryCommandPayload>, WithIdentifier>
+  let handler: CommandHandler<Command<'RegisterTimeEntry', RegisterTimeEntryCommandPayload>, Promise<WithIdentifier>>
 
   beforeAll(() => {
     database = new SimpleDatabase()

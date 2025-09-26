@@ -1,7 +1,7 @@
-import type { CreateStatement } from '@jvhellemondt/arts-and-crafts.ts'
+import type { CreateStatement } from '@arts-n-crafts/ts'
 import type { StoreTimeEntriesDirectivePort, TimeEntryModel } from '@modules/usecases/projectors/TimeEntriesProjection/TimeEntriesProjection.ports.ts'
 import type { UseCollection } from '../../useCollection.ts'
-import { Operation } from '@jvhellemondt/arts-and-crafts.ts'
+import { Operation } from '@arts-n-crafts/ts'
 
 export class StoreTimeEntriesInMemoryDirective implements StoreTimeEntriesDirectivePort {
   constructor(
