@@ -20,11 +20,10 @@
     "tsc": "tsc --noEmit",
     "typecheck": "tsc --noEmit",
     "release": "release-it",
-		"docker:start": "docker compose -f docker/docker-compose.yaml up -d",
-		"docker:down": "docker compose -f docker/docker-compose.yaml down",
-		"docker:destroy": "docker compose -f docker/docker-compose.yaml down -v"
-
-	},
+    "docker:start": "docker compose -f docker/mongodb/docker-compose.yaml up -d",
+    "docker:down": "docker compose -f docker/mongodb/docker-compose.yaml down",
+    "docker:destroy": "docker compose -f docker/mongodb/docker-compose.yaml down -v"
+  },
   "peerDependencies": {
     "typescript": "^5.9.2"
   },
