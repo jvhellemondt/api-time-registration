@@ -9,7 +9,10 @@ import { ListTimeEntriesDirective } from '@modules/infrastructure/database/mongo
 import { StoreTimeEntriesDirective } from '@modules/infrastructure/database/mongo/directives/StoreTimeEntries/StoreTimeEntries.directive.ts'
 import { MongoEventStore } from '@modules/infrastructure/database/mongo/eventStore/MongoDBEventStore.ts'
 import { useCollection } from '@modules/infrastructure/database/mongo/useCollection.ts'
-import { EventBus } from '@modules/infrastructure/eventBus/EventBus.ts'
+import { InMemoryOutbox } from '@modules/infrastructure/eventBus/pulsar/InMemoryOutbox.ts'
+import { PulsarEventBus } from '@modules/infrastructure/eventBus/pulsar/Pulsar.EventBus.ts'
+import { PulsarEventConsumer } from '@modules/infrastructure/eventBus/pulsar/Pulsar.EventConsumer.ts'
+import { PulsarEventProducer } from '@modules/infrastructure/eventBus/pulsar/Pulsar.EventProducer.ts'
 import { Outbox } from '@modules/infrastructure/outbox/Outbox.ts'
 import { OutboxWorker } from '@modules/infrastructure/outbox/OutboxWorker.ts'
 import { TimeEntriesProjector } from './usecases/projectors/TimeEntriesProjection/TimeEntriesProjection.handler.ts'
@@ -32,7 +35,13 @@ export async function timeRegistrationModule(): Promise<TimeRegistrationModule> 
   const outbox = new Outbox()
   const eventStore = MongoEventStore(database, outbox)
 
-  const eventBus = new EventBus()
+  const eventBusOutbox = new InMemoryOutbox<TimeEntryEvent>()
+  const broker = 'localhost:8080'
+  const eventProducer = new PulsarEventProducer(`http://${broker}`)
+  const eventConsumer = new PulsarEventConsumer(`ws://${broker}`, stream, eventBusOutbox)
+  await eventConsumer.connect()
+  const eventBus = new PulsarEventBus(eventProducer, eventConsumer)
+
   const outboxWorker = new OutboxWorker(outbox, eventBus, stream)
   outboxWorker.start(250)
 

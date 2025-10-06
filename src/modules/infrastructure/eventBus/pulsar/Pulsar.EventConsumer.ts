@@ -58,9 +58,12 @@ export class PulsarEventConsumer implements EventConsumer<TimeEntryEvent> {
     this.websocket = new WebSocket(url)
     return new Promise((resolve) => {
       this.websocket!.addEventListener('message', (raw: MessageEvent<string>) => {
+        // eslint-disable-next-line no-console
+        console.info('PulsarEventConsumer::onMessage > received event.')
         try {
           const data = JSON.parse(raw.data.toString()) as PulsarWebSocketMessage
-          const payload = JSON.parse(Buffer.from(data.payload, 'base64').toString('utf-8')) as TimeEntryEvent['payload']
+          const decode = Buffer.from(data.payload, 'base64').toString('utf-8')
+          const payload = JSON.parse(decode) as TimeEntryEvent['payload']
           const event = createDomainEvent(data.properties!.type, data.properties!.aggregateId, payload)
           this.outbox.enqueue(event)
           const ackMsg = { messageId: data.messageId }
@@ -78,6 +81,8 @@ export class PulsarEventConsumer implements EventConsumer<TimeEntryEvent> {
       })
 
       this.websocket?.addEventListener('open', () => {
+        // eslint-disable-next-line no-console
+        console.info('PulsarEventConsumer::connect > connected successfully.')
         resolve(true)
       })
     })
