@@ -31,8 +31,8 @@ describe('registerTimeEntryHandler', () => {
     const now = new Date()
     const payload: RegisterTimeEntryCommandPayload = {
       userId: uuidv7(),
-      startTime: subHours(now, 1).toISOString(),
-      endTime: now.toISOString(),
+      startTime: subHours(now, 1).getTime(),
+      endTime: now.getTime(),
     }
     const command = createRegisterTimeEntryCommand(aggregateId, payload)
     const result = await handler.execute(command)

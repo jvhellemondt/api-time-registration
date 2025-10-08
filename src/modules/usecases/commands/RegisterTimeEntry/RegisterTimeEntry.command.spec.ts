@@ -11,8 +11,8 @@ describe('registerTimeEntryCommand', () => {
   it('should contain the right payload', () => {
     const aggregateId = uuidv7()
     const userId = uuidv7()
-    const endTime = new Date().toISOString()
-    const startTime = subHours(endTime, 3).toISOString()
+    const endTime = new Date().getTime()
+    const startTime = subHours(endTime, 3).getTime()
     const payload = registerTimeEntryCommandPayload.parse({ userId, startTime, endTime })
 
     const command = createRegisterTimeEntryCommand(aggregateId, payload)

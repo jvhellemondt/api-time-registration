@@ -55,8 +55,8 @@ describe('producer', () => {
   it('should publish and consume messages from Pulsar', async () => {
     const aggregateId = uuidv7()
     const userId = uuidv7()
-    const startTime = subHours(new Date(), 2).toISOString()
-    const endTime = new Date().toISOString()
+    const startTime = subHours(new Date(), 2).getTime()
+    const endTime = new Date().getTime()
     const event = createTimeEntryRegisteredEvent(aggregateId, { userId, startTime, endTime })
     await producer.publish(stream, event)
     await wait(1000)

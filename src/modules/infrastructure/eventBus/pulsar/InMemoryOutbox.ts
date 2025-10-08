@@ -1,21 +1,21 @@
-import type { DomainEvent, Outbox } from '@arts-n-crafts/ts'
+import type { BaseEvent, Outbox } from '@arts-n-crafts/ts'
 
 interface OutboxEntry<TEvent> {
   id: string
   event: TEvent
   published: boolean
   retryCount: number
-  lastAttemptAt?: string
+  lastAttemptAt?: number
 }
 
-export class InMemoryOutbox<TEvent extends DomainEvent> implements Outbox {
+export class InMemoryOutbox<TEvent extends BaseEvent> implements Outbox {
   protected entries: OutboxEntry<TEvent>[] = []
   protected idCounter = 0
 
   // @ts-expect-error not a promise
   enqueue(event: TEvent): void {
     this.entries.push({
-      id: (this.idCounter++).toString(),
+      id: event.id,
       event,
       published: false,
       retryCount: 0,
@@ -40,7 +40,7 @@ export class InMemoryOutbox<TEvent extends DomainEvent> implements Outbox {
     const entry = this.entries.find(e => e.id === id)
     if (entry) {
       entry.retryCount += 1
-      entry.lastAttemptAt = new Date().toISOString()
+      entry.lastAttemptAt = new Date().getTime()
     }
   }
 }

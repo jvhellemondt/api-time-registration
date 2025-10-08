@@ -10,7 +10,7 @@ describe('mongodb EventStore', () => {
   let client: MongoClient
   const event = createTimeEntryRegisteredEvent(
     uuidv7(),
-    { userId: uuidv7(), startTime: subHours(new Date(), 2).toISOString(), endTime: new Date().toISOString() },
+    { userId: uuidv7(), startTime: subHours(new Date(), 2).getTime(), endTime: new Date().getTime() },
   )
 
   beforeAll(async () => {

@@ -32,8 +32,8 @@ describe('time-entry api', () => {
   describe('endpoint /register-time-entry', () => {
     it('should register a time entry', async () => {
       const body = JSON.stringify({
-        startTime: subHours(now, 1).toISOString(),
-        endTime: now.toISOString(),
+        startTime: subHours(now, 1).getTime(),
+        endTime: now.getTime(),
       })
       const res = await server.request('register-time-entry', {
         method: 'POST',
@@ -50,13 +50,13 @@ describe('time-entry api', () => {
     })
 
     it.each([
-      { __scenario: 'MISSING_UUID', payload: { userId: '', startTime: subHours(now, 1).toISOString(), endTime: now.toISOString() } },
-      { __scenario: 'MISSING_START_TIME', payload: { userId: uuidv7(), startTime: '', endTime: now.toISOString() } },
-      { __scenario: 'MISSING_END_TIME', payload: { userId: uuidv7(), startTime: subHours(now, 1).toISOString(), endTime: '' } },
+      { __scenario: 'MISSING_UUID', payload: { userId: '', startTime: subHours(now, 1).getTime(), endTime: now.getTime() } },
+      { __scenario: 'MISSING_START_TIME', payload: { userId: uuidv7(), startTime: '', endTime: now.getTime() } },
+      { __scenario: 'MISSING_END_TIME', payload: { userId: uuidv7(), startTime: subHours(now, 1).getTime(), endTime: '' } },
       { __scenario: 'MISSING_ALL_FIELDS', payload: { userId: '', startTime: '', endTime: '' } },
-      { __scenario: 'INVALID_UUID', payload: { userId: 'invalid-uuid-id', startTime: subHours(now, 1).toISOString(), endTime: now.toISOString() } },
-      { __scenario: 'INVALID_START_TIME', payload: { userId: uuidv7(), startTime: subHours(now, 1).toTimeString(), endTime: now.toISOString() } },
-      { __scenario: 'INVALID_END_TIME', payload: { userId: uuidv7(), startTime: subHours(now, 1).toISOString(), endTime: now.toUTCString() } },
+      { __scenario: 'INVALID_UUID', payload: { userId: 'invalid-uuid-id', startTime: subHours(now, 1).getTime(), endTime: now.getTime() } },
+      { __scenario: 'INVALID_START_TIME', payload: { userId: uuidv7(), startTime: subHours(now, 1).toTimeString(), endTime: now.getTime() } },
+      { __scenario: 'INVALID_END_TIME', payload: { userId: uuidv7(), startTime: subHours(now, 1).getTime(), endTime: now.toUTCString() } },
     ])('should return a validation error for $__scenario', async ({ payload: { userId, startTime, endTime } }) => {
       const res = await server.request('register-time-entry', {
         method: 'POST',
@@ -73,10 +73,10 @@ describe('time-entry api', () => {
       Jeff: { id: uuidv7(), name: 'Jeff Bezos' },
     }
     const documents: TimeEntryModel[] = [
-      { id: uuidv7(), userId: users.Elon.id, startTime: subHours(new Date(), 2).toISOString(), endTime: new Date().toISOString(), minutes: 120 },
-      { id: uuidv7(), userId: users.Elon.id, startTime: subHours(new Date(), 3).toISOString(), endTime: subHours(new Date(), 2).toISOString(), minutes: 60 },
-      { id: uuidv7(), userId: users.Jeff.id, startTime: subHours(new Date(), 2).toISOString(), endTime: new Date().toISOString(), minutes: 120 },
-      { id: uuidv7(), userId: users.Jeff.id, startTime: subHours(new Date(), 6).toISOString(), endTime: subHours(new Date(), 2).toISOString(), minutes: 240 },
+      { id: uuidv7(), userId: users.Elon.id, startTime: subHours(new Date(), 2).getTime(), endTime: new Date().getTime(), minutes: 120 },
+      { id: uuidv7(), userId: users.Elon.id, startTime: subHours(new Date(), 3).getTime(), endTime: subHours(new Date(), 2).getTime(), minutes: 60 },
+      { id: uuidv7(), userId: users.Jeff.id, startTime: subHours(new Date(), 2).getTime(), endTime: new Date().getTime(), minutes: 120 },
+      { id: uuidv7(), userId: users.Jeff.id, startTime: subHours(new Date(), 6).getTime(), endTime: subHours(new Date(), 2).getTime(), minutes: 240 },
     ]
 
     beforeAll(async () => {

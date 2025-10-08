@@ -10,8 +10,8 @@ describe('mapTimeEntryModelToListTimeEntriesItemMapper', () => {
 
   it('should map the TimeEntryModel to ListTimeEntriesItem', () => {
     const timeEntryModels: TimeEntryModel[] = [
-      { id: uuidv7(), userId: uuidv7(), startTime: subHours(new Date(), 2).toISOString(), endTime: new Date().toISOString(), minutes: 120 },
-      { id: uuidv7(), userId: uuidv7(), startTime: subHours(new Date(), 2).toISOString(), endTime: new Date().toISOString(), minutes: 120 },
+      { id: uuidv7(), userId: uuidv7(), startTime: subHours(new Date(), 2).getTime(), endTime: new Date().getTime(), minutes: 120 },
+      { id: uuidv7(), userId: uuidv7(), startTime: subHours(new Date(), 2).getTime(), endTime: new Date().getTime(), minutes: 120 },
     ]
     const mapResult = timeEntryModels.map(mapTimeEntryModelToListTimeEntriesItemMapper)
     expect(mapResult).toEqual([

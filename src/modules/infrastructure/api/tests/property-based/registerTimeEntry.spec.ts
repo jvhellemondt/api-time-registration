@@ -50,8 +50,8 @@ describe('request.POST /register-time-entry', () => {
         }),
         async (payload) => {
           const body = {
-            startTime: isValid(payload.startTime) ? toDate(payload.startTime).toISOString() : payload.startTime,
-            endTime: isValid(payload.endTime) ? toDate(payload.endTime).toISOString() : payload.endTime,
+            startTime: isValid(payload.startTime) ? toDate(payload.startTime).getTime() : payload.startTime,
+            endTime: isValid(payload.endTime) ? toDate(payload.endTime).getTime() : payload.endTime,
           }
 
           const payloadParseResult = registerTimeEntryCommandPayload.safeParse({ userId: payload.userId, ...body })

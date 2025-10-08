@@ -9,7 +9,7 @@ import { TimeEntry } from './TimeEntry.decider.ts'
 
 describe('time entry decider', () => {
   let pastEvents: TimeEntryEvent[]
-  const payload = registerTimeEntryCommandPayload.parse({ userId: uuidv7(), startTime: subHours(new Date(), 2).toISOString(), endTime: new Date().toISOString() })
+  const payload = registerTimeEntryCommandPayload.parse({ userId: uuidv7(), startTime: subHours(new Date(), 2).getTime(), endTime: new Date().getTime() })
   const registerTimeEntryCommand = createRegisterTimeEntryCommand(uuidv7(), payload)
   const timeEntryRegisteredEvent = createTimeEntryRegisteredEvent(registerTimeEntryCommand.aggregateId, registerTimeEntryCommand.payload)
 

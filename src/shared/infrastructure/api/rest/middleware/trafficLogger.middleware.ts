@@ -14,7 +14,7 @@ export async function trafficLoggerMiddleware(c: Context, next: Next) {
   // eslint-disable-next-line no-console
   console.group(`${method} ${path} ${status}`)
   // eslint-disable-next-line no-console
-  console.info(`[${new Date().toISOString()}] ${latency}ms - ${url}`)
+  console.info(`[${new Date().getTime()}] ${latency}ms - ${url}`)
   // eslint-disable-next-line no-console
   console.groupEnd()
   c.header('X-Response-Time', `${latency}ms`)

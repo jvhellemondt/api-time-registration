@@ -40,6 +40,7 @@ export async function timeRegistrationModule(): Promise<TimeRegistrationModule> 
   const eventProducer = new PulsarEventProducer(`http://${broker}`)
   const eventConsumer = new PulsarEventConsumer(`ws://${broker}`, stream, eventBusOutbox)
   await eventConsumer.connect()
+  eventConsumer.start(500)
   const eventBus = new PulsarEventBus(eventProducer, eventConsumer)
 
   const outboxWorker = new OutboxWorker(outbox, eventBus, stream)

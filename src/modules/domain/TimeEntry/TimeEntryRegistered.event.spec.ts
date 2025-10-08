@@ -9,7 +9,7 @@ describe('timeEntryRegistered Event', () => {
   })
 
   it('should be a domain event with proper payload', () => {
-    const props = registerTimeEntryCommandPayload.parse({ userId: uuidv7(), startTime: subHours(new Date(), 2).toISOString(), endTime: new Date().toISOString() })
+    const props = registerTimeEntryCommandPayload.parse({ userId: uuidv7(), startTime: subHours(new Date(), 2).getTime(), endTime: new Date().getTime() })
     const event = createTimeEntryRegisteredEvent(uuidv7(), props)
     expect(event.type).toBe('TimeEntryRegistered')
     expect(event.source).toBe('internal')

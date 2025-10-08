@@ -3,11 +3,12 @@ import type { TimeEntryEvent } from '@modules/domain/TimeEntry/TimeEntry.decider
 import type { InMemoryOutbox } from '@modules/infrastructure/eventBus/pulsar/InMemoryOutbox.ts'
 import { Buffer } from 'node:buffer'
 import { createDomainEvent, parseAsError } from '@arts-n-crafts/ts'
+import { camelCase } from 'change-case/keys'
 
 interface PulsarWebSocketMessage {
   messageId: string | [number, number]
   payload: string
-  properties?: Record<string, string>
+  properties: Record<string, string> & { eventType: string, aggregateId: string }
   publishTime?: number
   eventTime?: number
   sequenceId?: number
@@ -63,8 +64,8 @@ export class PulsarEventConsumer implements EventConsumer<TimeEntryEvent> {
         try {
           const data = JSON.parse(raw.data.toString()) as PulsarWebSocketMessage
           const decode = Buffer.from(data.payload, 'base64').toString('utf-8')
-          const payload = JSON.parse(decode) as TimeEntryEvent['payload']
-          const event = createDomainEvent(data.properties!.type, data.properties!.aggregateId, payload)
+          const payload = camelCase(JSON.parse(decode)) as TimeEntryEvent['payload']
+          const event = createDomainEvent(data.properties.eventType, data.properties.aggregateId, payload)
           this.outbox.enqueue(event)
           const ackMsg = { messageId: data.messageId }
           this.websocket!.send(JSON.stringify(ackMsg))

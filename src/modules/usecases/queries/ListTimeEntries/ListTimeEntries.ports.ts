@@ -8,8 +8,8 @@ export type ListTimeEntriesByUserIdPayload = z.infer<typeof listTimeEntriesByUse
 
 export interface ListTimeEntriesItem {
   id: string
-  startTime: string
-  endTime: string
+  startTime: number
+  endTime: number
   duration: {
     in: 'hours' | 'minutes' | 'seconds'
     value: number

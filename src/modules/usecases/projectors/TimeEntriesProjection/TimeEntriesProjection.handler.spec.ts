@@ -41,8 +41,8 @@ describe('time-entries projector', () => {
       const userId = uuidv7()
       const events = Array.from({ length: 5 }, () => createTimeEntryRegisteredEvent(uuidv7(), {
         userId,
-        startTime: subHours(new Date(), 2).toISOString(),
-        endTime: new Date().toISOString(),
+        startTime: subHours(new Date(), 2).getTime(),
+        endTime: new Date().getTime(),
       }))
       await Promise.all(
         events.map(async event => eventBus.publish(stream, event)),
