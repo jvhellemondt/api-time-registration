@@ -23,7 +23,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-bun-
 
-      - run: docker compose -f docker/docker-compose.yaml up -d
+      - run: docker compose -f docker/mongodb/docker-compose.yaml up -d
         env:
           MONGO_EXPRESS_REPLICAS: 0
           MONGO_INITDB_ROOT_USERNAME: ${{ vars.MONGO_INITDB_ROOT_USERNAME }}
