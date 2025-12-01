@@ -1,4 +1,4 @@
-import type TimeEntryApi from '@modules/infrastructure/api/TimeEntry.ts'
+import type TimeEntryApi from '@modules/TimeRegistration/infrastructure/api/TimeEntry.ts'
 import { fail } from '@arts-n-crafts/ts'
 import RestApi from '@shared/infrastructure/api/rest/server/RestApi.ts'
 import { v7 as uuidv7 } from 'uuid'

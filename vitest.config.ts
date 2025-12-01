@@ -19,8 +19,8 @@ export default defineConfig({
       exclude: [
         ...vitestBaseConfig.test.coverage.exclude,
         '*.ts',
-        '**/modules/infrastructure/database/mongo/**/*',
-        '**/modules/infrastructure/eventBus/pulsar/**/*',
+        '**/infrastructure/database/mongo/**/*',
+        '**/infrastructure/eventBus/pulsar/**/*',
         '**/*.module.ts',
         '**/main.ts',
         '**/tests/property-based/**/*',

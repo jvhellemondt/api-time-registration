@@ -2,7 +2,7 @@
   "name": "time-registration",
   "type": "module",
   "version": "0.0.0",
-  "module": "src/modules/TimeRegistration.module.ts",
+  "module": "src/modules/TimeRegistration/TimeRegistration.module.ts",
   "scripts": {
     "dev": "bun --hot --watch src/main.ts",
     "build": "bun build src/main.ts --splitting --outdir=./dist --target=bun --tsconfig=tsconfig.build.json",

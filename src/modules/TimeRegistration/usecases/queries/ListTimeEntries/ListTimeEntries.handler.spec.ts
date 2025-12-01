@@ -1,0 +1,60 @@
+import type { CreateStatement, Database } from '@arts-n-crafts/ts'
+import type { TimeEntryModel } from '@modules/TimeRegistration/usecases/projectors/TimeEntriesProjection/TimeEntriesProjection.ports.ts'
+import { Operation, SimpleDatabase } from '@arts-n-crafts/ts'
+import { ListTimeEntriesInMemoryDirective } from '@modules/TimeRegistration/infrastructure/database/in-memory/directives/ListTimeEntries/ListTimeEntries.in-memory.directive.ts'
+import {
+  mapTimeEntryModelToListTimeEntriesItemMapper,
+} from '@modules/TimeRegistration/mappers/mapTimeEntryModelToListTimeEntriesItem.mapper.ts'
+import { subHours } from 'date-fns'
+import { v7 as uuidv7 } from 'uuid'
+import { ListTimeEntriesByUserIdHandler } from './ListTimeEntries.handler.ts'
+import { listTimeEntriesByUserIdPayload } from './ListTimeEntries.ports.ts'
+import { createListTimeEntriesByUserIdQuery } from './ListTimeEntries.query.ts'
+
+describe('listTimeEntriesByUserIdHandler', () => {
+  const stream = 'time-entries'
+  const users = {
+    Elon: { id: uuidv7(), name: 'Elon Musk' },
+    Jeff: { id: uuidv7(), name: 'Jeff Bezos' },
+  }
+  const documents: TimeEntryModel[] = [
+    { id: uuidv7(), userId: users.Elon.id, startTime: subHours(new Date(), 2).getTime(), endTime: new Date().getTime(), minutes: 120 },
+    { id: uuidv7(), userId: users.Elon.id, startTime: subHours(new Date(), 3).getTime(), endTime: subHours(new Date(), 2).getTime(), minutes: 60 },
+    { id: uuidv7(), userId: users.Jeff.id, startTime: subHours(new Date(), 2).getTime(), endTime: new Date().getTime(), minutes: 120 },
+    { id: uuidv7(), userId: users.Jeff.id, startTime: subHours(new Date(), 6).getTime(), endTime: subHours(new Date(), 2).getTime(), minutes: 240 },
+  ]
+
+  let database: Database<TimeEntryModel>
+  let directive: ListTimeEntriesInMemoryDirective
+
+  beforeAll(async () => {
+    database = new SimpleDatabase()
+    await Promise.all(documents.map(async (document) => {
+      const statement: CreateStatement<TimeEntryModel> = { operation: Operation.CREATE, payload: document }
+      await database.execute(stream, statement)
+    }))
+  })
+
+  beforeEach(async () => {
+    directive = new ListTimeEntriesInMemoryDirective(stream, database)
+  })
+
+  it('should be defined', () => {
+    expect(ListTimeEntriesByUserIdHandler).toBeDefined()
+  })
+
+  it.each([
+    users.Elon,
+    users.Jeff,
+  ])('should retrieve the time entries for $name', async (user) => {
+    const aPayload = listTimeEntriesByUserIdPayload.parse({ userId: user.id })
+    const aQuery = createListTimeEntriesByUserIdQuery(aPayload)
+    const anHandler = new ListTimeEntriesByUserIdHandler(directive)
+    const result = await anHandler.execute(aQuery)
+    expect(result).toStrictEqual(
+      documents
+        .filter(document => document.userId === user.id)
+        .map(mapTimeEntryModelToListTimeEntriesItemMapper),
+    )
+  })
+})

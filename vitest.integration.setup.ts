@@ -1,4 +1,4 @@
-import { getClient } from '@modules/infrastructure/database/mongo'
+import { getClient } from '@modules/TimeRegistration/infrastructure/database/mongo'
 
 let client: Awaited<ReturnType<typeof getClient>>
 
