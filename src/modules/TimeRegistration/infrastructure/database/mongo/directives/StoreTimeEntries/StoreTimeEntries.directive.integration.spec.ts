@@ -1,11 +1,13 @@
 import type { TimeEntryModel } from '@modules/TimeRegistration/usecases/projectors/TimeEntriesProjection/TimeEntriesProjection.ports.ts'
 import type { Db, MongoClient } from 'mongodb'
+import { config } from '@config'
 import {
   mapTimeEntryModelToListTimeEntriesItemMapper,
 } from '@modules/TimeRegistration/mappers/mapTimeEntryModelToListTimeEntriesItem.mapper.ts'
 import { subHours } from 'date-fns'
 import { v7 as uuidv7 } from 'uuid'
-import { getClient } from '../../index.ts'
+import { afterAll } from 'vitest'
+import { createMongoClient } from '../../index.ts'
 import { ListTimeEntriesDirective } from '../ListTimeEntries/ListTimeEntries.directive.ts'
 import { StoreTimeEntriesDirective } from './StoreTimeEntries.directive.ts'
 
@@ -31,8 +33,12 @@ describe('mongodb StoreTimeEntriesDirective', () => {
   ]
 
   beforeAll(async () => {
-    client = await getClient()
+    client = await createMongoClient(config.mongodb)
     database = client.db()
+  })
+
+  afterAll(async () => {
+    await client.close()
   })
 
   it('should be defined', () => {

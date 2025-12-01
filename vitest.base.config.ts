@@ -22,6 +22,7 @@ export const vitestBaseConfig = {
         branches: 100,
       },
       exclude: [
+        './src/config/**/*.ts',
         '**/node_modules/**',
         '**/dist/**',
         '**/cypress/**',

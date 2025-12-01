@@ -1,14 +1,15 @@
 /* eslint-disable no-console */
 import process from 'node:process'
-import { getClient } from '@modules/TimeRegistration/infrastructure/database/mongo'
+import { createMongoClient } from '@modules/TimeRegistration/infrastructure/database/mongo'
 import { MongoEventStore } from '@modules/TimeRegistration/infrastructure/database/mongo/eventStore/MongoDBEventStore.ts'
 import { Outbox } from '@modules/TimeRegistration/infrastructure/outbox/Outbox.ts'
 import { TimeEntryModule } from '@modules/TimeRegistration/TimeRegistration.module.ts'
 import RestApi from '@shared/infrastructure/api/rest/server/RestApi.ts'
 import { serve } from 'bun'
+import { config } from './config'
 
 async function bootstrap() {
-  const client = await getClient()
+  const client = await createMongoClient(config.mongodb)
   const database = client.db()
   const outbox = new Outbox()
   const eventStore = MongoEventStore(database, outbox)

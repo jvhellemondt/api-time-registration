@@ -13,7 +13,7 @@
     "moduleResolution": "Bundler",
 
     "paths": {
-      "@config/*": ["./src/config/*"],
+      "@config": ["./src/config"],
       "@modules/*": ["./src/modules/*"],
 			"@shared/*": ["./src/shared/*"]
     },

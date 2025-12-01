@@ -1,8 +1,10 @@
 import type { MongoClient } from 'mongodb'
+import { config } from '@config'
 import { createTimeEntryRegisteredEvent } from '@modules/TimeRegistration/domain/TimeEntry/TimeEntryRegistered.event.ts'
 import { subHours } from 'date-fns'
 import { v7 as uuidv7 } from 'uuid'
-import { getClient } from '../index.ts'
+import { afterAll } from 'vitest'
+import { createMongoClient } from '../index.ts'
 import { MongoEventStore } from './MongoDBEventStore.ts'
 
 describe('mongodb EventStore', () => {
@@ -14,7 +16,11 @@ describe('mongodb EventStore', () => {
   )
 
   beforeAll(async () => {
-    client = await getClient()
+    client = await createMongoClient(config.mongodb)
+  })
+
+  afterAll(async () => {
+    await client.close()
   })
 
   it('should be defined', () => {

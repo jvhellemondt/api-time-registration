@@ -8,7 +8,6 @@ export default defineConfig(({ mode }) => {
     ...vitestBaseConfig,
     test: {
       ...vitestBaseConfig.test,
-      setupFiles: ['./vitest.integration.setup.ts'],
       env,
       include: ['src/**/*.integration.spec.?(c|m)[jt]s?(x)'],
       exclude: [
