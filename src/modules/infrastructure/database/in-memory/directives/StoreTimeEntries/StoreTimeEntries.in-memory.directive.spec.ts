@@ -1,19 +1,17 @@
 import type { Database } from '@arts-n-crafts/ts'
 import type { TimeEntryModel } from '@modules/usecases/projectors/TimeEntriesProjection/TimeEntriesProjection.ports.ts'
-import type { UseCollection } from '../../useCollection.ts'
 import { SimpleDatabase } from '@arts-n-crafts/ts'
 import {
   mapTimeEntryModelToListTimeEntriesItemMapper,
 } from '@modules/mappers/mapTimeEntryModelToListTimeEntriesItem.mapper.ts'
 import { subHours } from 'date-fns'
 import { v7 as uuidv7 } from 'uuid'
-import { useCollection } from '../../useCollection.ts'
 import { ListTimeEntriesInMemoryDirective } from '../ListTimeEntries/ListTimeEntries.in-memory.directive.ts'
 import { StoreTimeEntriesInMemoryDirective } from './StoreTimeEntries.in-memory.directive.ts'
 
 describe('in-memory StoreTimeEntriesDirective', () => {
+  const stream = 'time_entries'
   let database: Database<TimeEntryModel>
-  let collection: UseCollection<TimeEntryModel>
   const users = {
     Elon: { id: uuidv7(), name: 'Elon Musk' },
     Jeff: { id: uuidv7(), name: 'Jeff Bezos' },
@@ -33,7 +31,6 @@ describe('in-memory StoreTimeEntriesDirective', () => {
 
   beforeEach(async () => {
     database = new SimpleDatabase()
-    collection = useCollection(database, 'time_entries')
   })
 
   it('should be defined', () => {
@@ -46,13 +43,13 @@ describe('in-memory StoreTimeEntriesDirective', () => {
     users.Bill,
     users.Mark,
   ])('should store the documents of $name', async (user) => {
-    const storeDirective = new StoreTimeEntriesInMemoryDirective(collection)
+    const storeDirective = new StoreTimeEntriesInMemoryDirective(stream, database)
     await Promise.all(
       documents.map(async (document) => {
         await storeDirective.execute(document)
       }),
     )
-    const listDirective = new ListTimeEntriesInMemoryDirective(collection)
+    const listDirective = new ListTimeEntriesInMemoryDirective(stream, database)
     const result = await listDirective.execute(user.id)
     expect(result).toStrictEqual(
       documents

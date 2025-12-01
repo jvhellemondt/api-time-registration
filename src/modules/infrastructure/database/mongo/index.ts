@@ -2,7 +2,6 @@ import process from 'node:process'
 import { fail } from '@arts-n-crafts/ts'
 import { MongoClient, ServerApiVersion } from 'mongodb'
 import { ensureConnected } from './ensureConnected.ts'
-import { initializeCollections } from './initializeCollections.ts'
 
 const MONGODB_USER = process.env.MONGODB_USER ?? 'root'
 const MONGODB_PASSWORD = process.env.MONGODB_PASSWORD ?? 'password'
@@ -27,8 +26,5 @@ export async function getClient(): Promise<MongoClient> {
   catch {
     fail(new Error('MongoDatabase::client > not initialized'))
   }
-  const database = client.db()
-  await initializeCollections(database)
-
   return client
 }

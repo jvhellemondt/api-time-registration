@@ -1,9 +1,7 @@
 import type { CreateStatement, Database } from '@arts-n-crafts/ts'
-import type { UseCollection } from '@modules/infrastructure/database/in-memory/useCollection.ts'
 import type { TimeEntryModel } from '@modules/usecases/projectors/TimeEntriesProjection/TimeEntriesProjection.ports.ts'
 import { Operation, SimpleDatabase } from '@arts-n-crafts/ts'
 import { ListTimeEntriesInMemoryDirective } from '@modules/infrastructure/database/in-memory/directives/ListTimeEntries/ListTimeEntries.in-memory.directive.ts'
-import { useCollection } from '@modules/infrastructure/database/in-memory/useCollection.ts'
 import {
   mapTimeEntryModelToListTimeEntriesItemMapper,
 } from '@modules/mappers/mapTimeEntryModelToListTimeEntriesItem.mapper.ts'
@@ -14,6 +12,7 @@ import { listTimeEntriesByUserIdPayload } from './ListTimeEntries.ports.ts'
 import { createListTimeEntriesByUserIdQuery } from './ListTimeEntries.query.ts'
 
 describe('listTimeEntriesByUserIdHandler', () => {
+  const stream = 'time-entries'
   const users = {
     Elon: { id: uuidv7(), name: 'Elon Musk' },
     Jeff: { id: uuidv7(), name: 'Jeff Bezos' },
@@ -26,20 +25,18 @@ describe('listTimeEntriesByUserIdHandler', () => {
   ]
 
   let database: Database<TimeEntryModel>
-  let collection: UseCollection<TimeEntryModel>
   let directive: ListTimeEntriesInMemoryDirective
 
   beforeAll(async () => {
     database = new SimpleDatabase()
-    collection = useCollection(database, 'time_entries')
     await Promise.all(documents.map(async (document) => {
       const statement: CreateStatement<TimeEntryModel> = { operation: Operation.CREATE, payload: document }
-      await collection.execute(statement)
+      await database.execute(stream, statement)
     }))
   })
 
   beforeEach(async () => {
-    directive = new ListTimeEntriesInMemoryDirective(collection)
+    directive = new ListTimeEntriesInMemoryDirective(stream, database)
   })
 
   it('should be defined', () => {

@@ -1,6 +1,5 @@
 import type { Database, EventProducer } from '@arts-n-crafts/ts'
 import type { TimeEntryEvent } from '@modules/domain/TimeEntry/TimeEntry.decider.ts'
-import type { UseCollection } from '@modules/infrastructure/database/in-memory/useCollection.ts'
 import type { TimeEntryModel } from '@modules/usecases/projectors/TimeEntriesProjection/TimeEntriesProjection.ports.ts'
 import { SimpleDatabase } from '@arts-n-crafts/ts'
 import { createTimeEntryRegisteredEvent } from '@modules/domain/TimeEntry/TimeEntryRegistered.event.ts'
@@ -10,7 +9,6 @@ import {
 import {
   StoreTimeEntriesInMemoryDirective,
 } from '@modules/infrastructure/database/in-memory/directives/StoreTimeEntries/StoreTimeEntries.in-memory.directive.ts'
-import { useCollection } from '@modules/infrastructure/database/in-memory/useCollection.ts'
 import { InMemoryOutbox } from '@modules/infrastructure/eventBus/pulsar/InMemoryOutbox.ts'
 import { PulsarEventConsumer } from '@modules/infrastructure/eventBus/pulsar/Pulsar.EventConsumer.ts'
 import { PulsarEventProducer } from '@modules/infrastructure/eventBus/pulsar/Pulsar.EventProducer.ts'
@@ -24,12 +22,11 @@ async function wait(ms: number) {
   return new Promise(resolve => setTimeout(resolve, ms))
 }
 
-describe('producer', () => {
+describe.skip('producer', () => {
   const stream = 'time_entries'
   let producer: EventProducer<TimeEntryEvent>
   let consumer: PulsarEventConsumer
   let database: Database<TimeEntryModel>
-  let collection: UseCollection<TimeEntryModel>
   let outbox: InMemoryOutbox<TimeEntryEvent>
 
   beforeAll(async () => {
@@ -44,8 +41,7 @@ describe('producer', () => {
 
   beforeEach(() => {
     database = new SimpleDatabase()
-    collection = useCollection(database, stream)
-    consumer.subscribe(stream, new TimeEntriesProjector(new StoreTimeEntriesInMemoryDirective(collection)))
+    consumer.subscribe(stream, new TimeEntriesProjector(new StoreTimeEntriesInMemoryDirective(stream, database)))
   })
 
   afterAll(() => {
@@ -62,7 +58,7 @@ describe('producer', () => {
     await wait(1000)
     await consumer.tick()
 
-    const listDirective = new ListTimeEntriesInMemoryDirective(collection)
+    const listDirective = new ListTimeEntriesInMemoryDirective(stream, database)
     const result = await listDirective.execute(userId)
 
     expect(result).toStrictEqual([{

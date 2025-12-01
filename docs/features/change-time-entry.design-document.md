@@ -14,7 +14,7 @@ The system manages time entries (e.g., work shifts) in a DDD bounded context, us
 
 ## 🧱 Architecture
 
-- **Feature-driven design** (FDD) is an agile methodology that organizes development around delivering client-valued features, ensuring incremental and tangible progress. From an architecture perspective, FDD aligns with Domain-Driven Design (DDD), Command Query Responsibility Segregation (CQRS), Event Sourcing, and Event-Driven Architecture to create a scalable, maintainable system for managing time entries.
+- **Feature-driven design** (FDD) is an agile methodology that organizes development around delivering client-valued features, ensuring incremental and tangible progress. From an architecture perspective, FDD aligns with Domain-Driven Design (DDD), Command Query Responsibility Segregation (CQRS), Event Sourcing, and Event-Driven Architecture to createRouter a scalable, maintainable system for managing time entries.
 
 ---
 

@@ -1,6 +1,5 @@
 import type { Database, EventConsumer, EventHandler, EventProducer } from '@arts-n-crafts/ts'
 import type { TimeEntryEvent } from '@modules/domain/TimeEntry/TimeEntry.decider.ts'
-import type { UseCollection } from '@modules/infrastructure/database/in-memory/useCollection.ts'
 import type { StoreTimeEntriesDirectivePort, TimeEntryModel } from './TimeEntriesProjection.ports.ts'
 import { SimpleDatabase } from '@arts-n-crafts/ts'
 import { createTimeEntryRegisteredEvent } from '@modules/domain/TimeEntry/TimeEntryRegistered.event.ts'
@@ -10,7 +9,6 @@ import {
 import {
   StoreTimeEntriesInMemoryDirective,
 } from '@modules/infrastructure/database/in-memory/directives/StoreTimeEntries/StoreTimeEntries.in-memory.directive.ts'
-import { useCollection } from '@modules/infrastructure/database/in-memory/useCollection.ts'
 import { EventBus } from '@modules/infrastructure/eventBus/EventBus.ts'
 import { subHours } from 'date-fns'
 import { v7 as uuidv7 } from 'uuid'
@@ -19,7 +17,6 @@ import { TimeEntriesProjector } from './TimeEntriesProjection.handler.ts'
 describe('time-entries projector', () => {
   const stream = 'time_entries'
   let database: Database<TimeEntryModel>
-  let collection: UseCollection<TimeEntryModel>
   let eventBus: EventConsumer<TimeEntryEvent> & EventProducer<TimeEntryEvent>
   let projector: EventHandler<TimeEntryEvent>
   let directive: StoreTimeEntriesDirectivePort
@@ -27,8 +24,7 @@ describe('time-entries projector', () => {
   beforeEach(() => {
     eventBus = new EventBus()
     database = new SimpleDatabase()
-    collection = useCollection(database, stream)
-    directive = new StoreTimeEntriesInMemoryDirective(collection)
+    directive = new StoreTimeEntriesInMemoryDirective(stream, database)
     projector = new TimeEntriesProjector(directive)
     eventBus.subscribe(stream, projector)
   })
@@ -47,7 +43,7 @@ describe('time-entries projector', () => {
       await Promise.all(
         events.map(async event => eventBus.publish(stream, event)),
       )
-      const listTimeEntriesDirective = new ListTimeEntriesInMemoryDirective(collection)
+      const listTimeEntriesDirective = new ListTimeEntriesInMemoryDirective(stream, database)
       const result = await listTimeEntriesDirective.execute(userId)
       expect(result).toHaveLength(5)
 

@@ -1,18 +1,23 @@
 /* eslint-disable no-console */
 import process from 'node:process'
-import TimeEntryApi from '@modules/infrastructure/api/TimeEntry.ts'
-import { timeRegistrationModule } from '@modules/TimeRegistration.module.ts'
+import { getClient } from '@modules/infrastructure/database/mongo'
+import { MongoEventStore } from '@modules/infrastructure/database/mongo/eventStore/MongoDBEventStore.ts'
+import { Outbox } from '@modules/infrastructure/outbox/Outbox.ts'
+import { TimeEntryModule } from '@modules/TimeRegistration.module.ts'
 import RestApi from '@shared/infrastructure/api/rest/server/RestApi.ts'
 import { serve } from 'bun'
 
 async function bootstrap() {
-  const app = RestApi()
+  const client = await getClient()
+  const database = client.db()
+  const outbox = new Outbox()
+  const eventStore = MongoEventStore(database, outbox)
 
-  const module = await timeRegistrationModule()
-  const timeEntryRoutes = TimeEntryApi(module)
+  const app = RestApi()
+  const timeEntryModule = new TimeEntryModule(database, eventStore, outbox)
 
   return app
-    .route('/', timeEntryRoutes)
+    .route('/', timeEntryModule.router)
 }
 
 bootstrap()
