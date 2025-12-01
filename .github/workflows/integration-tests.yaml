@@ -46,4 +46,4 @@ jobs:
           MONGODB_HOST: ${{ vars.MONGODB_HOST }}
           MONGODB_QUERYPARAMS: ${{ vars.MONGODB_QUERYPARAMS }}
 
-      - run: docker compose -f docker/docker-compose.yaml down -v
+      - run: docker compose -f docker/mongodb/docker-compose.yaml down -v
